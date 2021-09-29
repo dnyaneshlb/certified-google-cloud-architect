@@ -1,0 +1,65 @@
+Labels vs tags
+	Labels are used to organize the resources in gcp.
+	They are key value pairs, always!
+	e.g. dept: finance
+		 env: prod
+		 
+	Tags are simple strings applied on resource(primarily networking resources). One use I know is in firewall rules to filter out resources with tags.
+	e.g. dev-network
+
+Budgets in GCP are not a way to prevent spending or stop resources. They are a tool for raising awareness about the consumption of resources so that a business can implement its own consumption management processes.
+e.g. when budget has spiked above 70% of monthly spend then possible code-automated action can be shutdown or delete non required resources.
+Note : Using 100% monthly budget will simply trigger notification to billing administrator. It wont prevent spending or stop resources.
+
+
+External IP addresses that don’t fall under the Free Tier will incur a small cost. Also, as a general security best practice, it’s a good idea to use internal IP addresses where applicable.
+
+
+Each project ID is unique across Google Cloud. 
+Once you have created a project, you can delete the project but its ID can never be used again.
+A project is associated with max one billing account but one billing account can be associated with multiple projects.
+
+A project serves as a namespace. This means every resource within each project must have a unique name, but you can usually reuse resource names if they are in separate projects. 
+Some resource names must be globally unique(like cloud storage bucket name?).
+
+What is cloud identity?
+		This 3 min video explains everything https://www.youtube.com/watch?v=O_O5Hb1bJyw
+		In a nutsehll this is what I used in firebase authentication for some apps/websites.		
+		also helpful video - https://www.youtube.com/watch?v=ny92vcpOQFs&list=PLIivdWyY5sqJlriayd9itEMQVZC2XH9T4&index=5
+		
+
+If you want to attach a persistent disk to a virtual machine instance, both resources must be in the same zone. Similarly, if you want to assign a static IP address to an instance, the instance must be in the same region as the static IP address.
+
+
+
+Where APIs are default enabled on project?
+	https://cloud.google.com/service-usage/docs/enabled-service#default
+	Cloud storage API
+	Datastore API
+	BigQuery API
+	Cloud SQL API
+	StackDriver - Logging, Monitoring, Debugging, Tracing
+	
+	Note that Compute engine API is not enabled by default. You either activate it by navigating to Compute engine setion 
+	within cloud console or via gcloud.
+	--> gcloud services enable compute.googleapis.com
+	
+	
+Quota
+	Project Quota
+	Region Quota
+	Quotas do not guarantee that resources are always available. If a resource is not available, or if the region you choose is out of the resource, you can't create new resources of that type, even if you have remaining quota in your region or project. For example, you might still have quota to create external IP addresses in us-central1, but there might not be available IP addresses in that region.
+	To increase quota go to IAM -> quotas 
+	A request to decrease quota is rejected by default. If you must reduce your quota, reply to the support email with an explanation of your requirements	
+	
+	
+How to check if there is any outage or current status of gcp service?
+	There is a nice dashboard to view it in few clicks. 
+	https://status.cloud.google.com/
+	
+
+gcloud 
+	gcloud projects delete projectID
+	gcloud projects undelete projectID
+	
+	

@@ -1,0 +1,463 @@
+Links :
+	Very good playlist "Season of Scale"
+		https://www.youtube.com/playlist?list=PLIivdWyY5sqKRzuCV5BejHJ3YoE-Sd8ku
+
+
+A folder can contain multipes projects or multiple folders or both.
+IAM policy can be applied on folder just like project or organization or resource.
+
+
+Custom roles cannot be applied at folder level.
+
+
+You can communicate within vms using their name as well rather than ip addresses.
+ping my-vm-1.us-central1-b
+This will internally use cloud DNS service to find the fully qualified name of the vm to ping to.
+
+
+GCP has quota to avoid extra usage of resources due to known reason or malicious activity.
+They help us to avoid billing surprises.
+Rate Quota
+	The rate at which the resource us used for certain time. If rate quota exceeeds for that resource then we can take some action.
+	e.g. 1000 admin req in 1 min for GKE cluster is rate quota. Its very unlikely for an admin to comsume more than allowed quota. If it does, something malicious is happning.	
+	Rate quota expires after certain.
+Allocation Quota
+	5 networks per project
+	gcloud compute project-info  -> project quota
+	gcloud compute regions describe region1 -> regional quota
+	
+	
+	
+Moving Instance between projects
+	Detach the boot disk from the VM that you intend to move by deselecting “Delete boot disk on instance delete” and terminating the VM
+	Create an image from the detached boot disk
+	share image to users in destination project
+		1. Upload the image to Google Cloud Storage and "share it with the new project"
+			OR
+		2. image can be shared directy with users from different project of same or another organization by using their individual/group email addresses
+	Create a custom image under the new project based on the image you uploaded to Google Cloud Storage
+	Create a new VM instance under the new project based on the custom image
+	
+	
+Moving Instance between zones
+	automatic moving
+		gcloud compute instances move instance1 --zone zone1 --destination-zone=zone2
+	manually moving
+		create snapshot of disks
+			gcloud compute disks snapshot snap1. Snapshots are global resources, hence can be moved.
+		create new disk from snapshot in destination zone
+		create new instance in destination zone with the new disk created in step 2
+		delete snapshots in old zone
+
+Moving instance between networks/subnets
+	stop instance
+	edit network interfaces
+	select destination network/subnet
+	
+	
+Copying Instance between projects
+	create snaphot of source vm boot's disk
+	create image from snapshot
+	share image to users in destination project
+		Upload the image to Google Cloud Storage and "share it with the new project"
+			OR
+		image can be shared directy with users from different project of same or another organization by using their individual/group email addresses
+	create vm with this custom image
+	
+	
+storage.objectAdmin vs storage.admin
+	storage.admin : Grants full control of buckets and objects.
+	storage.objectAdmin : Grants full control over only objects, including listing, creating, viewing, and deleting objects.	
+	
+	
+How to prevent persistent disk from being deleted in preeemptble VM?
+		gcloud compute instances create vm1 ---preemptible --no-boot-disk-auto-delete
+	By default preeemptble vm boot-disks are set to autodelete.
+	Note "only bootdisks" are set to auto delete on vm deletion. Other attached disks stays there.
+	
+	
+GCP provides ssh button to access linux instance but not for windows instances.
+To access windows VMs, gcp wont provide RDP client. you have to use the RDP capable client.		
+	
+
+Bastion host vs Cloud NAT
+	Bastion host protects set of VMs by allowing acesss to those VMs via bastion host only. External user dont have access to vms directly, cant ssh or connect. But it handlles only inbound traffic.
+	Hence NAT which protects outbound traffic(vms to internet)
+	It makes sure every vm can access internet in secured way for things like fetching software updates, etc.
+	https://youtu.be/bmaarG0IkH8?list=PLIivdWyY5sqJ0oXcnZYqOnuNRsLF9H48u
+	
+	
+VPC peering needs to be created both ways. otherwise it wont work.
+project1-vpc1 ----------> project2-vpc2
+project2-vpc2 ----------> project1-vpc1
+
+
+Which are global/regional/zonal compute resources?
+https://cloud.google.com/compute/docs/regions-zones/global-regional-zonal-resources
+	global : global ip addresses, snapshots, images, vpc, Instance templates, Firewalls, Routes
+	regional : regional PDs, regional ip addresses, subnets, regional MIG
+	zonal : vms, zonal PDs, TPUs, machine-type, zonal MIG
+	
+
+imp*** GKE dont deal with MIGs it deals with node pools. So if a question tries to combine GKE with MIG then its straight forward NO NO.
+
+
+Ingress vs Loadbalancer service in k8s?
+	in loadbalancer service, you have to have separate ip for each service running in cluster.
+		e.g. dsa service, stock service
+	in Ingress, you can expose all services under one ip address
+		e.g. www.atp.com/leadtime
+			 www.atp.com/stock
+			 
+			 
+
+Orgnization dont have a role called Org Owner like project owner. In fact org has very limited roles,
+	Orgnization Admin
+	Folder Admin
+	Orgnization Policy Admin
+	Billing Acount Admin
+	Billing Account Creator
+	Project Deletor
+	
+Viewing Google Cloud Platform status(ACE**)	
+	You can visit the link to view the status	https://status.cloud.google.com/	
+	You can check the same on project home screen. there is a card for platform status.
+	
+	
+Interesting roles
+	iam.serviceAccountDeleter
+	iam.serviceAccountUser
+	iam.serviceAccountKeyAdmin	
+	iam.serviceAccountTokenCreator
+	appengine.codeViewer
+	appengine.deployer
+	iam.organizationRoleViewer
+	iam.roleViewer vs iam/viewer
+	storage.hmacKeyAdmin
+	storage.legacyBucketOwner vs storage.admin
+	
+	
+You can use buckets to organize your data and control access to your data, but unlike directories and folders, you cannot nest buckets.
+
+
+gcloud components vs services?
+	components refers cloud SDK components.
+		e.g. If you want to interact with kms service then you can install the kms component.
+		Components are somewhat different than services. bq, beta, alpha, firestore emulator, pubsub emulator are components.
+		gcloud components list ---- this gives fair idea
+	services are various(compute, storage, networking services)services offered by gcp to us	
+		gcloud services list -- this gives fair idea
+		
+		
+		
+Decision tree for choosing the right service for right purpose?
+	Exreemely important link, dont miss this.
+	Also follow the links mentioned in the article. they are cherrypicked and fab.
+	part1 https://medium.com/google-cloud/a-gcp-flowchart-a-day-2d57cc109401
+	part2 https://medium.com/@grapesfrog/more-gcp-flowcharts-for-your-delectation-36b63ebb72ce
+	part3 https://medium.com/google-cloud/some-more-gcp-flowcharts-dc0bb6f7c94e
+	
+	https://grumpygrace.dev/posts/gcp-flowcharts/
+	
+	
+	
+Budget can be created for 
+	selected projects under billing account, 
+	selected services across projects under billing account, 
+	sleected labels on resources across projects under biling account
+	Subaccounts - select one or more billing subaccounts that you want to apply the budget alert to
+	
+	
+From blobs to relational tables: Where do I store my Data? 
+	https://www.youtube.com/watch?v=rn_68hBqt20 (Google Cloud Next '17)
+	
+	
+If a user presents their private SSH key, they can use a third-party tool to connect to any instance that is configured with the matching public SSH key file, even if they aren't a member of your Google Cloud project. 
+
+
+To provide Internet access to VMs without a public IP, a Cloud NAT must be created. what are other ways?
+
+Generally think of using a “bastion”host for “ingress “ and NAT for “egress”
+Bastion host vs NAT - dig more
+
+
+Commonly used ports for RDP -> TCP:3389 and SSH -> TCP:22
+
+
+When Editing an existing custom role, to avoid the conflict when multiple threads are trying to update the same role, etag is used to avoid stale writes.
+Also, gcloud iam roles create viewer --project=dsa-svc --file=role-def.yaml
+		in this command, 
+			we are creating custom role in dsa-svc project.
+			Here note that, roles/viewer is a predefined role "inhertited from org". But custom role dont have "roles/" prefix
+			--project is must which specifies exactly where this new role is created.
+	  
+	  gcloud iam roles update viewer --project $DEVSHELL_PROJECT_ID --stage DISABLED	
+			as this is custom role, it can be disabled but i think predefined roles cannot be .
+			
+	  gcloud iam roles list
+			this will list all roles at org level including custom roles as we havent specfied the level at which to list
+			but
+			
+	  gcloud iam roles list --project=dsa-svc
+			this will list "only custom roles" at dsa-svc project. predefined role will not be listed because they exist at org level.
+			
+	  gcloud iam roles undelete viewer
+			recover the deleted custom role viewer. 
+			The role can be undeleted within 7 days.
+
+set default cluster for gcloud			
+gcloud config set container/cluster [CLUSTER_NAME]			
+
+BigQuery provides the same cost-effective option for storage as Cloud Storage, Remember.
+
+
+A user is not part of project. You want to provide ssh access to one fo the instance for him. Whats the best way?
+	create a public ssh key for that user and add it in instance metadata of the vm in question.
+
+
+
+
+There will be at least 2 questions somewhat related to this page	
+	https://cloud.google.com/docs/enterprise/best-practices-for-enterprise-organizations
+	
+	Cloud IAM is good but I have already another identity provider that I am using on premise. what do I do in my gcp migration?
+		Federate your identity provider with Google Cloud
+		Synchronize your user directory with Cloud Identity to let users access Google Cloud with their corporate credentials. This way, your identity platform remains the source of truth while Cloud Identity controls how your employees access Google services.
+	
+	To communicate with the internet, resources in vpc must have an external, public IP address or must use Cloud NAT.	
+	Similarly, resources must possess an external IP address to connect to other resources outside of the VPC network, unless the networks are connected in some way—for example, through a VPN.
+
+	Limit access to the internet to only those resources that need it. Resources with only a private, internal IP address can still access many Google APIs and services through Private Google Access. This private access enables resources to interact with key Google and Google Cloud services while remaining isolated from the internet.
+
+
+	If you want to connect existing on-premises infrastructure with their Google Cloud
+		need low-latency, highly available, enterprise-grade connections
+			- dedicated interconnect or partner internconnect
+		don't require the low latency and high availability
+			- cloud VPN
+			
+	To consume resources, including resources included in the Free Tier, a project must be associated with a billing account.There is a one-to-many relationship between a billing account and projects; a project can be associated with only one billing account, but a billing account can be associated with many projects.
+	You can have multiple billing accounts in your organization, though we recommend creating only one central billing account.
+	
+	Timing is important. We recommend that you enable exports to BigQuery at the same time you create your Cloud Billing account. Your BigQuery dataset only reflects Google Cloud billing data incurred from the date you set up Cloud Billing export, and after. That is, Google Cloud billing data is not added retroactively, so you won't see Cloud Billing data from before you enable export.
+	
+	Quota vs budget
+	
+	
+	
+GCDS - Google Cloud Directory Sync
+
+
+When you create a new Cloud project using Cloud Console and if Compute Engine API is enabled for your project, a Compute Engine Service account is created for you by default. It is identifiable using the email:
+	PROJECT_NUMBER-compute@developer.gserviceaccount.com
+If your project contains an App Engine application, the default App Engine service account is created in your project by default. It is identifiable using the email:
+	PROJECT_ID@appspot.gserviceaccount.com
+	
+	
+Traffic that comes out of gcp network on the intenet cost you more as egress charges are added on such traffic.
+
+
+In order for VPC Network Peering to be established successfully, administrators of network-A and network-B must separately configure the peering association. One sided peerin will remain inactive unless peered from both sides.
+
+
+Private GKE Clusters
+	Private clusters nodes are isolated from having inbound and outbound connectivity to the public internet. This isolation is achieved as the nodes have internal IP addresses only.
+
+	If you want to provide outbound internet access for certain private nodes, you can use Cloud NAT or manage your own NAT gateway.
+	Control plane runs in Google owned project and worker nodes in your project. The networks are peered with VPC Network Peering..
+	
+	To provide kubectl commands access to such a cluster is not possible as there is no direct access to control plane/master node. Hence we need to authorize master netowrk using --enable-master-authorized-networks flag --master-authorized-networks CIDR block.
+	Now any vm beloning to this CIDR block can interact with API server of control plane
+		just install kubectl on that machine and run commands.
+		
+		
+gcloud config set container/cluster
+	This sets default cluster in gcloud, similar to "gcloud config set run/platform managed"
+	
+	
+--enable-private-ip-google-access and --no-enable-private-ip-google-access flags are used to switch private google access.
+Remember this applies on subnet and not on vm.
+When we create a vm with flag --no-address then it wont have public ip address. SO it wont be able to pull even container images. Hence you should either enable 
+	private google access : allows access to google APIs like Google Maps, Google Ads etc for resources nt having external ips.
+	Or
+	Use NAT : you know`
+	
+	
+
+In firewall rules, default direction is ingress if not specified.
+We can use below keywords for direction : INGRESS, EGRESS, IN, OUT
+If neither --source-ranges nor --source-tags are specified, --source-ranges defaults to 0.0.0.0/0, which means that the rule applies to all incoming connections from inside or outside the network
+Same applies for --destination-ranges
+
+
+
+I want to know which roles I can apply on the resource(project, org, vm....)
+	gcloud iam list-grantable-roles //cloudresourcemanager.googleapis.com/projects/PROJECT_ID
+
+I want to know which permissions I can add in a role for a given resource`
+	gcloud iam list-testable-permissions //cloudresourcemanager.googleapis.com/projects/dsa-dev/zones/us-east1-c/instances/i1
+
+
+To create a custom role, a caller must have the iam.roles.create permission. By default, the owner of a project or an organization has this permission and can create and manage custom roles.
+Users who are not owners, "including organization admins"***, must be assigned either the Organization Role Administrator role, or the IAM Role Administrator role.
+custom role can be in certain stage like alpha, beta, GA, disabled, deprecated, eap.
+	
+
+In general, Google recommends that each instance that needs to call a Google API should run as a service account with the minimum permissions necessary for that instance to do its job. In practice, this means you should configure service accounts for your instances with the following process:
+	Create a new service account rather than using the Compute Engine default service account( as it has editor access).
+	Grant IAM roles to that service account for only the resources that it needs.
+	Configure the instance to run as that service account.
+	*** Grant the instance the "https://www.googleapis.com/auth/cloud-platform" scope 
+		- allows access to most of the Google Cloud APIs
+		gcloud compute instances create [INSTANCE_NAME] --scopes cloud-platform
+	Avoid granting more access than necessary and regularly check your service account permissions to make sure they are up-to-date.
+	
+	The service account can execute API methods only if they are allowed by both the access scope and its IAM roles.
+
+		
+Binary Authorization 	
+	Binary Authorization is a deploy-time security control that ensures only trusted container images are deployed on Google Kubernetes Engine (GKE) or Cloud Run. With Binary Authorization, you can require images to be signed by trusted authorities during the development process and then enforce signature validation when deploying. By enforcing validation, you can gain tighter control over your container environment by ensuring only verified images are integrated into the build-and-release process.
+	 
+Binary Logging
+	Used in cloud SQL so that binary logs are generated which are used to help restore the system point-in-time.
+	 
+	 
+In Bigquery Export of billing data you can set up export in two ways
+- daily cost details
+- Cloud Billing Pricing details
+
+
+Cloud Composer :
+	Its a workflow orchstrator service built on apache airflow
+	It can author, schedule, and monitor pipelines that span across hybrid and multi-cloud environments 
+	Fully integrated with BigQuery, Dataflow, Dataproc, Datastore, Cloud Storage, Pub/Sub
+	--- kubernetes in also an orchstrator for compute engine pool
+		similarly composer is an orchstrator for pipelines.
+		
+		
+Data Fusion :
+	https://www.youtube.com/watch?v=veSZ4cfzPAM
+	A data intergration service which can be useful to bring data from many systems be it on cloud or on premise.
+	Its integrated with 150+ data services including aws storages, on prem sql services(sqlserver, oracle, postgress) and so on.
+	
+	
+BigQuery – User vs JobUser
+	USer - If given on dataset, he can  read the dataset's metadata and list tables in the dataset.
+		   If given on project, he can run jobs/queries on project datasets
+		   Also create datasets, jobs	
+			
+	jobUser	- 	can be given on project, he can run jobs/queries on project datasets
+	
+	So user > jobuser
+	
+	
+logging.viewer - can see Admin Activity logs
+logging.privateLogViewer - can see Data Access Logs
+
+VIMP : https://cloud.google.com/iam/docs/job-functions/auditing
+
+
+
+
+https://cloud.google.com/sdk/gcloud/reference/iam/roles/copy
+
+
+
+
+VMs in "different VPCs" cannot communicate with each other using private IPs.
+
+Confidential VMs, preemptible vms, Instances with GPUS/TPUs do not support live migration.
+but
+Instances with local SSDs attached support live migration.
+https://cloud.google.com/compute/docs/instances/live-migration#localssdmaintenance
+
+
+Resizing Cluster
+	gcloud container clusters resize CLUSTER_NAME --node-pool POOL_NAME  --num-nodes NUM_NODES
+Upgrading all node pools
+	gcloud container clusters upgrade clustername
+	
+	
+You've uploaded some static web assets to a public storage bucket for the developers. However, they're not able to see them in the browser due to what they called "CORS errors". What's the easiest way to resolve the errors for the developers?
+	Use the gsutil cors set command to set the CORS configuration on the bucket.
+	
+	
+	
+What is Application Default Credentials?
+	https://cloud.google.com/docs/authentication/production
+	If your application runs inside a Google Cloud environment, and you have attached a service account to that environment, your application can retrieve credentials for the service account. The application can then use the credentials to call Google Cloud APIs. Google Cloud Client Libraries use a library called Application Default Credentials (ADC) to automatically find your service account credentials.
+
+
+AE standard - Logs are written using App Engine SDK	
+AE Flexible - Logs are written to stdout, stderr
+Kubernetes - Logs are written to stdout, stderr
+Compute Engine - Install Stackdriver Logging Agent, configure it to minitor file named application.log and write log lines to a file named application.log
+
+
+
+Just restarting an instance does not trigger the startup script, but terminate will.
+
+
+
+Does the default service account allow write permissions on buckets?
+	No its just read
+	
+	
+VVVIMP***  - You cannot change a bucket to regional from multi-regional and vice versa.
+
+You can change the storage class of an existing object either by rewriting the object or by using Object Lifecycle Management.
+
+
+Changing the default storage class of a bucket does not affect any of the objects that already exist in the bucket.
+
+
+
+Cloud SQL has a 30TB limit and  max 4000 concurrent connections. Once crossed, spanner is the guy.
+
+
+Datastore dont has Transactional consistency but firestore does.
+
+If I wanted a cheaper solution I would choose Datastore. With Datastore you only pay for what you use, Bigtable requires at least 3 nodes that you pay for all the time.
+
+
+Does expansion of a persistent disk cause downtime?
+No. Persistent disks can be expanded while running/attached.
+You cannot shrink a persistent disk.
+You can however create a new, smaller disk, attach it to your VM, copy all files, and destroy the older, larger disk.
+
+
+To communicate between instances on the same Virtual Private Cloud (VPC) network, you can use the internal IP address for the instance. But you cannot communicate to other instances in different vpc using internal IPs even though they are within same project.
+
+
+Billing for networks happens only on egress, not on ingress.
+
+
+create snapshots of Compute Engine persistent disks
+	gcloud compute disks snapshot disk1
+	
+	WRONG- gcloud compute snapshots create snap1 --disk disk1
+	
+	
+Think carefully,	
+TO manage the billing account, you must be billing administrator of that billing account.
+To change the billing account of the project, you must be billing administrator on destination billing account and project owner(off course if you think carefully!).
+
+
+Special case :
+		You cannot grant the owner role to a member for a project using the Cloud IAM API or the gcloud command-line tool.
+		You have to use cloud console and invite the member as owner.
+		Plus the memeber has to accept the mail invitation. 
+		This special process does not happen for any other role. 
+		This process is only if you want to make member outside your orgnization as owner. For members within org, you can directly add them using gcloud/console.
+		
+		
+		
+Best Practive is not to use default service accounts.
+Best practice is also not to delete the default servuce accounts.
+Hence just disable them, as a common middle ground.
+
+
+ACE** -- subnet in Auto mode vpc can be expanded from /20 to max /16
+
+You can create many subnets in region if required unless quota exceeds.
+		

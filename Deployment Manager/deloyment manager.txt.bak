@@ -1,0 +1,33 @@
+Its a declarative way of telling how your infrastructure should look like.
+
+
+You can provision resources declaratively using either deployment manager or any third party tools like terraform, ansible etc.
+Deployment Manager is an infrastructure deployment service that automates the creation and management of Google Cloud resources. Write flexible template and configuration files and use them to create deployments that have a variety of Cloud Platform services, such as Cloud Storage, Compute Engine, and Cloud SQL, configured to work together.
+
+Ability to delete infra in a single click/command
+
+Configuration file : 
+	A configuration is a file written in YAML syntax that lists each of the resources you want to create and their respective resource properties. A configuration must contain a resources: section followed by the list of resources to create. 
+	e.g.
+		resources:
+		# Create the auto-mode network
+		- name: [RESOURCE_NAME]
+		  type: [RESOURCE_TYPE]
+		  properties:
+		    #RESOURCE properties go here
+
+Note : By default, Deployment Manager creates all resources in parallel, so there is no guarantee that dependent resources are created in the correct order unless you use self references.		    
+
+Deployment Manager allows you to use Python or Jinja2 templates to parameterize your configuration. This allows you to reuse common deployment paradigms such as networks, firewall rules, and VM instances.
+
+
+
+
+
+
+
+Terraform
+	Terraform enables you to safely and predictably create, change, and improve infrastructure. It is an open-source tool that codifies APIs into declarative configuration files that can be shared among team members, treated as code, edited, reviewed, and versioned.
+
+
+

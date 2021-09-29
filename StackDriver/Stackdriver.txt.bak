@@ -1,0 +1,84 @@
+Stackdriver is now known as "Cloud Operations Suite"
+
+Stackdriver is service for monitoring, collecting, visualising and diagnosing systemwide events and logs.
+
+Workspace
+	Stackdriver needs a workspace to start with.
+	You can create a workspace in one project(host project) and monitor other multiple projects in the same workspace.
+	see@workspace.png
+	Note: one project can be part of multiple workspaces.
+
+
+It is pre provisioned in
+	GKE
+	App Engine
+	Bigquery
+	pubsub
+	cloudSQL
+	datastore
+	etc.
+	
+Admin activity audit logs are kept for 400 days.
+Data Access audit logs kept for 30 days.	
+
+
+	
+
+
+
+By default stackdriver can access few things like CPU utilization, disk traffic etc but for accessing additional information it need, "Stackdriver Monitoring Agent" to be installed on VM/EC2 instance.
+
+
+StackDriver Monitoring:
+	Cloud Monitoring Groups :
+				Cloud Monitoring lets you define and monitor groups of resources, such as VM instances, databases, and load balancers. Groups can be based on names, tags, regions, applications, and other criteria. You can also create subgroups, up to six levels deep, within groups.
+	Uptime Check :
+				Uptime checks let you quickly verify the health of any web page, instance, or group of resources. Each configured check is regularly contacted from a variety of locations around the world. Uptime checks can be used as conditions in alerting policy definitions.
+
+	Note there are many default metrics associated with each cloud resource you can monitor with Cloud Monitoring but you can add you own metrics as well using "OPencensus" or "Prometheus" etc.
+	
+	
+	
+
+StackDriver Tracing:
+	A distributed traceing system to track how request propogates through your system
+	displays data in near real time
+	fun fact : like pubsub its been used widely within google widely.
+
+StackDriver Alerting:
+
+StackDriver Logging:
+	Provides functionality to view/filter/search logs.
+	Stores logs for at most 30 days.	
+	It is a best practice to run the Stackdriver Logging agent on all your VM instances.
+	Its a cross platform service which can work with AWS, GCP or even Onprem(but no azure)
+	Logs can be exported to cloud storage bucket, big query dataset and pub/sub.
+	
+	It is best practice to run the Cloud Logging agent on all your VM instances.
+	
+	Log Based Metrics:
+	
+
+
+StackDriver Error Reporting:
+	A single point in GCP to aggregate and display errors.
+	Can trigger notification when a new error is detected.
+
+StackDriver Debugger :
+	Inspect production runing application without stopping or slowing it down.
+	Adds max of 10ms latency, so your prod applications will never incur latency to end users.
+	We can take snapshots to capture all call stacks and variables of running application
+	Even we can inject new log statements without stopping a service
+	
+StackDriver Profiling :
+
+
+	
+Quicklabs
+		Google Cloud's Operations Suite
+Courses
+		?
+		
+		
+Best Practices
+	?		

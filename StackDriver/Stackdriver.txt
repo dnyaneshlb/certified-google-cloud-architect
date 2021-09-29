@@ -1,0 +1,174 @@
+Stackdriver is now known as "Cloud Operations Suite"
+
+Stackdriver is service for monitoring, collecting, visualising and diagnosing systemwide events and logs.
+
+Workspace
+	Stackdriver needs a workspace to start with.
+	You can create a workspace in one project(host project) and monitor other multiple projects in the same workspace.
+	see@workspace.png
+	Note: one project can be part of multiple workspaces.
+
+
+It is pre provisioned in
+	GKE
+	App Engine
+	Bigquery
+	pubsub
+	cloudSQL
+	datastore
+	etc.
+	
+Admin activity audit logs are kept for 400 days.
+Data Access audit logs kept for 30 days.	
+
+
+By default stackdriver can access few things like CPU utilization, disk traffic etc but for accessing additional information it need, "Stackdriver Monitoring Agent" to be installed on VM/EC2 instance.
+
+
+SLI : Service level indicators
+	  How many requests are successful and how many are failing in requests received in last 4 hours
+	  
+SLO : Its a objective of SLI
+	  Means there should be 99% of sucessful requests in every 30 days. 
+
+
+-------------------------------------------- StackDriver Monitoring ----------------------------------------------------------
+StackDriver Monitoring:
+	A collectd-based daemon that gathers system and application metrics
+	Cloud Monitoring Groups :
+				Cloud Monitoring lets you define and monitor groups of resources, such as VM instances, databases, and load balancers. Groups can be based on names, tags, regions, applications, and other criteria. You can also create subgroups, up to six levels deep, within groups.
+	Uptime Check :
+				Uptime checks let you quickly verify the health of any web page, instance, or group of resources. Each configured check is regularly contacted from a variety of locations around the world. Uptime checks can be used as conditions in alerting policy definitions.
+
+	Note there are many default metrics associated with each cloud resource you can monitor with Cloud Monitoring but you can add you own metrics as well using "OPencensus" or "Prometheus" etc.
+	https://cloud.google.com/monitoring/agent/monitoring/installation
+	
+	
+-------------------------------------------- StackDriver Tracing ----------------------------------------------------------
+StackDriver Tracing:
+	A distributed traceing system to track how request propogates through your system
+	displays data in near real time
+	fun fact : like pubsub its been used widely within google widely.
+
+
+
+-------------------------------------------- StackDriver Alerting ----------------------------------------------------------
+StackDriver Alerting:
+	An alerting policy describes the circumstances under which you want to be alerted and how you want to be notified.
+	Stackdriver keeps on monitoring the provided policy and creates incident and sends notification to configuted notification channels. When the condition no longer holds true, it automatically closes the incident.
+	Policies can be created using console/gcloud and MQL(Monitoring Query Language)
+	Alert text can contain markdown and variables to provide more meaningful information.
+			## Addressing High CPU Usage --bold text
+			error on project $${project}
+	Incident:
+		OPEN
+		Acknoledged
+		Closed
+	Incident Actions :
+		Silencing : This action will not give you alert when the defined condition is met and also the 
+					incident is removed from active incidents display untill next cycle to check the condition. When you investigate an incident, you should acknowledge it instead of silencing it.
+		Ackonlwdging
+		Closing : ***Incidents are closed automatically; you can't close an incident. 
+				  An incident is closed when the system observed that the condition is no longer being met or when 7 days have passed 
+	Notification Channels :
+		email, slack, pubsub, sms, PagerDuty, webhooks, Cloud Console MobileApp
+	---> After an alerting policy is configured, Monitoring "continuously" monitors the conditions of that policy. You "can't" configure the conditions to be monitored "only for certain time periods"			  
+		
+
+-------------------------------------------- StackDriver Logging ----------------------------------------------------------
+
+StackDriver Logging:
+	Provides functionality to view/filter/search logs.
+	Stores logs for at most 30 days.	
+	It is a best practice to run the Stackdriver Logging agent on all your VM instances.
+	Its a cross platform service which can work with AWS, GCP or even Onprem(but no azure)
+	** Logs can be exported directly using "LOG SINK" to cloud storage bucket, big query dataset and pub/sub.
+	
+	It is best practice to run the Cloud Logging agent on all your VM instances.
+	
+	Log Based Metrics:
+		Logs-based metrics are Cloud Monitoring metrics that are based on the content of log entries. It can help you identify trends, extract numeric values out of the logs, and set up an alert when a certain log entry occurs by creating a metric for that event. You can use both system and user-defined logs-based metrics in Cloud Monitoring to create charts and alerting policies. Logs-based metrics are time series that are generated from data in logs.
+		Can be 
+			System defined : ?
+			USer defined
+		Can be
+			Counter Metric
+			Distribution Metric
+		Labels : Labels allow logs-based metrics to contain multiple time series 
+				 But how???
+			
+	Custom metrics can also be created using OPencensus, an open-source monitoring and tracing library.
+			
+	Stackdriver logging agent is pre installed in App Engine(both flavours), GKE, CF and Cloud Run.
+		But not on Compute Engine --- keep in mind
+		Monitoring Agent ????
+	https://cloud.google.com/logging/docs/agent/logging
+	
+	
+Exporting Logs : 	
+	https://cloud.google.com/logging/docs/export
+	Log sink to
+		Pubsub
+		Cloud Storage
+		BigQuery
+		Cloud Logging log buckets
+		Splunk
+		
+		
+	SideNote - Cloud logging bucket is the same cloud storage bucket(_Default) used to store the logs for 30 days. We can either use the same bucket or create another storage bucket for storing the logs.		
+
+-------------------------------------------- StackDriver Error Reporting -----------------------------------------------
+
+
+StackDriver Error Reporting:
+	A single point in GCP to "aggregate" and display errors.
+	Can trigger notification when a new error is detected.
+
+
+
+-------------------------------------------- StackDriver Debugger ----------------------------------------------------------
+
+StackDriver Debugger :
+	Inspect production running application without stopping or slowing it down.
+	Adds max of 10ms latency, so your prod applications will never incur latency to end users.
+	ways to debug :
+		We can add debug points and it takes snapshots that point during execution to capture all call stacks and variables of running application.
+		We can inject new log statements without stopping a service
+	
+	In most cases it automatically detects the source code, but if not detected you can supply the soruce code from
+		- cloud source repo
+		- supported third party repos
+		- local repos
+		
+	Except cloud functions, it supports all of the computing services on gcp. https://cloud.google.com/debugger/docs/setup/python#language_versions_and_compute_environments	
+	
+	Cloud Next - https://www.youtube.com/watch?v=yP9a5gDRUqY
+	2 min know it - https://www.youtube.com/watch?v=OAXGk30S61M
+					https://youtu.be/g29OPekoA6w
+	go though qwicklabs
+	
+	
+	
+StackDriver Profiling :
+
+
+
+Stackdriver sandbox
+	Stackdriver is GCP in house tool, so learning and using it requires you to setup applications which generate logs, monitoring data and so on. Hence google has stackdriver sandbox where te env is ready to use including few microservices and fully setup stackdriver.
+	https://cloud-ops-sandbox.dev/
+	
+
+	
+Quicklabs
+		Google Cloud's Operations Suite
+Courses
+		?
+		
+		
+Best Practices
+	Alerting Best Practices : https://youtu.be/UjL-BlixJKY
+	
+
+Resources:
+	Watch all 2 min videos of https://www.youtube.com/hashtag/stackdoctor
+	

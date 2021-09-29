@@ -1,0 +1,26 @@
+Cloud vpn: 
+	prereq : VPN in general is a trusted network for external devices(laptops, mobiles, servers) to communicate with private isolated network such as corporate office network. Traffic flows over the internet in encryted form.
+	
+	Cloud vpn is a gcp service which allows you to connect your on premise infrastructure to gcp.
+	It encrypts traffic leaving on premise/gcp and decrypts traffic entering onpremise/gcp hence its slow. So it should be used for low network traffic scenarios. (Hence its advised not to use vpn for video meetings)
+
+	It needs vpn gateways at both the ends(gcp end and on premise end to encrypt and decrypt traffic) and a secure tunnel between both ends.
+
+	Routing via cloud vpn can be done in 2 ways
+	static routing
+		can be done by assigning static ip addresses
+	dynamic routing 
+		requires you to configure cloud router service.
+	
+	
+two vms having same network but different subnets can communicate using internal IP addresses(assuming firewall rules are enabled) as its internally managed by google.
+So in such scenarios, external Ip addresses are not required.
+
+But if they are in different network then you can communicate via external IP(which incurs more charges as traffic is route via THE intenet, outside GCP network, and less secure as traffic is not encrypted at all)
+To avoid cost, we can connect them using vpn(built in encryption).
+
+
+
+
+
+	

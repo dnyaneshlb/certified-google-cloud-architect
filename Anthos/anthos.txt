@@ -1,0 +1,3 @@
+Anthos enables you to run Kubernetes clusters anywhere, in both cloud and on-premises environments. 
+
+In a complex org, we have some apps in one cloud and some in other, while some monolith live in on prem env. It becomes hard to manage all these moving pieces together. Hence anthos. It enables you to work with you on prem clusters + any cloud kubenetes clusters together.

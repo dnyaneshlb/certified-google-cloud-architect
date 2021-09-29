@@ -1,0 +1,19 @@
+gsutil is a Python application that lets you access Cloud Storage from the command line. You can use gsutil to do a wide range of bucket and object management tasks like Creating and deleting buckets,Moving, copying, and renaming objects, Editing object and bucket ACLs and lot more.
+
+Syntax : gs://BUCKET_NAME/OBJECT_NAME
+
+
+copy all objects that start with gs://bucket/data/abc followed by any number of characters within that subdirectory.
+			gsutil cp gs://bucket/data/abc* .
+			
+print contents to stdout			
+gsutil cat -h gs://bucket/meeting_notes/2012_Feb/*.txt			
+
+gsutil mb -c coldline gs://testbucket
+
+gsutil cp *.txt gs://my-bucket
+
+gsutil ls
+gsutil ls gs://test*
+
+gsutil mv gs://my_bucket/* dir

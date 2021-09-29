@@ -1,0 +1,62 @@
+https://cloud.google.com/storage/docs/quickstart-gsutil
+
+gsutil is a Python application that lets you access Cloud Storage from the command line. You can use gsutil to do a wide range of bucket and object management tasks like Creating and deleting buckets,Moving, copying, and renaming objects, Editing object and bucket ACLs and lot more.
+
+Syntax : gs://BUCKET_NAME/OBJECT_NAME
+
+
+copy all objects that start with gs://bucket/data/abc followed by any number of characters within that subdirectory.
+			gsutil cp gs://bucket/data/abc* .
+			
+print contents to stdout			
+gsutil cat -h gs://bucket/meeting_notes/2012_Feb/*.txt			
+
+gsutil mb -c coldline gs://testbucket
+
+gsutil cp *.txt gs://my-bucket
+
+gsutil ls
+gsutil ls gs://test*
+
+gsutil mv gs://my_bucket/* mydir
+
+Access Control List on buckets/Objects
+	gsutil acl set private gs://bucket
+	gsutil acl ch -u AllUsers:R gs://example-bucket/example-object
+
+	gsutil acl get gs://bucket/file.txt > acl.txt
+	gsutil acl set acl.txt gs://cats/file.txt
+
+Set IAM policy on bucket/objects
+	gsutil iam get gs://example > bucket_iam.txt
+	gsutil iam ch -d user:john.doe@example.com gs://ex-bucket
+
+
+Lifecycle management policy on bucket
+	gsutil lifecycle get gs://test > cycle.json
+	gsutil lifecycle set gs://test  cycle.json
+
+-----------------------------------------------------------------------------------------------------------------
+CHanging storage class of object
+	gsutil rewrite -s nearline gs://bucket1/dog.png
+	
+Changing the default storage class of a bucket
+	gsutil defstorageclass set coldline gs://bucket1
+	
+Create a signed url for downloading an object valid for 10 minutes	
+	gsutil signurl -d 10m <private-key-file> gs://mybucket1/cat.jpg
+
+	
+gsutil rsync data gs://mybucket/data
+gsutil rsync -d -r gs://my-gs-bucket s3://my-s3-bucket
+
+	
+gsutil versioning set on gs://BUCKET_NAME	
+
+
+gsutil -m cp -r dir gs://my-bucket VS
+gsutil cp -rm dir gs://my-bucket
+This is very interesting
+
+gsutil signurl -d 10m gs://test/test/png
+	

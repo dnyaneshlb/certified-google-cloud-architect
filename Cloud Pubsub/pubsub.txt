@@ -1,0 +1,42 @@
+Pub/Sub is an asynchronous messaging service that decouples services that produce events from services that process events. Pub/Sub offers durable message storage and real-time message delivery with high availability and consistent performance at scale.
+Features :
+	Promises At least once delivery
+	Heavilly used inside google.
+	Supports offline consumers.
+	durable message storage(7 days, can be extended to 30 days)
+
+
+Topic
+
+Subscription
+
+Publishers
+
+Subscribers
+	Push Based
+
+	Pull Based
+
+Pubsub lite
+	pubsub with reduced cost.
+	Lite topics and Lite subscriptions are zonal resources that must be in the same Cloud project and zone
+
+
+Choosing between pubsub and cloud task?
+	https://cloud.google.com/pubsub/docs/choosing-pubsub-or-cloud-tasks
+	
+
+gcloud commands(ACE**)
+	gcloud pubsub topics create mytopic
+	gcloud pubsub subscriptions create mysub --topic mytopic
+	gcloud pubsub topics publish mytopic --message="Hey There" --attribute=Key1=Value1
+	gcloud pubsub subscriptions pull mysub --auto-ack --limit 10
+	
+	
+Best Practices
+
+
+Pricing
+	Pricing is based on volume of data processed 
+		number of subscriptions * size of message * rate of publishing per sec
+	Also, data storage charges and pubsub snapshot storage charges as it stores data for 7 days.

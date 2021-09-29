@@ -1,0 +1,10 @@
+imports:
+- path: vm_template.jinja
+
+resources:
+- name: my-vm
+  type: vm_template.jinja
+  properties:
+    zone: us-central1-a
+    machinetype : n1-standard-1
+    ## Note these properties are injected in vm_template which is imported in this configuration.

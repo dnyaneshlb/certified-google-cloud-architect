@@ -1,0 +1,21 @@
+GCP a intrinsically global while AWS is region scoped.
+
+Physical infrastrucuture hierarchy:
+	vCPU
+		Physical Server
+			Rack
+				Data Center
+					Zone
+						region
+							Multi-region
+								private global network(not internet)
+								
+Region :
+	A region is a specific geographical location where you can host your resources. Each region has one or more zones; most regions have three or more zones. For example, the us-west1 region denotes a region on the west coast of the United States that has three zones: us-west1-a, us-west1-b, and us-west1-c.
+
+Zone :
+	Google designs zones to be independent from each other: a zone usually has power, cooling, networking, and control planes that are isolated from other zones, and most single failure events will affect only a single zone.
+								
+
+
+							

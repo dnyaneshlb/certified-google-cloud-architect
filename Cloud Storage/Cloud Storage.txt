@@ -1,0 +1,340 @@
+Cloud Storage allows world-wide storage and retrieval of any amount of data at any time. You can use Cloud Storage for a range of scenarios including serving website content, storing data for archival and disaster recovery, or distributing large data objects to users via direct download.
+
+Cloud storage is not a file system though it appears like it.	
+Cloud Storage encrypts data at rest.
+
+Cloud storage API is enabled by default when you create project.(Its available in read mode to compute engine default service account)
+Just like BigQuery, StackDriver API or Cloud SQL API.
+
+Bucket 
+	Can be regional or dual regional or multiregional
+	Can have a bucket level access control or fine grained object level access control
+
+Objects
+	Bucket Objects are immutable. When an object is modified, GCP creates new version of the object and creates the  archieve of old version. This way we can roll back to older stage of the object at any time.
+	BY default objevt versioning is off.
+	WE can turn versioning on and off as required(as it involves the cost of storing each version -- remember me! said the object immutablity ..haha)
+	
+
+
+Data Storage :
+	IMP :  Unlike the "coldest" storage services offered by other Cloud providers, your data is available within milliseconds, not hours or days.
+	For All Storage classes listed below :
+		Unlimited storage with no minimum object size.
+		Low latency (time to first byte typically tens of milliseconds).
+		High durability (99.999999999% annual durability).
+
+	Standard
+		Standard Storage is best for data that is frequently accessed ("hot" data) and/or stored for only brief periods of time
+	Nearline
+		Nearline Storage is ideal for data you plan to read or modify on average "ONCE PER MONTH" or less. 
+		For example, if you want to continuously add files to Cloud Storage and plan to access those files once a month for analysis, Nearline Storage is a great choice.
+		It has a 30-day minimum storage duration
+		Lower storage cost than standard tier.
+		For data accessed less frequently than once a quarter, Coldline Storage or Archive Storage are more cost-effective, as they offer lower storage costs. But if queired frequently then query charges are more than standard.
+	Coldline
+		very-low-cost storage
+		Minimum 90 days duration
+		Coldline Storage is ideal for data you plan to read or modify at most "ONCE per 90 days"
+		Note, however, that for data being kept entirely for backup or archiving purposes, Archive Storage is more cost-effective, as it offers the lowest storage costs. But if queired frequently then query charges are more than standard/nearline.
+	Archive
+		lowest-cost storage
+		365-day minimum storage duration
+		Coldline Storage is ideal for data you plan to read or modify at most "ONCE PER YEAR"
+		Archive Storage is the best choice for data that you plan to access less than once a year
+		But if queired frequently then query charges are more than standard/nealine/coldline
+		
+	Among the above storage classes cost of retriving data increases from standard to archieve. Hence choose storage class based on how frequently data is being accessed, as it drives cost. --imp	
+	However, trick question might come in exam which tests which class has fastest data retrival performance?
+			ans is all classes give sub 10 millis perofrmance but 
+					the cost of access in standard < nearline < coldline < archieval
+					cost of storing data standard > nearline > coldline > archieval
+			so check what parameter(speed/cost of storage/cost of access) is asked in question
+			
+			
+Standard Storage Sub-Classes  :
+	Multi-Regional/Dual Regional 
+		Equivalent to Standard Storage, except Multi-Regional Storage.
+		Multi-Regional bucket can never be changed to regional bucket.
+		ideal for storing data that is accessed around the world, such as serving website content, streaming videos
+	Regional
+		Equivalent to Standard Storage, except Regional Storage, redudant across zones.
+		Regional bucket can never be changed to multi-regional bucket.
+	Durable Reduced Availability Storage(DRA)
+		new class introduced
+		Equivalent to Standard Storage, except higher pricing and reduced availability
+	
+	
+Data Security :
+	Fine Grained(Object Level)
+	Unitiform(Bucket level) - recommended
+
+	
+Commands :	
+	gsutil ls
+	gsutil mb -c nealine gs://mysamplebucket
+
+
+Obect Lifecycle :
+	You can assign a lifecycle management configuration to a bucket. The configuration contains a set of rules which apply to current and future objects in the bucket. When an object meets the criteria of one of the rules, Cloud Storage automatically performs a specified action on the object.
+	Cloud Storage offers the Object Lifecycle Management feature for
+		"downgrading" storage class(only downgrade possible***)
+		delete object
+		setting TTL
+	You can combine below conditions for taking above actions on object
+		age : delete when age is 10 days
+		Created Before : Delete all created before 11/03/2021
+		DaysSince : 	
+		IsLive
+		Matches Storage class : Move to Coldline if age is more than 10 days and storage class is standard
+		Number of Newer Versions : Keeps max 3 newer versions
+		
+	ACE ** -> If an object meets the conditions for multiple rules:
+		Deletion takes precedence over a change in storage class.
+		Changing objects to colder storage classes takes precedence over changing to warmer ones (ex. objects will switch to the Archive storage class instead of Coldline if there are rules for both).
+	
+		Updates to lifecycle configurations can take up to 24 hours to go into effect.
+		This means that when you change your lifecycle configuration, Object Lifecycle Management may still perform actions based on the old configuration for up to 24 hours.
+		
+		
+Object Metadata
+	Objects stored in Cloud Storage have metadata associated with them. 
+	Metadata identifies properties of the object, as well as specifies how the object should be handled when it's accessed like http "GET". Metadata exists as key:value pairs. For example, the storage class of an object is represented by the metadata entry storageClass:STANDARD
+	if metadata "content-type:application/pdf" is set on a pdf object and user browse this object(effectively calling http GET) then this object will be opened in browser rather than downloading.
+		Cache-Control
+		Content-Disposition
+		Content-Type
+		Content-Language
+		As well as custom metadata like 'project:atp'
+	
+
+Access Control :
+	There are many ways in which you can control access to objects & buckets.
+	IAM : most used one
+	ACLs : A list which holds users with their associated permissions.
+	Signed URLs: 
+		Time limited cryptographically signed URL. Note anyone having this URL can perform all allowed actions for limited amount of time(regardless of whether they have a Google account)
+		Any user having this URL can perform "only permitted operations" on bucket or object in bucket.
+
+Cloud Storage always encrypts your data on the server side, before it is written to disk, at no additional charge
+	Besides this standard behavior, there are additional ways to encrypt your data when using Cloud Storage
+	CMEK
+	CSEK
+	Client side encryption : Data arrives at Cloud Storage already encrypted  at client side but also undergoes server-side encryption
+	
+	
+	
+Important Features
+	Directory Sync - GCDS
+		allows VM directory to be synced with a bucket.
+	Object Versioning
+		allows multiple versions of same object to be stored.
+		disabled by default
+		Enabling Object Versioning increases storage costs, which can be partially mitigated by configuring Object Lifecycle Management to delete older object versions.
+		Cannot be enabled by console
+			gsutil versioning set on gs://BUCKET_NAME
+			
+	Object Lifecycle management
+		allows moving objects to and from different storage classes automatically.
+	Object change notification
+		allows sending notification to application when a objcet is added or changed in bucket.
+		
+
+GCP Data import Services
+	Transfer Appliance
+		A physical appliance designed by google to rack, capture and then transfer the data to google gcloud.
+	Storage Transfer Service
+		A software service to import data from another gcp bucket, S3 bucket, Azure Blob Storage Container or a http/https web source.
+		VVVIMP : To use this service, you can use Storage Transfer API or console. Google recommends that you use the Google-provided """client libraries""". This is asked in one of exam.
+	Offline Media Import
+		A third party provider service where provider can upload tons of physical offline data in form of hard drives, USB flash drives, tapes etc to google cloud. 
+
+Moving objects between Cloud Storage buckets(ACE**)
+	https://cloud.google.com/storage/docs/copying-renaming-moving-objects
+	Note that while some tools in Cloud Storage make an object move or rename appear to be a unique operation, they are always a copy operation followed by a delete operation of the original object, because objects are "immutable".
+	console : easy to copy, move or rename using tripple dot icon in object row
+	gcloud:
+		rename/move - gsutil mv gs://BUCKET_NAME/OLD_OBJECT_NAME gs://BUCKET_NAME/NEW_OBJECT_NAME
+		copy   - gsutil mv gs://BUCKET_NAME/OLD_OBJECT_NAME gs://BUCKET_NAME/NEW_OBJECT_NAME
+		
+
+Choose between uniform and fine-grained access
+	Uniform
+		Recommended.
+		allows you to use IAM alone to manage permissions. Note that IAM also allows you to use features that are not available when working with ACLs, such as IAM Conditions and Cloud Audit Logs.
+		
+	Fine-Grained
+		The fine-grained option enables you to use IAM and Access Control Lists (ACLs) together to manage permissions
+		See @bucket arch.png
+	
+	
+	
+Access Control
+	IAM : IAM is the recommended method for controlling access to your resources, than ACLs. 
+	ACL : IAM is the recommended method for controlling access to your resources, than ACLs. used to customize access to individual objects within a bucket.
+	Signed URL : 
+		Use signed URLs to give time-limited read or write access to an object through a URL you generate. Anyone with whom you share the URL can access the object for the duration of time you specify, regardless of whether or not they have a Google account.
+	Signed Policy Documents
+		Used to specify what can be uploaded to a bucket.
+		Policy documents allow greater control over size, content type, and other upload characteristics. 
+		Can be used by website owners to allow visitors to upload files to Cloud Storage.
+	Credential Access Boundaries	
+		This is bit tricly but useful concept. 
+		Used to specify which buckets the token can access, as well as an upper bound on the permissions that are available on that bucket. So even though a token has more permission on a buket, it can only perform operation mamadated by Credential Access Boundry of the bucket.
+		
+
+Upload Performance tuning
+	Too many Small files
+		Parallel uploads : using gsutil -m option
+		For big files, this doesnt scales up linearly hence composite objects
+	Big Bg Files
+		Composite Objects:  break down mountain big object into pieces and upload in order.
+	
+
+Download Performance tuning
+	https://www.youtube.com/watch?v=erKF9Dw6Qo4&list=PLIivdWyY5sqJcBvDh5dfPoblLGhG1R1-O&index=10
+	
+	
+Cloud Storage Triggers
+	google.storage.object.finalize
+		default trigger
+		event is sent when 
+			1. a new object is created OR 
+			2. an existing object is overwritten and a new generation of that object is created
+	google.storage.object.delete
+	google.storage.object.archieve
+	google.storage.object.metadataUpdate
+		see object metadata explained above
+
+
+Requestor Pays
+	Enabling Requester Pays is useful, for example, if you have a lot of data you want to make available to users, but you don't want to be charged for their access to that data.
+	With Requester Pays enabled on your bucket, you can require requesters to include a billing project in their requests, thus billing the requester's project
+	https://cloud.google.com/storage/docs/using-requester-pays#console
+	
+	Here I want to copy some data from from another project(analytics-dev) 
+	gsutil -u dsa-dev cp -r gs://analytics-dev-bucket gs://dsa-dev-bucket
+	
+
+Cloud Storage APIS
+	JSON API
+		enabled by default on new projects. For old projects can be enabled manually.
+		The JSON API is intended for software developers for accessing and manipulating Cloud Storage projects in a programmatic way. It is fully compatible with the Cloud Storage Client Libraries
+		https://cloud.google.com/storage/docs/json_api
+		gsutil supports only json API.
+	XML API
+		XML API is used when you are using tools and libraries that must work across different storage providers, or when you are migrating from another storage provider to Cloud Storage.
+
+
+
+ACE Exam Topics*******
+	Moving objects between Cloud Storage buckets
+		gsutil cp -r gs://SOURCE_BUCKET/* gs://DESTINATION_BUCKET  (just copies the data recursively)
+		gsutil cp -rm gs://SOURCE_BUCKET/* gs://DESTINATION_BUCKET  (copies the data and deletes the source bucket)
+		---->  gsutil -m cp -r dir gs://my-bucket   (multithreaded upload processing).
+				Note here -m applies to gsutil which tells how to perform the operation, cp in this case.
+				But -r applies to cp, which tell how files should be copied.
+				https://cloud.google.com/storage/docs/gsutil/addlhelp/TopLevelCommandLineOptions
+		
+		
+		rsync command makes the contents under dst_url(local or bucket) the same as the contents under src_url(local or bucket), by copying any missing files/objects
+			gsutil rsync -r data gs://mybucket/data     
+					--> syncin data directory and ite subdirectories with bucket
+			gsutil rsync -d -r gs://mybucket1 gs://mybucket2
+					--> same as above just -d deletes files in bcuket 2 which arenot in bucket 1
+					
+					
+	Converting Cloud Storage buckets between storage classes
+		CHanging storage class of object
+			gsutil rewrite -s nearline gs://bucket1/dog.png
+		Changing the default storage class of a bucket
+			gsutil defstorageclass set coldline gs://bucket1		
+			
+	Setting object life cycle management policies for Cloud Storage buckets
+		gsutil lifecycle set policy.json gs://BUCKET_NAME
+		
+	Importing/Exporting data
+
+	Uploading/Downloading
+		gsutil cp gs://bucket1/object1.zip .
+		gsutil cp object1.zip gs://bucket1
+
+
+Cloud Storage IAM roles(ACE**)
+	https://cloud.google.com/storage/docs/access-control/iam-roles
+	Predefined
+		roles/storage.objectCreator (just create object permission, no view and delete)
+		roles/storage.objectViewer  (list objects and view them)
+		roles/storage.objectAdmin	(Grants full control over objects)
+		roles/storage.admin			(Grants full control of buckets and objects)
+									When applied to an individual bucket, control applies only to the specified bucket and objects within the bucket.
+		roles/storage.hmacKeyAdmin
+		
+	Basic
+		roles/viewer
+		roles/editor
+		roles/owner
+		
+	Legacy Roles
+		roles/storage.legacyObjectReader/legacyObjectOwner
+		roles/storage.legacyBucketReader/legacyBucketWriter/legacyBucketOwner
+	
+
+
+When to use filestore vs cloud storage?
+		https://www.youtube.com/watch?v=8rS8O2RiT80
+		sums up everything
+		If you have files and need file system to browse it, filestore is your guy
+		If you have objects, then cloud storage is the guy
+		if you have blocks, then persistent disks is the guy
+
+practice test
+	https://googlecourses.qwiklabs.com/course_sessions/180780/quizzes/63756
+
+
+Pricing
+	Depends on
+		storage class used
+		amount of data stored
+		kind of operations performed(class A - object read, write etc  class B : list buckets, list object, getIAMPolicy)
+
+	Note : Data retrieval charges are applied if the data is stored as Nearline Storage, Coldline Storage, or Archive Storage. Its free for standard storage.
+
+gclud commands
+	see @gcloud_commands.txt
+	https://cloud.google.com/storage/docs/quickstart-gsutil
+	
+	
+Cloud Storage Best Practices
+		https://www.youtube.com/watch?v=WSwqYGln-vU	
+		
+Best practices for Cloud Storage
+	Avoid using sequential filenames such as timestamp-based filenames if you are uploading many files in parallel.
+	Every bucket name must be unique across the entire Cloud Storage namespace.
+	
+	Don't use user IDs, email addresses, project names, project numbers, or any personally identifiable information (PII) in bucket names. This is because, you access object in bucket using a url, which exposes the bucket, object names to public. Hence choose bucket and object names that are difficult to guess
+	
+	Bucket and object ACLs(Access Control List) are independent of each other, which means that the ACLs on a bucket do not affect the ACLs on objects inside that bucket. It is possible for a user without permissions for a bucket to have permissions for an object inside the bucket. For example, you can create a bucket such that only GroupA is granted permission to list the objects in the bucket, but then upload an object into that bucket that allows GroupB READ access to the object. GroupB will be able to read the object, but will not be able to view the contents of the bucket or perform bucket-related tasks.
+	
+	Upload/Download large files using resumable upload/download option.
+	
+	For sensitive data, put retentions policy. e.g. An object in the bucket cannot be deleted or replaced until it reaches the specified age.
+	
+	An object hold can be placed on individual objects to prevent anyone from deleting or replacing the object until the hold is removed
+		
+		
+Complete playlist ACE**
+	https://www.youtube.com/hashtag/cloudstoragebytes
+
+
+Signed Urls?
+	gsutil signurl -d 10m gs://test/test/png
+
+		
+change storage class of object
+	gsutil rewrite -s STORAGE_CLASS gs://PATH_TO_OBJECT/obect.png
+change default storage class of bucket
+	gsutil defstorageclass set STORAGE_CLASS gs://BUCKET_NAME
+	
+See the difference above
+	

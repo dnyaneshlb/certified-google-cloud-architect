@@ -1,0 +1,13 @@
+Complementing Pub/Sub, Pub/Sub Lite is a "zonal" service for messaging systems with predictable traffic patterns. If you publish 1 MiB-1 GiB of messages per second, Pub/Sub Lite is a low cost option for high-volume event ingestion.
+Publishers send messages to Lite topics and subscribers receive messages from Lite subscriptions. 
+
+*** Lite topics and Lite subscriptions are zonal resources that must be in the same Cloud project and zone.
+
+Lite topics are zonal resources backed by single-zone storage. Each Lite topic is provisioned with a number of partitions and an amount of message storage per partition.
+
+Advantages "
+	it allows you to choose one where you want this to be available as its a zonal reoruce
+	additionally, it allows you to choose read/write throughput using numner of partitions you want to create
+	additionally, it allows you to choose if you wan to store the messages permenantly or for some days
+	see @creating lite topic.png
+	

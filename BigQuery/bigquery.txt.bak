@@ -1,0 +1,24 @@
+Serverless, Highly scalable and cost effective data warehouse system.
+-	pertabyte scale
+- fully managed
+- Super fast(query 100 billion rows with 4.5 TB data in a minute)
+- SQL interface for querying
+
+
+We pay for data storage and querying data.
+
+When we store data in big query for more than 90 days, google automatically applies discount.
+BigQuery helps you perform interactive analysis of petabyte-scale databases, and it enables near-real time analysis of massive datasets. It offers a familiar SQL 2011 query language and functions.
+
+Data stored in BigQuery is highly durable. Google stores your data in a replicated manner by default and at no additional charge for replicas. With BigQuery, you pay only for the resources you use. Data storage in BigQuery is inexpensive. Queries incur charges based on the amount of data they process: when you submit a query, you pay for the compute nodes only for the duration of that query. You don't have to pay to keep a compute cluster up and running.
+
+
+Datasets: A dataset is a grouping mechanism that holds zero or more tables. A dataset is the lowest level unit of access control. Datasets are owned by GCP projects. Each dataset can be shared with individual users.
+
+Tables: A table is a row-column structure that contains actual data. Each table has a schema that describes strongly typed columns of values. Each table belongs to a dataset.
+
+There are two ways to query data in bigquery.
+1. bq command from cloud shell
+2. bigquery UI query editor
+When you write any query in bigquery UI, Query Validator tells you that the query syntax is valid (indicated by the green check mark) and indicates how much data the query will process. The amount of data processed allows you to determine the price of the query using the Cloud Platform Pricing Calculator.
+

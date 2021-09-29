@@ -1,0 +1,350 @@
+data fusion - data integration service that has connectors to many systems
+data lab - run jupyter notebooks on cloud
+data prep  -data cleansing in sheet like app
+
+
+There can be many host projects but service project can be attached to max one host project. offcourse!	
+
+What is Alias Ip address ranges? Whats the purpose?
+		If a vm hosts many services then it can use alias ip addressess to expose those services.
+		
+		
+Routes:
+	Route is way of defining how packets move in between resources and eventually how resources communicate.
+	Every default network has 
+		a routes  that allow every resource in same network send packets to another resource.
+		a default route that allow direct packets to destinations outside the network.
+	But firewall must allow such packet movement.
+	Manual networks dont have such route
+	
+Ephemeral external IP addresses are released from a resource if you delete the resource or stop it.	
+But
+internal ephemeral ip addresses stays with VM even if you stop it. They are gone only after deletion.
+Which makes sense because external ip address pool is very small as costly.
+
+
+VPC flow logs are set on/off on a subnet.
+Private Google Access is also at subnet level.
+
+
+Interconnect is layer 2 connectivity while peering is layer 3.
+peering - uses external addreses
+interconnect- uses internal addresses
+
+***Note that peering(Carrier and Direct) is used only if you need Google Workspace and supported Google APIs only. Otherwise Cloud interconnect is recommended way.
+	
+Peering Has no setup or maintenance costs but interconnect has.
+
+
+If you want to connec t google cloud use
+	Interconnect
+	VPN
+	Clou Router
+But
+If you want to connect to other google services like workspace, youtube 	then use direct/carrier peering.
+
+
+
+longest subnet mask you can use is 29	
+	/30 is invalid as it leavs no addresses used for user as 4 addresses per subnet are resirved
+	
+	
+/20 to /16 --- max expansion of auto mode subnets
+
+
+
+APIs enabled by default
+	https://cloud.google.com/service-usage/docs/enabled-service#default
+	SQL, Storage, Bigquery, monitoring, logging, tracing, debugger, datastore, Storage JSON API, Service mgmt, Service Usage API
+	
+	
+	
+region to multiregional bucket and vice versa is not possible.
+
+
+Updates to lifecycle configurations can take up to 24 hours to go into effect.
+		This means that when you change your lifecycle configuration, Object Lifecycle Management may still perform actions based on the old configuration for up to 24 hours.
+
+
+VVVIMP : To use Storage Transfer service, you can use Storage Transfer API or console. Google recommends that you use the Google-provided """client libraries""". This is asked in one of exam.		
+
+
+
+Cloud Storage Triggers - finalize(create, replace, new generation of object created), delete, archieve, metadataupdate
+
+gsutil supports JSON api.
+
+
+Data retrieval in standard storage class is free but not in the colder classes.
+
+
+Bucket and object ACLs(Access Control List) are independent of each other, which means that its possible that a user dont have access on bucket level but can have access to object. This is only for ACLs, not for IAM.
+
+
+If you want to upload/download large files from cloud storage then use resumable upload/download option.
+
+Bigtable is suitable for heavy read write scenario
+
+
+The data on each persistent disk is distributed across several physical disks. So PD is an abstraction.
+
+Normally shutdown script time is 90secs but for preemptible vms its 30s. --imp
+
+For preeemptible vms, No live migration and auto restart.
+Pick smaller machine shapes for preeemptible vms, larger instances are more likely to be preempted, since they take up more space
+
+
+When  VM is terminated, you do not pay for memeory and CPU but pay for attached disks and allocated ip addresses.
+
+No matter which region/zone you used to create VM, they run on UTC time always
+
+An instance level startup script takes precedence over a project level startup script. If an instance level startup script is specified, any project level script doesn't run.
+
+
+N1,N2,N2D, E2 are general purpose machine types.
+
+Unmanaged instance group instances has to be in same zone and vpc. Its a restriction.
+Unmanaged instance group - zonal
+Managed instance group - Regional, zonal -> both
+
+you cannot update an existing instance template or change an instance template after you create it.
+its a global resource
+
+The External IP addresses for VM instances are ephemeral by default
+
+Live migration transfers running vm from one host to another within "same zone"
+
+
+You can increase a size of persistent disk but cant shrink it. like a subnet.
+
+
+
+   hdd				ssd			   ssd			ssd				ssd
+pd-standard     pd-balanced      pd-ssd      pd-exterme     local-ssd
+------------------cost and performance increases -------------------->
+
+
+GPUs are not available for all machine types, only n1 and a2
+
+
+compute engine default service account VS Google APis Service account
+projectnumber-compute@developer.gserviceaccount.com
+compute@developer.gserviceaccount.com
+
+Google APis Service account - used to manage processes on your behalf.
+
+We can create a vm reservation so that we get a promise of availability.
+
+
+Difference between cloudrun and gke is
+	- CR us fully managed
+	- CR is stateless while gke can be stateful or stateless as you configure
+	
+You can create custom image from	
+			disk
+			another image
+			snapshot
+			tar of image stored in cloud storage
+			virtual disk
+		
+Snapshots are not available for Local SSDs.
+
+
+snapshots, images are global.
+
+snapshots are cheaper than images.
+
+A persistent disk snapshot can only back up a single disk at a time. If you want to backup all the persistent disks attached to VM, create image from the VM.
+
+
+Once you have created a project, you can delete the project but its ID can never be used again
+
+
+If you want to attach a persistent disk to a virtual machine instance, both resources must be in the same zone. Similarly, if you want to assign a static IP address to an instance, the instance must be in the same region as the static IP address.
+
+
+Billing Account lives outside your project hence it cant be controlled by project level IAM.
+Its a org level.
+
+Billing IAM roles
+Billing Acount Creator    Create billing account    ORG scope
+Billing Account Admin	  Manage Billing account(but cant create)    Billing account scope	
+Billing Account Viewer	  View BIlling information	Billing account scope	
+Billing Account USer	  Link projects to billing account	 Billing Account Scope
+Project Billing Manager	  Link/Unlink project to/from billing account  Project scope 
+
+
+To access big table, we can use HBase API.
+
+Cloud SQL - 30TB and 4000 concurrent connection --- max capacity
+
+Basic scaling is not supported by AE Flex env	- offcourse, as we have min instances setting here and basic scaling tries to scale down to zero.
+
+Splitting app engine traffic
+gcloud app services set-traffic --splits v1:90%,v2:10% --split-by cookie
+
+App Engine flex cannot scale down to zero, min 1 instance is required.
+
+A BigQuery slot is a virtual CPU used by BigQuery to execute SQL queries. BigQuery automatically calculates how many slots are required by each query, depending on query size and complexity.
+
+Yuo can directly query bigdate from bigquery
+	cloud sql
+	google drive
+	cloud storage
+	bigtable
+	
+	
+	
+VMs from the same organization but different projects will not run on the same sole tenant instance
+VMs have to be from same project.
+
+
+Set IAM policy on bucket/objects
+	gsutil iam get gs://example > bucket_iam.txt
+	gsutil iam ch -d user:john.doe@example.com gs://ex-bucket
+	
+	
+firewall rules logging??
+
+
+There is no such thing as multi-regional gke cluster.
+Regional clusters have replicas of the control plane
+single zone and multi-zonal clusters have only one control plane
+
+
+Image families are used to group related images together so you can roll forward or back between specific images versions. Image families always point to the latest version of an image that is not deprecated. 
+
+
+App.yaml is for application specifications. 
+Cron.yaml is for scheduled jobs.
+ Dispatch.yaml is for overriding routing rules.
+ 
+ 
+Ingestion time partitioned tables creates partitions by ingestion time. The pseudo column _PARTITIONTIME is added to the table and can be used to restrict the amount of data scanned. BigQuery does not provide for read replicas like some databases. BigQuery does not use indexes. The LIMIT option does not reduce the amount of data scanned, it only limits the number of rows returned.
+
+
+
+
+
+gsutil iam, kms
+
+gsutil versioning set on/off gs://bucket
+gsutil setmeta ---- sets metadata on already upaloaded objects
+ 
+gsutil 
+	perdiag  =
+	rb  	 = remove buckets
+	retention  
+	du		= disk usage
+	cors	=  
+
+mb - make bucket
+cp - copy files
+ls- list
+du - disk usage
+mv - move/rename objects
+rm - remove files
+rb - delete bucket
+stat- display object status
+rewrite - change storage class
+rsync - Synchronize content of two buckets/directories 
+setmeta
+ubla - set unifrm bucket level access
+versoining - gsutil versioning set on gs://bucket
+logging - gsutil logging set on gs://bucket
+compose - The compose command creates a new object whose content is the concatenation of a given sequence of source objects under the same bucket
+cat - concatinate
+defacl
+defstorageclass
+cors
+notification - gsutil notification create ...
+
+
+
+
+bq flags
+--max_rows=MAX_ROWS		   similar to limit
+--start_row=ROW_NUMBER     similar to offset
+--require_cache={true|false}       run the query only if results can be retrieved from the cache
+--use_cache={true|false}			To disallow caching query results, set to false. The default value is true.
+
+
+its okay to misplace = sign in bq commands
+bq ls --format prettyjson=myDataset
+bq ls --format=prettyjson myDataset
+
+bq add-iam-policy-binding
+bq remove-iam-policy-binding
+bq get-iam-policy / set-iam-policy
+
+
+BigTable is priced by provisioned nodes. BigTable does not autoscale.
+
+Yuo can directly query bigtable from bigquery(similar to cloud sql, google drive, cloud storage
+
+Its is recommended to assign key billing roles to more than one person (reasonable redundancy)
+
+You can't combine committed use discounts and sustained use discounts for the same resources.
+Once you buy a commitment you can still modify the resources.
+			e.g. you have bought commitment with 96 vCPUS which are clubbed into a group of 16 each. Later you came to know that you need a vCPU group of 32 each then you are welcome to do as number of vCPUs in commitment remains 96
+			Same goes with memory.
+			
+			
+			
+By default, a function times out after 1 minute, but you can extend this period up to 9 minutes.			
+
+
+Lite topics and Lite subscriptions are "zonal" resources that must be in the same Cloud project and zone
+very low cost since they are zonal
+
+
+Cloud Shell Runs as ephemeral G1 Small machine on Debian-based Linux operating system.
+	Full root previliges(can run sudo commands)
+	
+	
+Cloud SQL is regional thats why we have spanner which is global and strongly consistent.	
+
+Point-in-time recovery is enabled by default when you create a new Cloud SQL instance.
+			You must enable binary-logging for point-in-time recovery****
+			
+We first create instance and then create database in it
+	gcloud sql instances create prod-instance --database-version=MYSQL_5_7 --cpu=2 --memory=4GB
+	gcloud sql databases create prod-database --instance prod-instance
+	gcloud sql connect my-instance --user=root
+	
+	
+	
+ACE*** -> Cloud Task does not provide strong guarantees around the timing of task delivery and is therefore unsuitable for interactive applications where a user is waiting for the result.	
+
+It's also important to note that when you connect two VPC networks using Cloud VPN, at least one of the networks needs to be a custom mode network. This is because auto-mode networks use the same range of internal IP addresses for their subnets. This would cause an overlap problem if you didn't use at least one custom mode network when creating the VPN. 
+
+
+
+gcloud deployment-manager deployments create mydeployment --config myconfig.yaml --preview
+
+
+It is compatible with all old datastore APIs and libraries.
+
+
+An stackdriver incident is closed when the system observed that the condition is no longer being met or when 7 days have passed. You cannot manually close incident.
+
+
+Log sink to
+		Pubsub
+		Cloud Storage
+		BigQuery
+		Cloud Logging log buckets
+		Splunk
+		
+In Google Kubernetes Engine, LoadBalancers give you access to a regional Network Load Balancing configuration by default. To get access to a global HTTP(S) Load Balancing configuration, you can use an Ingress object.
+
+
+
+Zonal and multizonal gke clusters have master plane running in only one  zone.
+Regional gke clusters have multiple in multiple zones.
+
+
+Node updrage is automatic but node repair needs to be configured.
+
+
+

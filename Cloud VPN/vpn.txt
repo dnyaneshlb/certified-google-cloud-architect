@@ -1,0 +1,21 @@
+https://cloudacademy.com/course/deploying-networking-and-compute-resources-on-google-cloud-platform/creating-a-vpn-connection/
+
+VPN is mostly for secure connection between on prem nw and google vpc.
+VPN is created over the internet via secure tunnel. low badnwidth. encrypted traffic.
+
+It's also important to note that when you connect two VPC networks using Cloud VPN, at least one of the networks needs to be a custom mode network. This is because auto-mode networks use the same range of internal IP addresses for their subnets. This would cause an overlap problem if you didn't use at least one custom mode network when creating the VPN. 
+
+Types
+	HA VPN
+		as name suggests, it has 99.99 availability
+			 see types.png, two tunnels are created
+		Supports dynamic routing(BGP) only 
+
+	Classic VPN
+		No High availability 
+			see types.png, only one tunnel is created
+		Supports both static and dynamic routing
+
+Creating a VPN between a Google VPC and an external network using Cloud VPN(ACE**)
+	https://cloud.google.com/network-connectivity/docs/vpn/how-to/creating-static-vpns
+	

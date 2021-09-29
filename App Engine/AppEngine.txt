@@ -1,0 +1,185 @@
+Its a Serverless platform as a service - keep in mind
+
+
+COmpute Engine(IaaS) < Kubernetes(Somewhere between IaaS and PaaS, hybrid of both) < App Engine(PaaS)
+
+Herarchy :
+App Engine
+	Services
+		Versions
+			Instances
+	see hierarchy.png
+Misc
+	You can access you app engine app service using : 
+		https://{VERSION_ID}-dot-{SERVICE_ID}-dot-{PROJECT_ID}.{REGION_ID}.r.appspot.com
+		e.g. https://sn-cache-operations-dot-ingka-ofd-cop-dev.appspot.com/
+	Logging : logging messages to stdout and stderr is enough as stackdriver logging is integrated by default
+	
+
+How Instances are Managed(*ACE)
+	https://cloud.google.com/appengine/docs/standard/java/how-instances-are-managed
+	Manual Scaling
+		Manual scaling specifies the number of instances that continuously run regardless of the load level.
+	Basic Scaling
+		Its a lazy scaling where it creates instances when your application receives requests.
+		Ideal for work that is intermittent or driven by user activity, ie. Adhoc workload
+		App egnine tries to keep cost low, It tries to reduce cost by scaling instances to 0.
+		Not supported by AE Flex env. 
+	Auto Scaling
+		Sophisticated scaling based on target CPU utilization, request rate, response latencies, and other application metrics
+		we can specify min and max number of instances that we want regardless of traffic.
+		Recommended for contineuos running workload*** - offcourse, as we have min instances setting here
+
+F1 - Automatic sclaing instances
+B1 - Basic scaling instancees		
+	
+Deploying App(*ACE)
+	see gcloud section below---
+	gcloud app deploy
+	gcloud app deploy app.yaml
+
+Splitting Traffic(*ACE)	
+	When you add new features to application then you need to check hoe your new version behaves to end users
+	You can achieve that using % traffic splitting.
+	command : 
+		gcloud app services set-traffic dsa-svc --splits v1=90%,v2=10% --split-by [IP_OR_COOKIE]
+		The exact split values do not matter, only their relation to each other. For example, v1=2,v2=2 is equivalent to v1=.5,v2=.5
+		
+	Splitting:
+		Splitting can be done you incomeing request parameters like ip address or cookie.
+		ip address : 
+			default
+			HEre certain ip addresses are diverted to v2 of app  but as there are high chances that user keeps moving from network to another effectively changing ip addresses, he might get different responses as sometimes he diverted to V1 and sometimes V2.
+		cookie : 
+			Here, if a requets has a "GOOGAPPUID" cookie then it will be diverted to V2 else v1.
+			above problem is no more here.
+	
+	Remember: Traffic splitting is applied to URLs that do not explicitly target a version. (Offcourse, whole idea of traffic splitting is to smoothly introduce a new version. If a url is targetting a perticular version, no point in traffic splitting. Period.)
+		For example, the following URLs split traffic because they target all the available versions within the specified service:
+		[MY_PROJECT_ID].appspot.com - Distributes traffic to versions of the default service.
+		[MY_SERVICE].[MY_PROJECT_ID].appspot.com - Distributes traffic to versions of the MY_SERVICE service.
+		
+	
+App Engine Standard
+	Instance startup in milliseconds/seconds
+	free or low cost service for "low traffic apps"
+	Automatic scale down to zero instances and	scale up very fast for traffic with extreme spikes
+	Apps can be written in java, go, nodeJs, php, Ruby, Python. For lannguagges other than these(.Ne :)) use AE flex.
+	Billing
+		free daily usage
+		billing depends on number of instances and instance class(F or B)
+	Logging
+		Logs are written using App Engine SDK
+	Manual, auto and basic scaling. Scale down to zero possible.
+	Can attach persistent local disks
+	It enforces sandbox environment hence
+		no writing to local files
+		Cant ssh
+		requests times out in 1-10 min depending on language runtime
+		limited third party softwares
+		So you might wanna choose App Engine Flex
+	https://cloud.google.com/appengine/docs/standard
+
+
+App Engine Flex
+	Instance startup in minutes
+	Most cost-effective for applications that serve traffic continuously since you can mention how many minimum instances to run(called as resident instances).
+	Apps can be written in java, go, nodeJs, php, Ruby, Python and .Net(The Sole difference). Even apps written in another lannguagges like Rust, Cobol can be run using containers hosted on AE.
+	No sandbox constraints like app engine standard, hence can ssh compute engine instances  for debugging purposes
+	Manual and auto scaling only. Scale down to zero not possible, min 1 instance.
+	Billing
+		no free daily usage
+		billing depends on vCPUs, memory usage
+	Logging
+		Since its a contairized env, logs can be written to syserror/sysout.
+	Can attach ephemeral local disks
+	Provides access to background processes
+	Used to run Cotainerised workloads where you dont need to look after the infrastructure like we do in kubernetes, hence complete PaaS experience.
+	Even apps written in another lannguagges can be run using containers hosted on AE.
+	https://cloud.google.com/appengine/docs/flexible
+	
+	
+
+How to choose right App engine env?
+	https://cloud.google.com/appengine/docs/the-appengine-environments
+	
+
+Fully Serverless, planetscale
+
+Stackdriver in intergrated out of the box. You can write logs to console and AE flex will take care of the rest.
+For standard env, write logs using language specific app engine SDK.
+
+
+Types of instances in AE	
+	resident
+		 A resident instance runs all the time
+		 good for contineuos request processing app
+		 We can fix some resident instances and AE will ad new dynamoc instances based on app needs. Once need over, those will be removed automatically.
+		 
+	dynamic
+		A dynamic instance starts up and shuts down automatically based on current needs
+		Good for app with burst mode traffic
+		All dynamic instances will be shut down after need is over.
+		
+		
+Migrating and Splitting Traffic(ACE**):
+https://cloud.google.com/appengine/docs/admin-api/migrating-splitting-traffic	
+https://cloud.google.com/appengine/docs/standard/java11/splitting-traffic
+	You can use traffic splitting to specify a percentage distribution of traffic across two or more of the versions within a service. Splitting traffic allows you to conduct A/B testing between your versions and provides control over the pace when rolling out features.
+	Splitting by client IP address	
+		Certain client ip address will be diverted to version 2 of app engine service. 
+		This is error prone in some cases where user keeps changing network and ip address changes(Users connecting from cell phones might have a shifting IP address throughout a single session). So he might get inconsistant responses(sometimes v1 somtimes v2).
+	Splitting by Client Cookie
+		clients requests with certain cookie(GOOGAPPUID) will be diverted to v2 of app engine service.
+	
+	gcloud : gcloud app services set-traffic [MY_SERVICE] --splits v1=10 ,v2=90 --split-by [IP_OR_COOKIE]
+			 gcloud run services update-traffic [MY_SERVICE] --to-revisions revision1=10 revision2=90
+
+	IMP : Keep in mind that Traffic splitting is only applied to URLs that do not explicitly target a version. Its a pretty simple and no brainer though. 
+		[MY_PROJECT_ID].[REGION_ID].r.appspot.com   --- traffic splitting applied on default service
+		[MY_SERVICE]-dot-[MY_PROJECT_ID].[REGION_ID].r.appspot.com   --- traffic splitting applied on MY_SERVICE
+		https://1-dot-ingka-ofd-cop-dev.appspot.com/  ---- NO NO NO traffic splitting applied as it targets version 1
+	
+	When migrating from v1 to v2 version, its google recommended practice to remove the version element from your app.yaml file and instead, use a command-line flag to specify your version ID
+		gcloud app deploy -v v2
+
+
+gcloud
+	gcloud app services/versions list
+	gcloud app services set-traffic dsa-svc --splits v1=.5,v2=.5 --split-by=cookie
+	
+	Deploying app
+		gcloud app deploy 
+		gcloud app deploy --appyaml=test.yaml
+		gcloud app deploy [app.jar] [pom.xml] [build.gradle] [appengine-web.xml]
+		gcloud app deploy dsa.jar, masterdata.jar, stock.jar	---> multiple services deployed in one go
+		
+		gcloud app deploy --version 1.2 --no-promote
+		
+
+
+Notes : 
+	**** You can create only one app engine app per project. You cannot change region of app engine once created. 
+	
+	You create services under ap engine app. If you need to create app engine in another region, you cant create in same project. You have to create in another project.
+	When yuo create app engine for first time, gcloud will ask you to select region but once first app is created, it wont ask you to select the region for further services.  
+		
+	[MY_PROJECT_ID].[REGION_ID].r.appspot.com
+		This will point to 'default' service created by gcp when you created your first app engine app.
+		
+		
+Practive tests
+	https://googlecourses.qwiklabs.com/course_sessions/180780/quizzes/63773
+	https://googlecourses.qwiklabs.com/course_sessions/180780/quizzes/63777
+	https://googlecourses.qwiklabs.com/course_sessions/180780/quizzes/63786
+	https://googlecourses.qwiklabs.com/course_sessions/180780/quizzes/63797		
+	
+	
+	
+Prcing
+	Standard 
+		free daily usage
+		based on number of instancehours and instance class
+	Flexible
+		no free quota
+		based on vCPUS, memory and disk used per hour

@@ -1,0 +1,27 @@
+
+Stores structured json data
+Allows running SQL-like queries***
+
+Firestore is the next generation of Datastore.
+	Firestore supports transactions but datastore does not.
+
+You no more create datastore, but create firestore in datastore mode. Choose carefully cause you cannot switch modes of firestore(datastore mode/native mode) in a project.
+
+entities vs Documents
+kinds vs Collections
+properties vs fields --- elements in a document
+
+
+Import/Export Datastore(ACE**)
+	https://cloud.google.com/datastore/docs/export-import-entities
+	
+	gcloud datastore export gs://bucket --async
+	gcloud datastore import gs://bucket/overallexportfile --async
+
+
+Best Practices:
+	Not required for ACE exam
+	
+	
+Pricing:
+	?

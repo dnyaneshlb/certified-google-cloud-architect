@@ -1,0 +1,9 @@
+Cloud Identity is a stand-alone Identity-as-a-Service (IDaaS) solution. It gives Cloud Platform customers access to many of the identity management capabilities provided by Google Workspace.
+
+It talks about having a single platform to do jobs like authntication, single sign on(be it google, facebook, email an so on) using a single platform.
+	
+
+Just add a libray  and some boilerplate code and you are good to focus on pre business logic 
+playlist - https://www.youtube.com/playlist?list=PLIivdWyY5sqJlriayd9itEMQVZC2XH9T4
+
+

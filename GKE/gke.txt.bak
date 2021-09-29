@@ -1,0 +1,234 @@
+Links
+	Practice Exam
+		https://googlecourses.qwiklabs.com/course_sessions/180780/video/63760
+		https://googlecourses.qwiklabs.com/course_sessions/180780/quizzes/63767
+	Kubectl sheetsheet
+		https://phoenixnap.com/kb/kubectl-commands-cheat-sheet
+	Kubenetes est practices palylist by google
+		https://www.youtube.com/watch?v=wGz_cbtCiEA&list=PLIivdWyY5sqL3xfXz5xJvwzFW_tlQB_GB	
+		
+
+See more on k8s on graph15Up\tools\Kubernetes\knowme.txt
+
+
+Kubernetes is an orchestration framework for software containers. Containers are a way to
+package and run code that's more efficient than virtual machines. Kubernetes provides the tools
+you need to run containerized applications in production and at scale
+
+
+Local K8s Setup in most simple way :
+	https://collabnix.com/kubernetes-dashboard-on-docker-desktop-for-windows-2-0-0-3-in-2-minutes/
+	
+
+Yaml file is nothing but a state of kubernatis app or cluster.
+	deployment yml
+	service yml
+	
+Cluster Types
+	Zonal
+		Within single zone.
+	Multizonal
+		A multi-zonal cluster has a single replica of the control plane running in a single zone, and has nodes running in multiple zones.
+	VPC-native 
+		A cluster that uses Alias IPs to route traffic from one Pod to another Pod is called a VPC-native cluster
+	Routes-based clusters
+		A cluster that uses "Google Cloud Routes" to route traffic from one Pod to another Pod is called a VPC-native cluster
+	
+Container
+
+Components(see components.png)
+	Control plane
+		API server
+			the most powerful component in kuberntes. It coordinates virtually everything. 
+			It communicates with all the objects to make sure k8s runs healthy.
+		Scheduler
+			Schedules pods on node. 
+		etcd
+			an internal cluster private database used to store almost everything like pods, their state, and what not.
+		cloud manager
+			interacts with cloud providers	
+			
+	Worker plane
+		worker nodes
+			A compute engine or physical machine
+		kubectl
+			A k8s agent running on node that reports to API server. Takes commands and executes on node.
+
+Kubernetes Resources :
+	Deployment
+		A file that tells how pod should look like.
+	Service
+		A single endpoint available for external users to communicate with pods via an external IP address.
+		They virtually groups pods together.
+	Persistance Volume
+	Persistance Volume Claim
+	POd
+	StorageClass
+	HorizontalPOdAotuscalar
+	Role
+	RoleBinding
+	ClusterRole
+	ClusterRoleBinding
+	
+	
+Persistant Volume
+
+Persistant Volume Claim
+
+Daemon Sets
+	One and Only one pod per node in cluster
+
+Stateful Sets
+
+Replica Sets
+	This is internal mechanism used by  deployment controller to handle app relicas.
+	We define app replicas in deployment.yml and k8s creates replica set having those many app replicas.
+	They are really useful while rolling updating apps with zero downtime.
+	Dont directly play with replica sets ever.
+		
+POd :
+	Atomic unit of scheduling in k8s
+	Can contain one or more containers but usually one container per pod
+	Yuo can specify the metadata like memory, CPU etc of each container in pod. This help kubernets decide how many pods can be run on a node -- imp
+	
+Service 
+	In yml, you can define what is kind (service) and what is type of kind(Load Balancer)
+	types
+		LoadBalancer
+			If type is LoadBalancer and kind is service then k8s will create an instance of cloud native load balancer and this will take care of all the traffic coming in for your pods.
+			
+		ClusterIP
+			Default type is ClusterIP. It gives an ip to cluster and note that its accesible from "within the cluster"
+		NodePort
+			Apart from ip it creates a communication port. We can access any pod using (pod ip + port). 
+			This provides access from both inside and outside the cluster.
+			
+		
+CSI
+	Container Storage Interface
+	This s meant to provide an efficeint way to connect external storage systems to any container orchestration technology like kubernetes.
+	This sits in between storage vendor and Kubernetes and allows way to communicate.
+	
+	
+Rolling Update
+	MaxSurge
+	MaxUnavilable
+	
+	
+AutoScaling
+	Vertical POd Autoscaling
+		???
+	Horizontal POd Autoscaling
+		For adding new pods on existing nodes when demand goes high
+		
+	Cluster Autoscaling
+		For adding new nodes in k8s when demand goes high
+		
+		
+Nodepool
+	A node pool is a group of nodes within a cluster that all have the same configuration.
+	A cluster can be created as multiple node pools each having different set of compute engines but remember that all nods in nodepool are of identical configuration.
+	e.g. nodepool A - 2 CPUs(16gb) min:1 max:6
+		 nodepool B - 4 CPUs(32gb) min:2 max:10
+	
+	You cannot configure a single node in a node pool; any configuration changes affect all nodes in the node pool.
+	You can explicitly deploy a Pod to a specific node pool by setting a "nodeSelector" in the Pod manifest. This forces a Pod to run only on Nodes in that node pool.
+	Nodepool is GKE feature and it doesnt exists in kubernetes.
+	
+	imp: while creating cluster we choose whether its a zonal cluster or multizonal(we choose say 3 zones)
+			 Size of the nodepool is number of nodes running in nodepool per zone.
+			 So if we increase size of the nodes from say 3 to 4  then gcp will add one node per zone hence total nodes per zone will be 5.
+			 But all nodes across the clusters across the all 3 zones are 12 now.
+			 
+	When we resize the cluster from 5 nodes to 4 then any random node will be picked no matter it has running pods or not. So be careful.
+	In such cases, if we have replication controller like statefulSet or ReplicaSet controller defined then all pods will be gracefully terminated.
+	
+	
+Kubernetes Security
+	Role 
+	Role Binding
+	
+
+Logging :
+	Native integration with stackdriver out of the box.
+	
+Labels :
+	Labels are key value pair.
+	In various k8s files, labels are used extensively to organize the resources within cluster.
+	e.g. 	in depployment.yaml file, we can add env=prod, group=cia
+				later, we can get all pods of cia group using,
+					kubectl get pods --selector=group=cia
+	
+	
+	
+While creating k8s cluster we choose number of nodes. Nodes are actual physical hardware used underneeth the kubernetes to perform computations.
+In contrast, pods are virtual objects that spins on nodes(worker nodes). Hence dont get confused pods with nodes.
+In 2 node cluster, pods can be 100 in theory.	
+In one pod, practically there can be many containers but generally we have one container per pod.
+
+
+Each pod has a single IP address so if many containers are present in a single pod, then they can communicate with each other via localhost and they can communicate with other pods using individual pods ip address.
+	
+	
+Kubernetes runs a "watch-loop" to identify the changes in the desired state of the cluster and actual state of the cluster. Once it detects that its not in sync, it automatically make changes.
+
+Clusters can be created across a region or in a single zone. "A single zone is the default". When you deploy across a region the nodes are deployed to three separate zones and the total number of nodes deployed will be three times higher.
+
+We should always aim for pod scaling and avoid node scaling(costly operation wrt time and money)
+
+Private Clusters
+		You might use private clusters to provide services such as internal APIs that are meant only to be accessed by resources inside your network. For example, the resources might be private tools that only your company uses. Or they might be backend services accessed by your frontend services, and perhaps only those frontend services are accessed directly by external customers or users. In such cases, private clusters are a good way to reduce the surface area of attack for your application.
+		You have several options to lock down your cluster to varying degrees:
+
+		The whole cluster can have external access.
+		The whole cluster can be private.
+		The nodes can be private while the cluster master is public, and you can limit which external networks are authorized to access the cluster master.
+
+
+
+
+
+When you deploy applications, your application code runs inside a container in the cluster, and thus your code can access other services by using the FQDNs of those services from inside that cluster. This approach is simpler than using IP addresses or even Pod names, because those are more likely to change.
+e.g. from pod1 you can directly call API of pod2 using FQDNas dns-demo-2.dns-demo.default.svc.cluster.local
+
+
+Kube-proxy
+		Its an agent running on node that takes care of network traffic within a node across pods.
+	
+	
+namespace
+		kubenetes has a default namespace named "default" and if no namespace is provided while creating resource it will fall in default namespace.
+		There are other internal namespaces as well
+				kube-system
+				kube-public
+				
+		Namespaces are recommended for large teams where resoruce names could get clashed potentially deleting/overriding existing resource.
+		kubectl create namespace test OR
+		kubectl apply -f namespace.yaml
+		
+		Note that all commands are run against current active namespace. If you create a pod in namespace demo and you are ind efault namespace then you need to get you pod like below
+		kubectl get pod pod1 --namespace demo
+		OR swtich namspaces like using kubens command
+		kubens demo (switches namspace to demo)
+		
+		resources within same namespace can communicate using their names directly but if they want to communicate to resource on another namespace then they have to use resourcename.namespacename to communicate.
+		>>> pod1.demo
+		
+		
+Livelyness Probe
+		Check if application is live or not if not it will kill the pod and start the new one.
+
+Readiness Probe
+		Checks if app is ready to serve requests.
+		
+Note that livelyness probe can return true but readiness probe may fail.
+
+
+As far as I understand, to access any application within Kubernetes cluster there should be a Service resource created and that should have an IP address which is accessible from an external network.
+But in case of port-forward how does kubectl create a connection to the application without an IP address which is accessible externally?
+Ans - the port-forward feature of kubectl simply tunnels the traffic from a specified port at your local host machine to the specified port on the specified pod. API server then becomes, in a sense, a temporary gateway between your local port and the Kubernetes cluster.kubectl port-forward is useful for testing/debugging purposes so you can access your service locally without exposing it.
+
+		
+		
+		
+				

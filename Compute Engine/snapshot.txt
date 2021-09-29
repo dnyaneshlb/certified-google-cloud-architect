@@ -1,0 +1,64 @@
+What is snapshot?
+	Snapshots are incremental back up of data from your persistent disks. After you create a snapshot to capture the current state of the disk, you can use it to restore that data to a new disk
+
+
+Snapshots:
+	You can take a snapshot of a Compute Engine persistent disk to quickly back up the disk so you can recover lost data, transfer contents to a new disk, or make static data available to multiple nodes
+	Manual :
+	Scheduled :
+			 schedule automatic snapshots hourly, daiyl ow weekly backup.
+			 you can mention retention policy(delete snapshot after 14 days)
+	VVVIMP ---- Snapshots are not available for Local SSDs.
+	see @snapshot1.png
+	Snapshots are incremental in nature. so only first snapshot has big size, subsequent snapshots are relatively smaller. So you are billed way less.
+	Amazingly, even if you delete first snapshot of big size, google automatically checks if next snapshots are dependant on it, if yes then required data is moved into the next snapshot, increasing its size. Fasciating!
+	
+	You can create snapshots from disks even while they are attached to running virtual machine (VM) instances.
+	
+	--> Snapshots are global resources, so any snapshot is accessible by any resource within the same project. You can also share snapshots across projects.
+
+
+	
+Snapshot Schedule
+		
+		
+Deleting Snapshot:
+	If the snapshot has no dependent snapshots, it is deleted outright.
+	However, if the snapshot does have dependent snapshots	
+			data is moved to "next snapshot", increasing its size
+	see @deleting snapshot.PNG		
+		
+
+Moving Snapshot
+	You cannot change the storage location of an existing snapshot. If you need to move a snapshot from one region or multi-regional location to another, you must create a new snapshot and specify its location, and delete the previous snapshot
+
+
+Image vs Snapshots
+	A snapshot reflects the contents of a persistent disk in a concrete instant in time. An image is the same thing, but includes an operating system and boot loader and can be used to boot an instance.
+	Images and snapshots can be public or private. In the case of images, public can mean official public images provided by Google or not.
+	Snapshots are stored as diffs (a snapshot is stored relative to the previous one, incremental) while images are not. Snapshots are also cheaper ($0.03 per GB/month vs $0.085 for images).
+
+Can we transfer data from HDD disk to SSD disk?
+	Yes via snapshots.
+	create snashot of hdd data and create SSD with snapshot we just taken
+	
+	
+Word of Caution	
+	Snapshots are not available for Local SSDs.
+
+	Snapshots are incremental by default to avoid billing you for redundant data, to minimize use of storage space, and to decrease snapshot creation latency. However, to ensure the reliability of snapshot history, a snapshot might occasionally capture a full image of the disk.
+
+	If you have critical data on disk, write it on different disk than boot disk as snapshotting only small critical data is more efficient way.
+
+Images and snapshots are global.
+
+
+Disk Clones
+
+
+Best Practices
+			https://cloud.google.com/compute/docs/disks/data-protection#best_practices  -- easy but IMP
+			https://cloud.google.com/compute/docs/disks/snapshot-best-practices
+			
+	A persistent disk snapshot can only back up a single disk at a time. If you want to backup all the persistent disks attached to VM, create image from the VM.		
+			

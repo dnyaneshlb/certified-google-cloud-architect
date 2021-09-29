@@ -1,0 +1,49 @@
+VVVVIMP Prerequiresites
+	image is a serialized copy of the entire state of a system stored in some non-volatile form such as a file.
+	Image as such is not of any use unless its coupled with a bootable disk on which its mounted.
+	So you always mount an image on boot disk and then start your computer/vm
+	see image1.jpg
+	So standard process is, create an image from boot disk of your existing instace. Then this image can be used as source to create many boot disks. Then start vms with these new boot disks.
+	
+When to use/create images?
+	Image is ideal for situations where you have created and modified a persistent boot disk or specific image to a certain state and need to save that state for creating instances.
+	While snapshots are used for disaster recovery purpose. They dont have os level data(?)
+	
+Images
+	public images
+	Custom images
+	Premium Images
+	Container Optimzed OS images
+	
+Image Families
+	debian is an image family which may contain lof of other images created from base image debian.
+	Image family is actually used to track latest version.
+		here debian-10 is the latest version of debain family. And previous versions gradually become deprecated, obsolete and finaly deleted. As a developer you dont need to remember complex names of each version(debian-us-v3-20210101) but rfer to image family.
+	
+
+Custom Images Creation
+	Creating a custom image is calling "Baking"	
+	---> You can create a simple custom image by creating a new VM instance from a public image, configuring the instance with the applications and settings that you want, and then creating a custom image from that instance.
+			e.g. create a new vm instance with debian-9 public image, add java, gradle, git, intellij, postman to it. Then create custom image and store it to cloud storage as "my-ultimate-dev-image"
+	---> You can create custom image from	
+			disk
+			another image
+			snapshot
+			tar of image stored in cloud storage
+			virtual disk
+			
+	You can create an image from disk of running vm but to make it reliable, put vm in more predictable stare like stopped.
+	If stopping vm not possible then at least try to make the disk state constant(by not writing anything on disk) while image is being created.	
+
+
+
+Custom Images Deprecation
+	ACTIVE : can be used
+	Deprecated: In use but will trigger a warning
+	Obsolete: Cannot be used, triggers error. Existing links to this image are still allowed.
+	Deleted: error message is returned if you try to use a deleted image
+	see @image2.jpg
+			
+Security
+	All disks in Compute Engine are encrypted by default using Google's encryption keys. Images built from disks are also encrypted
+	

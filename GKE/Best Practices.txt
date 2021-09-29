@@ -1,0 +1,71 @@
+Links :
+	https://www.youtube.com/watch?v=wGz_cbtCiEA&list=PLIivdWyY5sqL3xfXz5xJvwzFW_tlQB_GB
+	https://cloud.google.com/kubernetes-engine/docs/best-practices
+
+
+USe small lean base images. Moreover add container optimized images.
+		alpineJDK
+		
+Use even smaller Raw images and add required layers on it.
+		Use raw alpine image and add JRE , Tomcat and so on...
+		This way we get even more control on what goes inside an image.
+		
+		
+Use namespaces to logically isolate your resources from other namespaces. Namespaces are recommended for large teams where resoruce names could get clashed potentially deleting/overriding existing resource.
+
+
+USe readiness and liveliness probes.
+
+
+USe requests and limits for each container so that we never run out of cpu/ram.
+		LimitRange is how much cpu power and memory each container can use at max and min. This allows you to use node in better way.
+		
+	
+Use ResourceQuotas based on environments
+		ResourceQuota is a special object in k8s world that allows you to limit the useage of resources.
+		e.g. for dev namspace max provided memory for all containers is 1000Mb.
+		     for prod namspace max provided cpu for all containers is 8000m.
+				 So on dev env, if anyone tries to reserve more memory than required it will throw QuotaExceeded Error.
+				 
+				 
+Terminate Apps with grace
+		k8s gives 30 seconds, for a pod to terminate successfully. But if you have lot of things to do for graceful termination then you must increase terminationGracefulPeriodSeconds to desired time in pod manifest.
+		
+		
+Map external services using Endpoints.
+		endpoits is a special k8s object required to call another service outside the cluster. It holds information like host, port, protocol scheme and other information.
+		When we create service object we can provide the "Endpoint" object which takes control of mapping external communication.
+		To be honest, its a extra layer of objectification so that we can plug and play endpoints in different envs without changing the ip addresses of external services.
+		
+Upgrading cluster with zero downtime
+		Upgrading master
+			if cluster is zonal then we have only one master node and when upgrading master node, we cannot perform other actions like running kubectl command.
+			Hence for zero downtime upgrade of master node, "cluster has to be regional" in which there is one master per zone which helps upgrading master one by one and one just like worker nodes.
+		Upgrading workers
+			if you select the auto upgrade, gke will do it automatically in background in rolling upgrade way.
+			
+			
+Migration of Node pool
+		you are using one node pool and think that you need to migrate to bigger node pool???
+			create a new node pool with more capacity and it it to cluster
+			decomission old node pool
+				tell kubernets that dont schedule pods on old node
+						kubectl cordon nodename
+				tell kubernetes to drain node
+						kubectl drain nodename
+				tell kubernetes to delete node pool
+						gcloud container node-pools delete poolname
+						Note that you delete a node-pool using gcloud not kubectl
+
+
+Choose a private cluster type
+	https://cloud.google.com/kubernetes-engine/docs/best-practices/networking#private-cluster-type
+	public cluster : both private and public IP addresses on nodes and only a public endpoint for control plane nodes
+	private cluster: only private IPs on nodes, and private and public endpoints for control plane nodes				
+									
+			
+			
+				
+				
+		
+				

@@ -1,0 +1,53 @@
+VIMP
+	Within our VPC network, all primary and secondary IP addresses must be unique. 
+	But they don't need to be contiguous
+	
+	Subnet can be removed or replaced ONLY if not is use by any instance.
+	
+	Once created you can expand subnet but cannot shrink it.
+	
+	longest subnet mask you can use is 29.
+	i.e. 10.0.0.0/10 --- valid
+		 10.23.2.12/31 --- invalid
+		 192.12.56.23/8 -- valid
+		 
+	for automatic subnets you cannot provide range above x.x.x.x/16
+	i.e. you cannot expand subnet(default is x.x.x.x/20)
+	
+		 
+		 
+CIDR Range notation
+	10.0.0.0/10
+	first 10 bits are fixed rest can be changed.
+	Above ip address in binary form -- 00001010.00000000.00000000.00000000
+	So only 00001010.00 is fixed, rest digits can be anything.
+	which essentially gives us 2^22 combinations.
+	
+Custom VPC cannot be converted into auto mode network but vice versa possible.
+
+For external Ip address(internet facing machine), you can use either static reserved ip address or ephemeral ip address.
+If you use 
+
+	
+Subnetworks :
+	Subnet can span across multiple zones in a single region.
+	first two and last two ip addresses in subnet are reserved.
+		e.g. 172.168.0.0/29
+		This subnet will have 8 ip address but 4 will be reserved leaving you with only 4 useful ip addresses.
+	Subnets can grow but cant contract so avoid large subnets.
+	
+	Every vm in subnet needs an internal ip address and external ip address. Both Internal and external can be ephemeral or static.	
+	see create instance in gui.
+		
+	
+HA using VPC
+	Keep VMs in diffrent zones within same VPC so that even if one zone is affected other will maitain HA
+	
+	USe multiregional architecture
+	
+Bastion Host
+	bastion means defensive walls around fort
+	
+
+	
+	

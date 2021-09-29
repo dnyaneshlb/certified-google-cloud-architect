@@ -1,0 +1,77 @@
+Most Handly Command in Kubenetes to learn anything
+	kubectl explain deployment
+	kubectl explain deployment.spec
+	kubectl explain deployment.spec.selector
+	
+	This command can tell information about every k8s object in very interactive way than typical --help commands.
+	Very impressed.
+	
+
+
+Kubectl sheetsheet
+	https://phoenixnap.com/kb/kubectl-commands-cheat-sheet
+	
+	
+Listing Resources
+		kubectl get pods
+		kubectl get services -o wide
+		kubectl get deployments, nodes
+		kubectl get pods --field-selector=spec.nodeName=backend
+		
+
+Updating Resources
+		kubectl apply -f file.yaml
+		kubectl apply -f directory : it applies all file in directory
+		kubectl edit service servicename  : its a combination of "kubectl get servicename" and "kubectl apply servicename". Not it opens servicename object in default editor for modification.
+		
+
+Displaying state of resources
+		kubectl describe pod podname
+		kubectl descrive -f anyobject.json : describes details about kubernetes object whose name and type as listed in anyobject.json
+		
+		
+Deleting Resources
+		kubectl delete pod podname
+		kubectl delete pods --all
+		kubectl delete pods, services -l app=backend
+		
+		
+Executing commands
+		"exec" is used to issue commands to a container or to open a shell in a container
+		kubectl exec -it podname -- /bin/bash  : open bash in specific pod
+		kubectl exec podname -- ls  : runs ls command on podname pod and returns the output to kubectl prompt.
+			
+
+
+Print Container Logs
+		kubectl logs podname
+		kubectl logs -f podname  : stream logs from pod podname
+		
+		
+		
+We can use short names for most of k8s objects.
+		e.g. kubectl create namespace [namespace-name]
+				 can be written as
+				 kubectl create ns [namespace-name]
+				 
+				 
+stream pod logs
+		kubectl logs -f podname
+		
+
+kubectl port-forward podname 10080:80
+
+
+kubectl explain deployment
+kubectl explain deployment.metadata.name
+
+kubectl get replicasets		
+
+
+Updating applications
+		kubectl rollout pause depolyment/hello
+		kubectl rollout resume depolyment/hello
+		kubectl rollout status deployment/hello
+		
+		kubectl rollout undo deployment/hello		-- rollbacl to previous version
+		

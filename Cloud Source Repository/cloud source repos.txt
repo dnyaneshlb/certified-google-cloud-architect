@@ -1,0 +1,34 @@
+Its a private Git instance hosted on Google Cloud.
+
+Features
+	Unlimited repos with super fast search across all the repos 	
+		functions, classes and all the entities are indexed
+	
+	Built in intergration with cloud build, Cloud Debugger, IAM
+
+	You can connect an existing GitHub or Bitbucket repository to Cloud Source Repositories.
+
+	Cloud Source Repositories automatically send logs of repository activity to Cloud Logging to help track and troubleshoot data access.
+
+		
+Cloud Source Repositories offer security key detection to block git push transactions that contain sensitive information. This feature is designed to improve the security of your source code.
+	This is pretty important as you remember 82 delete protected VMs are spinned up in our dev project because someone publicly added service account key in repo.
+
+
+With default IAM intergration, you can add roles (list repos, create repo, delete repo, push commits, create tag) to source contribtors for fine grained access.	
+
+
+gcloud commands:
+	gcloud source repos create/delete newrepo
+
+Pricing:
+	https://cloud.google.com/source-repositories/pricing
+	This service is essentially free or very very low cost.
+			Code Storage charges 		- free 50 gb
+			Network egress charges		- free 50gb per month
+			number of repos				- 1000 per project, no repo charges
+				
+				
+Best Practices:
+	Not required for ACE
+	off course dont put SA key in cloud source repo.

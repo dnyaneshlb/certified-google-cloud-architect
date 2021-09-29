@@ -1,0 +1,466 @@
+
+Storage :
+	data at rest is always encrypted
+	Local SSD
+	Persistat Disks
+	Cloud Filestore
+	Cloud Storage
+		Massively scalable, fully managed amd versioned
+		same as amazon S3
+		types : multi-regional, regional, nearline, coldline
+		
+		
+Database :
+	Cloud SQL
+			Fully managed MySQL, PostgreSQL, SQLServer databases
+			Similar to Amazon RDS
+			Support for failover, backup and restore
+	Cloud Spanner
+			First Horizontally Scalable relational database 
+			USed for humongouly large relational data(over 10 TB and more than 4000 connections)
+	BigQuery
+			Serverless
+			Columnar sql based datastore
+			Most powerful gcp service of all
+			Similar to Amazom Athena
+	Cloud BigTable
+			NoSQL db for low latency and high throughput 
+			Similar to Hbase or DynamoDB or Cassandra
+			Used for Massive data storage
+	Cloud Datastore
+			NoSQL db
+			Used for no so Massive data storage
+	Firebase RealtimeDB
+			?
+	Cloud Firestore
+			Strong consistent document DB
+			Enhanced version of Datastore
+			
+			
+			
+Data Transfer
+	Data Transfer Appliance
+			Physically Ship your data to google cloud-engineer
+			Simialr to Amazon Snowball
+			Can perform Only ingest(your datacenter to gcloud)
+	Storage Transefer Service
+			Can transfer data from existing cloud storage like S3 or CosmosDB or existing GCS bucket to new GCS bucket
+			
+			
+
+External Networking
+	Cloud DNS
+			Reliable and managed DNS system
+			100% uptime
+			Similar to Amazon Rout 53
+	Static Ip
+			Similar to elastic IP in amazon
+	Cloud Load balancer
+			Simialr Elastic Load balancing or Nginx
+			Regional Load Balancer
+				low latency, session affinity
+			Global Load Balancer
+				failover, low latency
+	Cloud CDN
+			low latency content delivery
+			Simialr to Amazon CloudFront or Cloudflare or Akamai
+			Caches data at multiple google servers regionally located
+			
+
+Internal Networking
+	Virtual Private Cloud
+			Similar to Amazon VPC or Azure Vnet
+			Global scale,not region scoped
+	Cloud Interconnect
+			When you need to communicate with app running on another cloud or your won data center, you need cloud interconnect
+	Direct Interconnect
+			Similar to Amazon DirectConnect
+			Direct connection between cloud VPC and yor datacenter for high volume data 
+			
+	Cloud VPN
+			USed for static connections between gateways that dont change usually
+			Supports both static and dynamic routing
+	Cloud Router
+	CDN interconnect
+			Interconnect between lot of CDN providers and gcp
+			
+			
+Machine Learning
+	Cloud ML engine
+			Similar to Amazon Sagemaker
+			Massively scalable managed service for training ML models and making predicting
+	Cloud Vision API
+			Pretrained ML models to analyse images
+			Pay per image you want to analyse
+	Cloud Speech API
+			Pretrained ML models for speech to text
+			pay per seconds
+	Cloud Natural Language API
+			Pretrained ML models to understand what natural text means so that you can act on it.
+	Cloud Translation API
+			Pretrained ML models for language translation
+			pay per char
+	DialogFlow
+			Build conversations for websites, apps etc.
+	Cloud Video Intelligence API
+			Pretrained ML Models for video scene analysis and subject identification
+			Pretty cool
+			pay per minute video analysis
+	Cloud Job Discovery
+			Helps Career sites, job boards
+			Integrates well with hiring systems
+			e.g. leagacy job searching is text based. false positives are more.
+			here we can search 'show me jobs within 30 min commute on public transportation'
+			
+			
+Big data and IoT
+	Cloud IoT Core
+		Connect and manage and ingest data from devices globally
+	Cloud Pubsub
+		Infinitely scalable messaging service
+		at least once delivery semantic
+		Similar to SNS or Event HUb or Service Bus or Kinesis or Kafka
+		7 days storage and max 10 mb size of message
+		Push Mode vs Pull Mode(Require ack or time expiry)
+	Cloud Dataprep
+		Visually clean, explore and prepare data for further analysis
+		Mostly used by Business analyst as its sole purpose is to have a clean data for running ML algirithms etc.
+	Cloud DataProc
+		Distributed batch processing with managed Spark or Hadoop clusters
+		Best used for moving existing SPark or Hadoop based workloads to GCP
+		For new workloads, dataflow is prefereed. Go with the flow.
+	Cloud dataflow
+		Both batch and stream processing
+		fully managed and massivly scalable
+	Cloud Datalab
+		Interactive tool for data analysis, exploration, visualization etc.
+	Cloud Datastudio
+		Big data visualization with charts, dashboards and reports so that management can make decisions.
+		
+		
+		
+Identity and Access
+	Roles
+	Cloud IAM
+		Control level of access to GCP resources
+		it does authorization not really authentication
+	Service Account
+	Cloud Identity
+		Identity as service. 
+	Security Key Enforcement
+	Cloud Resource Manager
+	Cloud Identity Aware Proxy
+		Similar to Amazon gateway
+		Passes through only aauthorised and authenticated requests.
+	Cloud Audit Logging
+		Logging service for logging each security related actions in gcp
+		e.g Admin activity or system events
+		
+		
+Security : Monitoring and Responding
+	Cloud Armor
+		Used for safeguarding from DDOS and other attacks
+		Similar to Amazon Shield and WAF
+		Can preview changes before going live
+	Security Scanner 
+		App vulnerability scanner
+		Simialr to Amazon Agent, Qualys App Scanner
+		Can identfy XSS, Flash Injection, Outdated Libraries/deps etc.
+	Cloud DLP API
+		Scan, Find and optionally obscure sensitive information(credit card numbers, passports numbers etc.) from unstractured data streams
+	Event threat Detection
+		Automatically scans stackdriver logs for suspicious activity.
+		Detects lot of attacks like malware, cryptomining, port scanning, Brute force SSH key by monitoring stackfriver logs automatically
+		Can send suspicious logs to bigquery for forensic analysis.
+		Similar to Amazon GuardDuty or Splunk
+	Cloud SCC(Security Command Center)	
+		Helps you to prevent,detect and respond to threat in single pane
+		Can alert both humans and systems.
+		
+		
+Encryption
+	Cloud KMS (Key mangement system)	
+		similar to Key vault of azure
+	Cloud HSM - hardware security model
+		Similar to cloud KMS
+		
+		
+Operations and Mangement
+	Stack Driver
+		Similar to Cloudwatch or Appinsights
+		Moniters, logs and dignose apps with stackdriver
+		Tightly intergrated with all gcp services
+		Powerful API for browse, search and slice log data
+	Stackdriver Error reporting
+		Smartly aggregate and group errors
+		Instant alerts
+	Strackdriver trace
+	Strackdriver debugger
+		
+	Stackdriver Monitoring
+		Supports diffrent clous providers
+		Alerting via call, msg, pagerduty, slack, AWS SNS, webhook.
+	Stackdriver Profiler
+		Continious profiling of CPU and memory for peroformance boot and cost reduction
+		Saves profiles for 30 days
+		Even you can run this on prod too since it can use max 5% CPU in worst case(avg 0.5% CPU usage)
+	Deployment Manager
+		Infra as a code
+		create and manage gcp resurces via code
+		similar to terraform or cloud formation
+	Cloud billing API
+		Programatically manage billing accounts
+		
+		
+		
+Development & APIs
+	Cloud Source Repositories
+		For code hosting like github or bitbucket
+		Natural integration with stackdriver debugger and other gcp services.
+	Cloud Build
+		CI/CD service from GCP
+		Simialr to AWS code buid or Travis CI or Jenkins
+		Free 120 Minutes of build per day.
+	Container Registry
+		Simialr to docker hub
+		repo for docker images
+	Cloud Endpoints
+		
+	APIgee
+		transforms calls between diffrent protocols : SOAP, REST, XML etc
+		Throttling with quotas
+		API managements with versions
+		reporting on suspicious API behaviour
+	
+		
+	
+PROJECT TREEHOUSE ---------------******************---------------------------------------------
+	sample gcp architectures for all common usecases
+	http://gcp.solutions
+	
+	
+	
+	
+Links :
+		Associate Clod Engineer : https://acloud.guru/learn/gcp-certified-associate-cloud-engineer
+		
+		Google Cloud Architect : https://acloud.guru/learn/gcp-certified-professional-cloud-architect
+		
+
+Exam Tips:
+	Know Kubernetes very well. Lot of Questions on k8s.
+	Understand IAM deeply.
+	Look and Remember best practices for doing everything.
+		Best practices for enterprise organizations
+			https://cloud.google.com/docs/enterprise/best-practices-for-enterprise-organizations
+		Best Practices for Operating Containers
+			https://cloud.google.com/solutions/best-practices-for-operating-containers	
+	Watch Google Cloud minute Videos on YOUTUBE.		
+	Find reviews and experiences from fellow students on internet and close gaps.
+	codelabs
+	qwicklabs
+	Very important links in lecture no 126 in udemy.
+	
+	
+
+
+https://kubernetes.io/docs/reference/kubectl/cheatsheet/ 
+https://kubernetes.io/docs/tutorials/kubernetes-basics/explore/explore-intro/	
+
+Cloud Functions does not support Rust or Ruby
+
+Play with Pricing Calculator
+
+The Compute Engine section of the console does not identify any “Owner”. Information about “Who did What, and When?” should be identified from the Activity Log or fuller Audit Log.
+
+GCP does not have top-level location selectors like AWS does. GCP is global by default and it’s only individual resources that live in certain locations. When you’re creating a bucket in the console, the wizard asks you where you want to put it. Also, you cannot move a bucket after its region has been chosen during creation.
+
+
+How can you enable the Compute API in the fewest number of steps?
+Each API must be enabled before it can be used. Some APIs are enabled by default, but GCE is not. Navigating to the Compute Engine of the console automatically enables the GCE API. You do not have to configure authentication to be able to use Cloud Shell, but regardless, using Cloud Shell would take more steps than simply navigating to the GCE console. Hence right answer is "Navigating to the Compute Engine of the console"
+
+What are auto enabled gcp services?
+	BigQuery API
+	Google Cloud APIs
+	Datastore API
+	Cloud SQL
+	Cloud Storage
+	Cloud Storage JSON API
+	Service Management API
+	Service Usage API
+	Stackdriver Debugger API
+	Stackdriver Logging API
+	Stackdriver Monitoring API
+	Stackdriver Trace API
+
+
+https://cloud.google.com/docs/enterprise/best-practices-for-enterprise-organizations
+
+
+StackDriver Logging Agent Configuration https://cloud.google.com/logging/docs/agent/configuration
+
+
+Service Accounts :
+	https://cloud.google.com/iam/docs/service-accounts
+	https://cloud.google.com/iam/docs/understanding-service-accounts https://cloud.google.com/iam/docs/granting-roles-to-service-accounts
+	
+How can you link a new project with your billing account?
+	If created using console, do nothing
+	if created using gcloud, can link using "gcloud beta billing" command
+	
+	
+Cloud Marketplace	
+	Its a single place for easy to deploy third party softwares and packages.
+	It has production-grade solutions from third-party vendors who have already created their own deployment configurations based on Deployment Manager
+	With GCP marketplace you can directly bring your own app/infra licenses to GCP.
+	e.g you want to create infra of LAMP(linux, Apache server, Mysql, Php) stack then instead of creating infra on your own(hci requires quite a hefty things) you can go to market place and install LAMP stack in one click.
+	https://cloud.google.com/marketplace/ 
+	https://cloud.google.com/wordpress/ 
+	https://console.cloud.google.com/marketplace/details/click-to-deploy-images/wordpress https://cloud.google.com/marketplace/docs/	
+
+There are three identifiers for a project.
+id : globally unique and cannot be changed
+number : globally unique and cannot be changed, its auto generated
+name : can be changes and not unique
+
+
+You can create compute engine without service account as well. It will falls back to project level access.
+
+No matter how much gigantic data you have you generally need single storage bucket. It is generally easiest (and best) to manage all your data in a single bucket and using things like folders for organizing them.
+
+Data will be persisted in Persistent Volumes even if all DB pods have failed or been shut down. Kubernetes StatefulSet objects exist to manage applications that _do_ want to preserve state--unlike the normal applications that should be stateless. https://cloud.google.com/kubernetes-engine/docs/how-to/stateful-apps https://stackoverflow.com/questions/41732819/why-statefulsets-cant-a-stateless-pod-use-persistent-volumes
+
+
+Cloud Storage Classes
+https://cloud.google.com/storage/docs/storage-classes
+
+You are planning a log analysis system to be deployed on GCP.  Which of the following would be the best way to store the logs, long-term?
+	Stackdriver Logging (retains logs for 30 days)
+	Cloud Pub/Sub (not long-term storage)
+	BigTable
+	GCS ---- right answer
+	
+	
+	
+There is no way we can clone a project. You must handle each resource separately.
+
+
+You have a GKE cluster that currently has six nodes but has lots of idle capacity.  What should you do?
+	gcloud container clusters resize mycluster --size=5
+	Cluster autoscaling is an optional setting. If its in place above is not required.
+	
+
+GCE instance can be created without any service account.	
+If you don't do (or specify) anything, the default service account will be attached by default to each new GCE instance. However, you can stop that from happening by either deleting the default service account or opting out of attaching it when you are creating a new GCE instance.	
+
+	
+Syntax to enable/disable API in gcloud
+	gcloud services enable pubsub.googleapis.com
+	gcloud services enable storage.googleapis.com	
+	
+
+
+You need to store thousands of 2TB objects for one week and it is very unlikely that you will need to retrieve any of them.  Which of the following options would be the most cost-effective?	
+	A. Nearline
+	B. ColdLine
+	C. Regional GCS bucket
+	D. BigTable
+	E. Multi Regional GCS bucket
+	
+	Ans : C
+		Bigtable is not made for storing large objects.
+		Nearline and Coldline have minimum storage durations that make them more expensive for short-term storage.
+		Multi-Regional is more expensive than Regional.
+		Hence C.
+		
+		
+gcloud init will take care of intialising gcloud command as well as "gsutil" and "bq" commands.
+
+
+Costs in GCP
+	To predict cost of service : Procing Calculator
+	To Manage billing account : Billing API
+	To visualize historical costs : Data studio *******
+	To get service pricing information : Pricing/Catlouge API
+	
+
+No seetting(region, zone, project) needs to be done bq or gsutil commands since it uses settings added as part of gcloud command.
+bq config set project -------- wrong
+
+
+Pricing Calculator "DOESNT GIVE EXACT AMOUNT" but its approx estimate of using services.
+
+
+Which of the following concerning VPC subnets is TRUE?
+	All primary & secondary IP ranges used must be both unique and contiguous.
+	VPC subnets can be altered on the fly while in use.
+	If no instances are actively using that IP range it can be replaced. ----- Correct 
+	Primary IP ranges cannot be expanded, only replaced or shrunk.
+
+
+GSuite products and services are separate from Cloud Identity services and require a separate contract/billing arrangement.
+
+
+For creating custom role, you must have iam.roles.create permission.
+
+User -> Role -> Permissions
+dnyanesh4it@gmail.com --> 
+	Compute Instance Admin  --> 
+		compute.disks.list, compute.cpu.list, compute.autoscalar.use, compute.instances.use
+		compute.zones.get, compute.zones.list and so on.
+		
+		
+
+Three type of audit logs are kept for your project
+	System Events  : stored by default, cannot be changed
+	Admin Activity : stored by default, cannot be changed
+	Data access : can be configured
+	
+Free qwicklab covering stackdriver monitoring(App SLA, SLO, SLI) https://googlecoursera.qwiklabs.com/focuses/32554
+
+
+Service accounts are not members of your G Suite domain, unlike user accounts. For example, if you share assets with all members in your G Suite domain, they will not be shared with service accounts. Similarly, any assets created by a service account cannot be owned or managed by G Suite admins.	
+
+
+
+Deployment Manager is a GCP service that uses templates written in a combination of YAML, python, and Jinja2 to automate the allocation of GCP resources and perform setup tasks.
+
+
+
+Once shut down project is initiated, it will shcedule the shut down for 30 days.
+You can restore project back
+
+
+GCP Virtual Private Cloud (VPC) provides networking functionality to Compute Engine virtual machine (VM) instances, Kubernetes Engine containers, and the App Engine flexible environment. In other words, without a VPC network, you cannot create VM instances, containers, or App Engine applications. Therefore, each GCP project has a "default network" to get you started.
+
+Without a VPC network, you cannot create VM instances, containers, or App Engine applications.
+
+We recommend that you use custom mode networks in production.
+
+
+Surpisingly there is a Project Deleter role(like project creator)
+
+
+Labels vs Tags?
+
+
+TO manage the billing account, you must be billing administrator.
+To change the billing account of the project, you must be billing administrator on destination billing account and project owner(off course if you think carefully!).
+
+
+4 ways to interact with GCP
+cloud SDK and cloud Shell
+Rest API
+mobile app
+cloud console
+
+
+
+
+
+
+
+
+
+
+

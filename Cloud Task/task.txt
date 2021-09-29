@@ -1,0 +1,9 @@
+Cloud Tasks lets you separate out pieces of work that can be performed independently, outside of your main application flow, and send them off to be processed, asychronously, using handlers that you create. These independent pieces of work are called tasks.
+The Cloud Tasks service is designed for asynchronous work. 
+
+ACE*** -> It does not provide strong guarantees around the timing of task delivery and is therefore unsuitable for interactive applications where a user is waiting for the result.
+
+
+Tasks are explicit in nature vwhere pubsub is implicit in nature
+https://cloud.google.com/pubsub/docs/choosing-pubsub-or-cloud-tasks
+

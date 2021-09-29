@@ -1,0 +1,54 @@
+Serverless, event based, small single purpose processing 
+
+billed nearest 100ms
+
+can be written only in python, nodejs, java, .Net, Ruby, php and go.
+
+Two types
+	HTTP Function
+		Functions that are triggered by HTTP requests are called HTTP functions.
+	Background Function
+		Functions that are triggered by event are called background functions
+		for example, by a message being published to a Pub/Sub topic, a change in a Cloud Storage bucket, or a Firebase event.
+	CloudEvent Function
+		conceptually similar to background functions
+		CloudEvent functions use an industry-standard event format known as CloudEvents
+		Another such difference is that Cloud Functions itself invokes CloudEvent functions using HTTP requests
+
+gcloud
+	gcloud functions deploy myfunction
+		--runtime python37 		
+		--trigger-event=providers/cloud.firestore/eventTypes/document.write
+		--allow-unauthenticated
+		--memory=512MB
+		--timeout=60
+
+	gcloud functions call helloWorld  --data='{"message": "Hello World!"}'	
+	
+	gcloud functions logs read myfunction
+		--limit=20
+		--min-log-level=DEBUG
+
+
+Supprted Events and triggers
+	https://cloud.google.com/functions/docs/concepts/events-triggers
+	HTTP : call by http requests
+	Cloud storage : finalize, delete, archieve, metadataUpdate
+	Firstore : create, delete, update, write
+	pubsub : topic.publish
+	CLoud Logging : forward log entries to a Pub/Sub topic by creating a sink. You can then trigger the function
+	firebase
+
+
+Important Considertion for choosing CF
+	By default, a function times out after 1 minute, but you can extend this period up to 9 minutes.
+
+
+Pricing :
+	?
+
+	
+Best Practices
+	Not required for ACE exam
+		
+	

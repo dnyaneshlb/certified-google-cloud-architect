@@ -1,0 +1,119 @@
+Serverless, Highly scalable and cost effective data warehouse system.
+- pertabyte scale
+- fully managed
+- Super fast(query 100 billion rows with 4.5 TB data in a minute)
+- SQL interface for querying
+- Suitable for OLAP(Online Analytical processing)
+
+
+You pay for data storage and querying data.
+
+When we store data in big query for more than 90 days and dont modify it, google automatically applies 50% discount.
+BigQuery helps you perform interactive analysis of petabyte-scale databases, and it enables near-real time analysis of massive datasets. It offers a familiar SQL 2011 query language and functions.
+
+Data stored in BigQuery is highly durable. Google stores your data in a replicated manner by default and at no additional charge for replicas. With BigQuery, you pay only for the resources you use. Data storage in BigQuery is inexpensive. Queries incur charges based on the amount of data they process: when you submit a query, you pay for the compute nodes only for the duration of that query. You don't have to pay to keep a compute cluster up and running.
+
+Big query ccaches the results so next query takes even less time and money.
+
+
+Datasets: A dataset is a grouping mechanism that holds zero or more tables. A dataset is the lowest level unit of access control. Datasets are owned by GCP projects. Each dataset can be shared with individual users.
+
+Tables: A table is a row-column structure that contains actual data. Each table has a schema that describes strongly typed columns of values. Each table belongs to a dataset.
+
+Projects contain datasets, and datasets contain tables.
+
+
+There are two ways to query data in bigquery.
+1. bq command from cloud shell/cloud sdk
+2. bigquery UI query editor
+When you write any query in bigquery UI, Query Validator tells you that the query syntax is valid (indicated by the green check mark) and indicates how much data the query will process. The amount of data processed allows you to determine the price of the query using the Cloud Platform Pricing Calculator.
+
+
+Slots :
+	A BigQuery slot is a virtual CPU used by BigQuery to execute SQL queries. BigQuery automatically calculates how many slots are required by each query, depending on query size and complexity.
+
+	You have a choice of using an on-demand pricing model or a flat-rate pricing model. Both use slots for data processing. The flat-rate model gives you explicit control over slots and analytics capacity, whereas the on-demand model does not.
+	https://cloud.google.com/bigquery/docs/slots
+	
+
+BigQuery Jobs
+	Jobs are actions that BigQuery runs on your behalf to load data, export data, query data, or copy data.
+	When you use the Cloud Console or the bq command-line tool to load, export, query, or copy data, a job resource is automatically created, scheduled, and run
+	Job status(ACE**)
+		Because jobs can potentially take a long time to complete, they execute asynchronously and can be polled for their status.
+		gcloud : bq show -j jobid
+		
+Querying extenral data sources		
+	BigQuery supports querying data from 
+		Cloud Storage data : https://www.youtube.com/watch?v=jBfx1K3-97k
+		google drive
+		Cloud SQL : https://www.youtube.com/watch?v=0cyTHbkARwY
+		Bigtable
+	Cons :
+		Query performance is relatively slow
+		Results would not be cached
+		No data size estimates(get to know once query completes)
+	Usecases :
+		less accessed and but frequently changed data can be treated for external data sources for bigquery
+
+Pricing
+	https://cloud.google.com/bigquery/pricing
+	Pay as you go service
+	storage cost : 
+		Amount of data stored
+		Long term storage data : If you ad data in BigQuery and dont modify it for 90 days, its called as long term storage data. The cost for it will be 50% of normal storage cost.
+	query cost : 
+			Amount od data scanned in each query
+			1st TB of data used in query processing is free in each month
+			Cost = number of users running queries * Number of queries they run * Amount of
+				   data accessed in each query
+				   50 users * 10 times a day * 5GB in each query
+				   
+	https://chartio.com/resources/tutorials/how-to-estimate-google-bigquery-pricing/
+	How much data stored? +
+	How much long term storage data? +
+	How much Queries?			   
+				   
+				   
+				   
+How can I find my Query Cost ?(ACE**)
+	https://cloud.google.com/bigquery/docs/estimate-costs#estimating_query_costs
+	1. You can use the query validator in console which tell you upfront how much data will be scanned by this query.
+
+	2. When you run a query in the bq command-line tool, you can use the --dry_run flag to estimate the number of bytes read. 
+	e.g. bq query --use_legacy_sql=false --dry_run 
+			'SELECT column1,column2,column3 FROM `project_id.dataset.table` LIMIT 1000'
+		 Running this command will output
+			Query successfully validated. Assuming the tables are not modified, running this query will process 10918 bytes of data
+	3. Key in the amount of data read by query into Pricing Calculator and find cost	
+	4. "dryRun" parameter when submitting a query job using the API
+	5. Using client library
+			no matter which language you are using, BQ language sdk has some options to let BigQuery know that its a dry run
+			in java -  QueryJobConfiguration queryConfig = new QueryJobConfiguration()
+					   queryConfig.setDryRun(true)
+
+	** ->If you are querying the external data source like CloudSQL, CloudStorage, drive or bigtable then its not possible to know the query cost. Makes sense if you think.
+	
+
+An application is writing and reading data for OLAP processing at very high scale. You need to decide which GCP option to choose?
+	BigTable, BigQuery, Cloud Spanner, Datastore
+	It seems very lucrative to select bigquery looking at OLAP word and scaling requirements but remember biquery is READ optimized hence its not right fit for high scale write operations.
+	So answer could be BigTable or Spanner.
+
+
+
+Notes :
+	If you have a table that is not edited for 90 consecutive days, the price of storage for that table automatically drops by 50 percent to $0.01 per GB, per month. This is the same cost as Cloud Storage Nearline.
+
+
+
+Best Practices :
+	Not really required for ACE exam
+	
+	
+	
+Complete bigquery playlist on google cloud tech channel
+	https://www.youtube.com/hashtag/bigqueryspotlight
+	
+	
+				   

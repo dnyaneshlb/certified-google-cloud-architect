@@ -1,0 +1,12 @@
+This small video sums up everything
+		https://www.youtube.com/watch?v=8rS8O2RiT80
+		
+Bit deeper dive with cloud next
+		https://youtu.be/QJXnlYqBEi4		
+		
+		
+How its different from cloud storage?
+	https://stackoverflow.com/questions/52033035/how-is-google-cloud-storage-different-from-file-storage-different-from-file-storage
+	
+	Objects do not reside within subdirectories in a bucket.
+		For example, you can name an object /europe/france/paris.jpg to make it appear that paris.jpg resides in the subdirectory /europe/france, but to Cloud Storage, the object simply exists in the bucket and has the name /europe/france/paris.jpg. As a result, while deeply nested, directory-like structures using slash delimiters are possible within Cloud Storage, they don't have the performance that a native filesystem has when listing deeply nested sub-directories.

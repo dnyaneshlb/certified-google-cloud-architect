@@ -1,0 +1,18 @@
+resources:
+- name: vm-created-by-deployment-manager
+  type: compute.v1.instance
+  properties:
+    zone: us-central1-a
+    machineType: zones/{{ properties["zone"] }}/machineTypes/{{ properties["machinetype"] }}
+    disks:
+    - deviceName: boot
+      type: {{ env["disktype"] }}
+      ## --------> Note this template property must be defined as env variable 
+      boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: projects/debian-cloud/global/images/family/debian-9
+    networkInterfaces:
+    - network: global/networks/default
+    
+    ## Note some properties are injected in this template. These properties are passed from configuration file where this template is imported.

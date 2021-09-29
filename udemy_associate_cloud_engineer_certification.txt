@@ -1,0 +1,21 @@
+
+Organization
+	Project
+		USer
+			Roles
+			
+
+cloud shell:
+	5 gb storage
+	preinstalled tools like node,python, git, bash, vim, gcloud etc
+	web preview and web code editor
+	
+	
+Designing cloud solutiuon think about this classic example of ballet dancer girls going home and you need to find optimum way to find solution
+
+	
+	
+	
+	
+	
+

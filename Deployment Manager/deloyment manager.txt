@@ -1,0 +1,143 @@
+
+Deployment Manager is present under Console -> tools section.
+
+Its a declarative way of telling how your infrastructure should look like. IaaC.
+
+
+You can provision resources declaratively using either deployment manager or any third party tools like terraform, ansible etc.
+Deployment Manager is an infrastructure deployment service that automates the creation and management of Google Cloud resources. Write flexible template and configuration files and use them to create deployments that have a variety of Cloud  services, such as Cloud Storage, Compute Engine, and Cloud SQL, configured to work together.
+
+Ability to delete infra in a single click/command
+
+Configuration file : 
+	A configuration is a file written in YAML syntax that lists each of the resources you want to create and their respective resource properties. A configuration must contain a resources: section followed by the list of resources to create. 	
+	e.g.
+		# Optionally import templates
+		imports [TEMPLATES]
+		resources:
+		# Create the auto-mode network
+		- name: [RESOURCE_NAME]
+		  type: [RESOURCE_TYPE]
+		  properties:
+		    #RESOURCE properties go here
+
+	Selflink : By default, Deployment Manager creates all resources in parallel, so there is no guarantee that dependent 
+				resources are created in the correct order unless you use self references(selflink).		    
+				see@selflink example.yaml
+	
+	Outputs : When you create a deployment, you might want to expose key properties of your configurations or templates 
+			 for other templates or users to consume.
+			 Outputs can be added optionally in template or configuration both.
+			 Its optional setting.
+			 see @simple vm deployment.yaml
+
+
+Preview:
+	 Previewing a configuration lets you see the resources that Deployment Manager would create but does not actually instantiate any actual resources
+	 Recommended practice.
+	 **Its done by passing --preview flag
+		gcloud deployment-manager deployments create example-config --config configuration-file.yaml --preview
+
+
+Templates
+	https://cloud.google.com/deployment-manager/docs/configuration/templates/create-basic-template#jinja
+	Templates allow you to separate your configuration out into different pieces that you can use and reuse across different deployments. If you find yourself rewriting configurations that share very similar properties, you can abstract the shared parts into templates.
+	Deployment Manager allows you to use Python or Jinja2 templates to parameterize your configuration. This allows you to reuse common deployment paradigms such as networks, firewall rules, and VM instances.
+	When you require to create multiple same type resources then its good to create resource template so that that can be reused.
+	Schema :
+		A template can be big. It may holds multiple resources and that is where it gets complex. USers of template might misuse it(by passing wrong params) hence we have template schemas. Deployment Manager uses the schema to enforce how users can interact with the template. Schemas define a set of rules that a configuration file must meet if it wants to use a particular template.
+
+Template Properties :
+	https://cloud.google.com/deployment-manager/docs/configuration/templates/define-template-properties
+	how to pass properties like name, memory etc to a template from a configuration file?
+		see @vm template.jinja
+			@vm from template.yaml
+		We created a template "vm template.jinja" for a vm creation. This is imported in "vm from template.yaml" configuration file. This configuration file passes template properties to template variables 
+		{{ properties["zone"] }}. 
+	Note that these template properties can be passed from gcloud command as well.
+	how?
+		gcloud deployment-manager deployments create vm_deployment --config vm_from_template.yaml
+			--properties zone:europe-west1,machinetype=n1-standard-1
+			
+	It is also possible to directly deploy a template by passing properties via gcloud directly. 	
+		gcloud deployment-manager deployments create vm_deployment_via_template 
+			--"template" vm_template.jinja 
+			--properties zone:europe-west1,machinetype=n1-standard-1
+			
+			
+
+Terraform
+	Terraform enables you to safely and predictably create, change, and improve infrastructure. It is an open-source tool that codifies APIs into declarative configuration files that can be shared among team members, treated as code, edited, reviewed, and versioned.
+
+
+Interactive Tutorial for Best practices
+	Highly Recommended	https://console.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fdeploymentmanager-samples&cloudshell_tutorial=walkthroughtutorial.md&_ga=2.10343990.225871058.1619638200-2121382610.1593627817
+
+
+Developing Deployment Manager templates(ACE**)
+	A template is a separate file that is imported and used as a type in a configuration. You can use as many templates as you want in a configuration.
+	Creating Template
+		The template must define a method called GenerateConfig(context) or generate_config(context)
+		The template method must return a Python dictionary. resoruces array to be precise, nothing new, a template whether its a jinja2 or python must return resources array. see @vm_template.jinja or below python template.
+		e.g.	https://github.com/GoogleCloudPlatform/deploymentmanager-samples/tree/c3c0eb9a7e9561b7d9526569b2d2d19f3c938ec1/examples/v2/build_configuration/add_templates/python
+		
+	Importing Template
+		After creating a template, import it into your configuration file to use it. To import a template, add an imports section in your configuration
+		https://cloud.google.com/deployment-manager/docs/configuration/templates/create-basic-template#importing_the_template
+		
+		**If your template uses other templates as dependencies, import the dependent templates in your configuration as well
+		
+	Deploying templates
+		Once you import a template, use it as a type in your configuration:
+		https://cloud.google.com/deployment-manager/docs/configuration/templates/create-basic-template#deploying_templates
+
+		While deploying a resurce we can pass template and the properties from command line as well.
+			gcloud deployment-manager deployments create my-igm \
+			--template vm_template.jinja \
+			--properties zone:us-central1-a,machineType:n1-standard-1
+	
+
+		
+Launching a Deployment Manager template(ACE**)
+	--preview
+	gcloud deployment-manager deployments cancel-preview DEPLOYMENT_NAME
+	
+	
+	
+Deploying a market place solution using deployment-manager(ACE**)
+	https://www.getgcpcertified.com/courses/free-trial-associate-cloud-engineer/lectures/11207690
+
+
+Key points :
+	Deployments are written in yaml
+	But templates can be written using jinja2 or python. Note that the templates are eventually results in the same YAML synatx as deployment.
+	Templates properties can be passed via
+		env variables
+		gcloud command
+		configuration file using that template
+		
+		
+gcloud
+	Create deployment
+		gcloud deployment-manager deployments create dep1 --config config.yaml
+	Create deployment(pass template properties) 	
+		gcloud deployment-manager deployments create dep1 --config config.yaml
+			--properties zone:us-west1-a,cpus:4
+	Deploy a template directly
+		gcloud deployment-manager deployments create dep1 --template template.jinja
+	Deploy a template directly(pass template properties)
+		gcloud deployment-manager  deployments create dep1 --template template.jinja
+			--properties zone:us-west1-a,cpus:4
+	Preview deployment
+		gcloud deployment-manager deployments create dep1 --tempalte template.jinja --preview
+	cancel long running preview
+		gcloud deployment-manager deployments cancel-preview DEPLOYMENT_NAME
+			
+			
+pricing
+	Deployment Manager is available at no additional charge to Google Cloud Platform customers.
+
+
+Best practices	
+	Not required for ACE exam
+	

@@ -1,0 +1,130 @@
+Cloud Storage allows world-wide storage and retrieval of any amount of data at any time. You can use Cloud Storage for a range of scenarios including serving website content, storing data for archival and disaster recovery, or distributing large data objects to users Cloud Storage allows world-wide storage and retrieval of any amount of data at any time. You can use Cloud Storage for a range of scenarios including serving website content, storing data for archival and disaster recovery, or distributing large data objects to users via direct download.
+
+Cloud storage API is enabled by default when you create project
+Just like BigQiery, StackDriver API or Cloud SQL API.
+
+Bucket 
+
+
+Objects
+	Bucket Objects are immutable. When an object is modified, GCP creates new version of the object and creates the  archieve of old version. This way we can roll back to older stage of the object at any time.
+	WE can turn versioning on and off as required(as it involves the cost of storing each version -- remember me! said the object immutablity ..haha)
+	BY default its off.
+
+
+Data Storage :
+	IMP :  Unlike the "coldest" storage services offered by other Cloud providers, your data is available within milliseconds, not hours or days.
+	For All Storage classes listed below :
+		Unlimited storage with no minimum object size.
+		Low latency (time to first byte typically tens of milliseconds).
+		High durability (99.999999999% annual durability).
+
+	Standard
+		Standard Storage is best for data that is frequently accessed ("hot" data) and/or stored for only brief periods of time
+	Nearline
+		Nearline Storage is ideal for data you plan to read or modify on average "ONCE PER MONTH" or less. 
+		For example, if you want to continuously add files to Cloud Storage and plan to access those files once a month for analysis, Nearline Storage is a great choice.
+		It has a 30-day minimum storage duration
+		Lower storage cost than standard tier.
+		For data accessed less frequently than once a quarter, Coldline Storage or Archive Storage are more cost-effective, as they offer lower storage costs.
+	Coldline
+		very-low-cost
+		Minimum 90 days duration
+		Coldline Storage is ideal for data you plan to read or modify at most "ONCE per 90 days"
+		Note, however, that for data being kept entirely for backup or archiving purposes, Archive Storage is more cost-effective, as it offers the lowest storage costs.
+	Archive
+		lowest-cost
+		365-day minimum storage duration
+		Coldline Storage is ideal for data you plan to read or modify at most "ONCE PER YEAR"
+		Archive Storage is the best choice for data that you plan to access less than once a year
+		
+	Among the above storage classes cost of retriving data increases from standard to archieve. Hence choose storage class based on how frequently data is being accessed, as it drives cost. --imp	
+	However, trick question might come in exam which tests which class has fastest data retrival performance?
+			ans is all classes give sub 10 millis perofrmance but 
+					the cost of access in standard < nearline < coldline < archieval
+					cost of storing data standard > nearline > coldline > archieval
+			so check what parameter(speed/cost of storage/cost of access) is asked in question
+			
+			
+Additional Storage Classes :
+	Multi-Regional 
+		Equivalent to Standard Storage, except Multi-Regional Storage.
+		Multi-Regional bucket can never be changed to regional bucket.
+	Regional
+		Equivalent to Standard Storage, except Regional Storage
+		Regional bucket can never be changed to multi-regional bucket.
+	Dual Regional	
+	
+	
+Data Security :
+	Fine Grained(Object Level)
+	Unitiform(Bucket level)
+
+	
+Commands :	
+	gsutil ls
+	gsutil mb mysamplebucket
+
+
+Obect Lifecycle :
+	You can assign a lifecycle management configuration to a bucket. The configuration contains a set of rules which apply to current and future objects in the bucket. When an object meets the criteria of one of the rules, Cloud Storage automatically performs a specified action on the object.
+	Cloud Storage offers the Object Lifecycle Management feature for
+		"downgrading" storage class(only downgrade possible)
+		delete object
+		setting TTL
+
+
+
+Access Control :
+	There are many ways in which you can control access to objects & buckets.
+	IAM : most used one
+	ACLs : A list which holds users with their associated permissions.
+	Signed URLs: Time limited cryptographically signed URL. Note anyone having this URL can perform all allowed actions for limited amount of time
+		Any user having this URL can perform permitted operations on bucket or object in bucket.
+	
+Important Features
+	Directory Sync
+		allows VM directory to be synced with a bucket.
+	Object Versioning
+		allows multiple versions of same object to be stored.
+	Object Lifecycle management
+		allows moving objects to and from different storage classes automatically.
+	Object change notification
+		allows sending notification to application when a objcet is added or changed.
+		
+
+GCP Data import Services
+	Transfer Appliance
+		A physical appliance designed by google to rack, capture and then transfer the data to google gcloud.
+	Storage Transfer Service
+		A software service to import data from another bucket, S3 bucket or a web source.
+	Offline Media Import
+		A third party provider service where provider can upload tons of physical offline data in form of hard drives, USB flash drives, tapes etc to google cloud. 
+
+
+
+Best practices for Cloud Storage
+	Avoid using sequential filenames such as timestamp-based filenames if you are uploading many files in parallel.
+	Every bucket name must be unique across the entire Cloud Storage namespace.
+	Don't use user IDs, email addresses, project names, project numbers, or any personally identifiable information (PII) in bucket names
+	
+	Bucket and object ACLs(Access Control List) are independent of each other, which means that the ACLs on a bucket do not affect the ACLs on objects inside that bucket. It is possible for a user without permissions for a bucket to have permissions for an object inside the bucket. For example, you can create a bucket such that only GroupA is granted permission to list the objects in the bucket, but then upload an object into that bucket that allows GroupB READ access to the object. GroupB will be able to read the object, but will not be able to view the contents of the bucket or perform bucket-related tasks.
+	
+	
+Cloud storage is not a file system though it appears like it.	
+Cloud Storage encrypts data at rest.
+
+
+When to use filestore vs cloud storage?
+		https://www.youtube.com/watch?v=8rS8O2RiT80
+		sums up everything
+		If you have files and need file system to browse it, filestore is your guy
+		If you have objects, then cloud dtorage is the guy
+		if you have blocks, then persistent disks is the guy
+
+practice test
+	https://googlecourses.qwiklabs.com/course_sessions/180780/quizzes/63756
+	
+	
+Cloud Storage Best Practices
+		https://www.youtube.com/watch?v=WSwqYGln-vU	

@@ -1,0 +1,34 @@
+Labels vs tags
+	Labels are used to organize the resources in gcp.
+	They are key value pairs always
+	e.g. dept: finance
+		 env: prod
+		 
+	Tags are simple strings applied on resource(primarily networking resources).
+	e.g. dev-network
+
+Budgets in GCP are not a way to prevent spending or stop resources. They are a tool for raising awareness about the consumption of resources so that a business can implement its own consumption management processes.
+e.g. when budget has spiked above 70% of monthly spend then shutdown or delete non required resources.
+Note : Using 100% monthly budget will simply trigger notification to billing administrator. It wont prevent spending or stop resources.
+
+
+External IP addresses that don’t fall under the Free Tier will incur a small cost. Also, as a general security best practice, it’s a good idea to use internal IP addresses where applicable.
+
+
+Each project ID is unique across Google Cloud. 
+Once you have created a project, you can delete the project but its ID can never be used again.
+A project is associated with max one billing account but one billing account can be associated with multiple projects.
+
+A project serves as a namespace. This means every resource within each project must have a unique name, but you can usually reuse resource names if they are in separate projects. Some resource names must be globally unique.
+
+What is cloud identity?
+		This 3 min video explains everything https://www.youtube.com/watch?v=O_O5Hb1bJyw
+		In a nutsehll this is what I used in firebase authentication for some apps/websites.		
+		also helpful video - https://www.youtube.com/watch?v=ny92vcpOQFs&list=PLIivdWyY5sqJlriayd9itEMQVZC2XH9T4&index=5
+		
+You must have a valid Cloud Billing account even if you are in your free trial period or if you only use Google Cloud resources that are covered by the Google Cloud Free Tier.		
+
+Its is recommended 
+		to have only one billing account unless absolutely required.
+		to enable billing expoerts to big query on day one
+		to Assign key roles to more than one person (reasonable redundancy)

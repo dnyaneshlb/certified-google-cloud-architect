@@ -1,0 +1,23 @@
+A folder can contain multipes projects or multiple folders or both.
+IAM policy can be applied on folder as like project or organization or resource.
+
+
+Custom roles cannot be applied at folder level.
+
+
+Yuo can communicate within vms using their name as well rather than ip addresses.
+ping py-vm-1.us-central1-b
+This will internally use cloud DNS service to find the fully qualified name of the vm to ping to.
+
+
+GCP has quota to avoid extra useage of resources due to known reason or malicious activity.
+They help us to avoid billing surprises.
+Rate Quota
+	The rate at which the resource us used for certain time. If rate quota exceeeds for that resource then we can take some action.
+	e.g. 1000 admin req in 1 min for GKE cluster is rate quota. Its very unlikely for an admin to comsume more than allowed quota. If it does, something malicious is happning.	
+	Rate quota expires after certain time then restarts.
+Allocation Quota
+	5 networks per project
+	
+	
+	

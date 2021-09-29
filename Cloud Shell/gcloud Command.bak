@@ -1,0 +1,51 @@
+Gcloud 
+	Shortform for google cloud
+	Similar to gsutil : google storage utility
+			   bq	  : Bigquery
+			   
+	
+Syntax:
+	gcloud <global flags> <service name> <group> <command> <flags> <parameters>
+	
+	e.g.
+	gcloud compute instances list
+	gcloud config project list
+	gcloud --project myprojectId compute instances list
+	
+	more info @ https://cloud.google.com/sdk/gcloud/reference/
+	
+	
+Interesting Global Flags :
+	--help : get full help of command
+	-h		: get short help
+	--project : run command on specific project
+	--account : run command on specific account. Useful when logged in with different account.
+	--quiet : dont promt an confirmations
+	--format : format output into JSON,YAML or CSV
+	
+Config Properties :
+	You can set default configurations required for your gcloud shell, once and for all.
+		gcloud config set project projectId
+		gcloud config set region US-WEST
+		gcloud config get-value project
+		gcloud config unset project
+	Once set its uused atomtcally for each and every gcloud command we run.
+	If yuo want to run command with different config proerpty you can override it with global flags.
+		gcloud --project some_different_project compute instances list
+		
+		
+Configurations :
+	It is used to groups of settings and easily switch between them.
+	It works like a profile, essentially.
+	Most useful thing when you are using multple projects. If you'd like to work with multiple projects or authorization accounts, you can set up multiple configurations with gcloud config configurations create and switch among them accordingly.
+	Yuo can create multple configurations and eaily set active configuration while interacting with resources of gcloud.
+		gcloud config configuration activate <configname>
+		or 
+			you can use configuration as global paramter.
+		gcloud --configuration <configname> compute instances list
+			Note, in configName configuration I can set lot of things like region, project, zone etc which is auto used.
+			
+
+
+			
+		

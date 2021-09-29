@@ -1,0 +1,16 @@
+Cloud SQL supports only mamanged postgress, mySQL, SQLServer as of now.
+
+When your application does not reside in the same VPC connected network and region as your Cloud SQL instance, use a proxy to secure its external connection.
+
+If you can host your application in the same region and VPC connected network as your Cloud SQL, you can leverage a more secure and performant configuration using Private IP.
+By using Private IP, you will increase performance by reducing latency and minimize the attack surface of your Cloud SQL instance because you can communicate with it exclusively over internal IPs.
+Remember that you can only connect via Private IP if the application and the Cloud SQL server are collocated in the same region and are part of the same VPC network. If your application is hosted in another region, VPC, or even project, use a proxy to secure its connection over the external connection.
+
+Private service connection?
+
+
+data is encrypted at rest in cloud SQL.
+Supports read replicas.
+
+
+

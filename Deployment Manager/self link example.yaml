@@ -1,0 +1,20 @@
+resources:
+- name: the-second-vm
+  type: compute.v1.instance
+  properties:
+    zone: us-central1-f
+    machineType: https://www.googleapis.com/compute/v1/projects/MY_PROJECT/zones/us-central1-f/machineTypes/g1-small
+    networkInterfaces:
+    # As in the resource above, the "network" value has been replaced with 
+    # the new network's "selfLink" property. 
+    - network: $(ref.a-new-network.selfLink)
+      accessConfigs:
+      - name: External NAT
+        type: ONE_TO_ONE_NAT
+# The following network must be created first before creating a vm above.
+- name: a-new-network
+  type: compute.v1.network
+  properties:
+    routingConfig:
+      routingMode: REGIONAL
+    autoCreateSubnetworks: true

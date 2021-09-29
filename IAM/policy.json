@@ -1,0 +1,17 @@
+{
+  "bindings": [
+    {
+      "members": [
+        "user:user1@company.com"
+      ],
+      "role": "organizations/1036595291461/roles/customroleowner"
+    },
+    {
+      "members": [
+        "serviceAccount:967714853000@cloudbuild.gserviceaccount.com",
+        "user:user1@company.com",
+        "user:user2@company.com"
+      ],
+      "role": "roles/appengine.appAdmin"
+    }]
+}	

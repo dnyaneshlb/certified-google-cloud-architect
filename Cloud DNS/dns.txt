@@ -1,0 +1,45 @@
+Basic :
+	As name suggest its a domain name service for mapping ip addresses to meaningful names.
+	Its pretty useful service since we dont want hardcode ipa addresses everywhere if there is simple way to refer to services using names.
+	e.g. Create a vm with apache web server. Create a dns and map a vm ip address with the website domain nameand then consume your content using a domain name.
+	Very well explained https://www.youtube.com/watch?v=HTRwE4rWMZA
+
+
+Private Domain ZOne
+	Private zones enable you to manage custom domain names for your virtual machine (VM) instances, load balancers, and other Google Cloud resources without exposing the underlying DNS data to the public internet. A private zone is a container of DNS records that can only be queried by one or more Virtual Private Cloud (VPC) networks that you authorize.
+	
+	A private zone can only be queried from networks in the same project where it is defined
+
+
+Public DOmain ZOne  
+	A public zone is visible to the internet. Cloud DNS has public authoritative name servers that respond to queries about public zones regardless of where the queries originate. You can create DNS records in a public zone to publish your service on the internet. For example, you might create the following record in a public zone example.com for your public website www.example.com.
+	
+	
+https://cloud.google.com/dns/docs/key-terms	
+
+
+Prerequiresites to DNS configuring
+	A Record – IPv4 address, maps IP with a domain.
+	CNAME – (canonical name)Alias for one name to another (www.domain.com, points to domain.com)
+	MX – Manages where emails should be delivered.
+	TXT – Any text content, like domain owner verification text or something like that
+	AAAA Record – IPv6 address, mainly used in HTTP(S), SSL Proxy, and TCP Proxy Load balancing.
+
+
+Configuring Cloud DNS(ACE**)
+Steps
+	https://www.cloudbooklet.com/setting-up-google-cloud-dns-for-your-domain/
+	1. Create DNS zone
+			here I add my website gcprocks.com as public dns zone
+	2. Create a new "A" type record
+	3. Create new "CNAME" type record
+	4. Update your domain name servers
+	Very well explained 
+		https://www.youtube.com/watch?v=HTRwE4rWMZA
+		https://cloud.google.com/dns/docs/tutorials/create-domain-tutorial
+		
+note that 
+	If you have an IPv4 address and need to create an A record.
+	If you have an IPv6 address and need to create an AAAA record.
+	
+	

@@ -1,0 +1,29 @@
+Built on top of kNative, built on top of of kubernetes.
+
+Made for stateless workloads as opposed to gke which can be configured to handle both stateful and stateless
+
+gcloud commands(ACE**)
+	gcloud run deploy myservice 
+		--image gcr_path
+		--platform managed
+		--memory 4GiB
+		--cpu 4
+		--no-allow-unauthenticated --min-instances=1
+		
+	gcloud run revisions list
+
+	ACE** 
+	gcloud run services update-traffic myservice --to-revisions=myservice-revision1=10,myservice-revision2=90
+	gcloud run revisions list --service=dsa-svc
+	
+	
+Best Practices
+
+
+Pricing
+	Pay as you go based on your setup
+		number of min instances
+		amount of time taken to process request
+		cpu and	memory allocated
+		concurrency
+		

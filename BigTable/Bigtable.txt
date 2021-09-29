@@ -1,0 +1,56 @@
+Father of all noSQL databases but used for analytics, super high throuput read/writes. 
+Its first no SQL db internally used in google to power almost all google apps like gmail, maps, photos, calender etc.
+
+Fully managed & clustered, you need to provision the nodes.
+Low latency, massively scalable NoSQL
+
+BigTable is priced by provisioned nodes. BigTable does not autoscale.
+
+ACE** - The Compute Engine default service account is created with the Cloud IAM project editor role
+
+To access big table, we can use HBase API.
+
+Yuo can directly query bigtable from bigquery(similar to cloud sql, google drive, cloud storage)
+
+Big query is read intensive while bigtable is write intensive.
+
+You need to enter the number of BigTable nodes you'll provision.
+BigTable is priced by provisioned nodes. BigTable does not autoscale. BigTable does not store its data in GCS
+
+
+
+Bigtable has a limit of 1,000 tables per instance, but in most cases, you should have far fewer tables than that. Creating many small tables is a "Bigtable anti-pattern"
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+GCA
+
+
+https://codelabs.developers.google.com/codelabs/cloud-bigtable-intro-java/index.html#3
+
+BigTable is a third dimensional database. Meaning, a cell can store many historical timestamped values. 
+
+	
+	
+Architechture :
+		https://cloud.google.com/bigtable/docs/overview#architecture
+	Instance
+		An instance contain one or more clusters.
+		
+
+	cluster
+		A cluster contain one or more nodes
+		All clusters created under instance share instace properties like SDD/HDD storage, application profile etc.
+
+	Node
+		A node is a basic unit responsible for handling bigtable metadata. Note all data is stored in collosus and nodes are mere a medium to interact with underlying collusus file system.
+
+	Storage
+		HDD or SDD 
+			https://cloud.google.com/bigtable/docs/choosing-ssd-hdd#use-cases-hdd
+			
+
+
+	
+			
+			

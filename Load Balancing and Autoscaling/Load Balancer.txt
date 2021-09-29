@@ -1,0 +1,137 @@
+
+Choosing Load Balancer?
+		Just one image is enough as below.
+		https://cloud.google.com/load-balancing/images/choose-lb.svg
+
+Choosing Load Balancer based on traffic type?
+		https://cloud.google.com/load-balancing/docs/load-balancing-overview#traffic_type
+		
+		
+What is IPv6 termination? 		
+IPv6 termination enables you to handle IPv6 requests from your users and proxy them over IPv4 to your backends
+
+
+Global vs regional load balancing
+	Global load balancer requires to use premium network tier while regional can work with standard tier.
+
+	Use global load balancing when your backends are distributed across multiple regions, your users need access to the same applications and content, and you want to provide access by using a single anycast IP address. 
+	Global load balancing can also provide IPv6 termination hence it handles both ipv4 and ipv6 traffic.
+	Global Load Balancers are implemented using GFEs(Google Front End)
+
+	Use regional load balancing when your backends are in one region, and you only require IPv4 termination.
+
+	Just see @Internal&_global_Load_balancing_demonstration.svg. its crystal clear.
+	
+
+External vs internal load balancing
+	External load balancers distribute traffic coming from the internet to your Virtual Private Cloud (VPC) network. Global load balancing requires that you use the Premium Tier of Network Service Tiers. 
+	For regional load balancing, you can use Standard Tier.
+
+	Internal load balancers distribute traffic to instances inside of Google Cloud.
+
+
+Network load balancing allows you to balance the load of your systems based on incoming IP protocol data, such as address, port, and protocol type. You also get some options that are not available, with HTTP(S) load balancing. For example, you can load balance additional TCP/UDP-based protocols such as SMTP traffic. And if your application is interested in TCP-connection-related characteristics, network load balancing allows your app to inspect the packets, where HTTP(S) load balancing does not.
+
+
+--------------------------------------------External Load Balancing--------------------------------------------------
+
+Global 
+		Http(s) Load Balancing:
+			Its global load balancing hence It allows you to load balance traffic coming from any device across globe.
+			By default it routes requests to resource in a zone/region closest to the client location.
+				But it also check the health of the resources running backed service before routing requests. So it is quite possible that a user sitting in Asia hits the request but the backend instances in that region are not healthy or dont have capacity, so load balancer can route requests to America backend servers.
+				And this is called cross region load balancing.
+			But you can define the URLmap which  allows you to route request to different set of instances based on custom logic.
+				e.g. www.example.com/audio can be directed to one set of instances and
+						 www.example.com/video can be directed to another
+			Supports http port 80 and 8080
+						   https port 443
+						   both IPV4 and IPV6 addresses
+						   
+			How it works? https://youtu.be/jZQf97np114?t=88 (quite easy though)
+			A question can be like,
+			A company serving audio and video services, wants its global users to access their content but they want to keep same url. How to achieve this?
+			Ans - They can use Global Http(s) load balancer which can route traffic based on content requested using a url header.
+			
+			A https load balancer required setting of signed SSL certificate on load balancer.
+			
+			
+			
+		SSL Proxy Load Balancer
+			ITs a global load balancer used for encrypted TCP traffic requirements.	
+			The user SSL connection is terminated at this LB and the traffic is proxied further using LBs encryption capability.
+			TCP:443
+			
+		TCP Proxy Load Balancer
+			Its a global load balancer used for non encrypted TCP traffic requirements.	
+			Popular usage of this LB
+				tcp:22 -- ssh
+				tcp:25 -- SMTP traffic
+				
+	
+Regional
+		TCP/UDP Network Load Balancer
+			Also called as just "Network Load Balancer"
+			USed for traffic routing within a same region
+			Its routes traffic based on ip address, port and protocol
+			Its a non-proxied load balancer(as opposed to above one's)
+			34.117.199.63:80		
+
+
+-----------------------------------------------Internal Load Balancing------------------------------------------------
+
+Internal Http(s) load balancer
+
+Internal TCP/UDP Load Balancer
+
+
+
+----------------------------------------------- Components in Load Balancer -----------------------------------------------
+
+Load Balancing Components :
+	https://cloud.google.com/load-balancing/docs/backend-service
+
+
+------------------------------------------------------------------------------------------------------------------
+
+Pricing
+	?
+
+
+gcloud
+	gcloud compute http-health-checks create sample-check
+		--host locahost
+		--port 8080
+		--timeout 60
+		--check-interval 10
+	
+	Similarly we can create https health check
+	gcloud compute "https"-health-checks create sample-check
+			............
+			.........
+
+	Another generic alternative is to use "health-checks"
+	gcloud compute health-checks create http generic-easy-check
+		--host locahost
+		-- port 8080
+		--timeout 60
+		--check-interval 10
+
+	gcloud compute health-checks create "https" generic-easy-check
+		--host locahost
+		-- port 442
+		--timeout 60
+		--check-interval 10
+	
+	Note using this generic way we can create checks for tcp, ssl, grpc, hhtp2 as well.
+		
+
+
+Ever wordered what is target proxy in load balancing?
+	neetly explaned at - https://thecloudgirl.dev/images/CLB.jpg
+	When a traffic comes from an internet, a forwarding rule cannot decide which backend service to call OR its not the right place to decide, hence we have traget proxy. Its a place to decide which backend service to call based on its configured host, path rules.
+
+
+Best Practices
+	Not required for ACE exam
+

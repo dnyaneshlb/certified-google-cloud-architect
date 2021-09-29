@@ -1,0 +1,10 @@
+NoSQL document database.
+Strongly consistent.
+
+Suitable for IoT, mobile, web data.
+
+
+This is enhanced version of Cloud Datastore. It can work in datastore mode for backword compatibility. It is compatible with all old datastore APIs and libraries.
+
+
+

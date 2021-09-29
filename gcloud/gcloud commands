@@ -1,0 +1,288 @@
+
+VVVIMP Gcloud cheetsheet :
+		https://cloud.google.com/sdk/docs/cheatsheet 
+		@gcloud-cheat-sheet.pdf
+		https://gist.github.com/pydevops/cffbd3c694d599c6ca18342d3625af97
+		https://cheatsheet.dennyzhang.com/cheatsheet-gcp-a4
+		https://itnext.io/gcp-command-line-cheatsheet-5e4434ca2c84#d8b9
+		https://medium.com/@raigonjolly/cheat-sheets-gcloud-bq-gsutil-kubectl-for-google-cloud-associate-certificate-4093b8977a01
+		
+		
+The gcloud command-line tool is a tree; non-leaf nodes are command groups and leaf nodes are commands.
+
+
+VVVVVVIMP
+***************** run command "gcloud alpha interactive" to run interactive env where you get autocomplete and learn commands on the go.
+
+Syntax:
+	gcloud <global flags> <service> <group> <command> <flags> <parameters>
+
+
+---------------------------------------  Getting Started -----------------------------------------------
+
+
+Getting Started
+		gcloud init
+		gcloud version
+		gcloud info 		
+		gcloud components list
+		gcloud components install componentid
+		gcloud components update componentid
+		
+		
+Global flags
+		--help
+		--project			-  If using a project other than the current one
+		--verobsity   		-  info, debug, error, critical or none
+		--quiet
+		--version		  	- Display gcloud version information.
+		--format			- Set output format
+		
+---------------------------------------  Personalization  ----------------------------------------------------
+
+Config
+		list all configs(at configuration level)
+					gcloud config list
+		list specific config value(at configuration level)
+					gcloud config list project
+					gcloud config get-value project		- both commands are same	
+					gcloud config list account
+		set perticular config property(at configuration level)
+					gcloud config set compute/region europe/west1
+					gcloud config unset compute/region			
+					>>>>>> 	Note for setting a config there is a "set" keyword and getting a config property there is "get-value"
+									but these is not any "set-value" command.
+									Available properties :
+											account, project
+											verbosity
+											compute/region, compute/zone 
+											container/cluster - default name to use for cluster
+											and many more(gcloud config --help)
+																						
+
+
+Configurations
+		Configurations are required when you switch between projects and want to have some configuration to start with.
+				gcloud config configurations create dev
+				gcloud config configurations list
+				gcloud config configurations activate dev
+				gcloud config configurations delete confname
+	
+		Service Enable/DIsable
+			gcloud services enable pubsub.googleapis.com
+
+	
+	
+Credentials	
+		list all accounts
+				gcloud auth list
+		login to gcloud
+				gcloud auth login
+		print tokens for logged in user
+				gcloud auth print-identity-token
+				gcloud auth print-access-token
+		Instead of using current account of user , use some service account to make calls. serves the same function as gcloud auth login but uses a service account rather than Google user credentials.
+				gcloud auth activate-service-account account_emailaddress
+		Remove access credentials of account		
+				gcloud auth revoke
+				
+---------------------------------------  Interacting with Resources  -----------------------------------------------
+Organization
+	gcloud organizations get-iam-policy orgid
+	gcloud organizations add-iam-policy-binding orgid --member='use:dnyanesh@test.com' --role='roles/storage.admin' 
+	similarly remove-iam-policy-binding
+
+
+Projects
+		gcloud projects list
+		gcloud projects create projectname
+		gcloud projects describe projectid
+		How to add user/SA to project and assign some role
+				gcloud projects add-iam-policy-binding testproject --member='user:dnynesh@test.com' --role='roles/editor'
+				gcloud projects add-iam-policy-binding testproject --member='serviceAccount:test-sa@test.com'        --role='roles/editor'				
+				gcloud projects get-iam-policy dev-dsa	
+		similarly remove-iam-policy-binding
+		
+		gcloud projects delete dsa-dev
+		gcloud projects undelete dsa-dev
+
+
+		Note both below commands sets exists and understand their usage	
+			 get-iam-policy | set-iam-policy
+			 add-iam-policy-binding | remove-iam-policy-binding	 
+			 
+		Link project to billing account
+			gcloud beta billing projects link PROJECT_ID --billing-account=ACCOUNT_ID
+			dont get confused - wrong -- gcloud projects link myproject --billing-account account1
+				Remember you link projects to billing account and no the other way
+
+			Similarly you attach disks to vm and the other way around
+				gcloud compute instances attach-disk myvm --disk=disk1 [--boot]
+
+
+Networking(ACE**)
+		expand subnet
+			gcloud compute networks subnets expand-ip-range my-subnet --region my-region --prefix-length 10.1.2.0/24
+				note old prefix here was 10.1.2.0/28
+		Adding new subnet to existing vpc
+			gcloud compute networks subnets create new-subnet --network my-network --range 192.0.0.12/28 --region=us-west1-b
+		Reserve ip addresses
+			reserve global ip address -> gcloud compute addresses create my-global-ip --global --ip-version=[IPV4 | IPV6]
+			reserve regional ip address -> gcloud compute addresses create my-internal-ip --region=my-region
+		
+	
+			
+IAM
+		list of grantable roles for a resource
+				gcloud iam list-grantable-roles resourceid
+		Create a custom role for a project or org.
+				gcloud iam roles create rolename --project=someproject OR --organization=someorg
+				
+		other operations on gcloud roles are
+				delete, undelete, copy, describe, list, update
+				
+		Create a service account with the provided name
+				gcloud iam service-accounts create somename --display-name=myname
+				
+		No point in creating service account alone, need to add some roles to it via policy binding.A binding consists of at least one member, a role, and an optional condition. Adding a binding to a service account grants the specified member the specified role on the service account.
+				gcloud iam service-accounts add-iam-policy-binding  me@myproject.iam.gserviceaccount.com  --member='user:test-user@gmail.com' --role='roles/editor'	
+				
+				gcloud iam service-accounts add-iam-policy-binding  my-iam-account@my-project.iam.gserviceaccount.com  --member='allAuthenticatedUsers'  --role='roles/editor'
+				above command adds all authenticated users as editor on my-iam-account service account		
+				
+				gcloud pubsub subscriptions add-iam-policy-binding  my-subscription --member='user:test-user@gmail.com'  --role='roles/editor'
+			
+		get iam policy on service account
+				gcloud iam service-accounts get-iam-policy
+				
+		replace existing iam policy on service account
+				gcloud iam service-accounts set-iam-policy myserviceaccountname newpolicy.json
+				
+		other gcloud operations on service account are
+				delete, describe, disable, enable 		
+					
+
+
+GKE
+		create cluster
+				gcloud container clusters create mycluster
+		Update kubeconfig to make kubectl run commands on cluster.
+				gcloud container clusters get-credentials mycluster --zone=myzone
+		
+		Remember kubectl is used for interacting with kubenetes level resources like deployments, pods, services, pvc,StatefulSets, CronJobs,ConfigMaps, Secrets etc
+		For cluster level operations we use gcloud
+				managing nodepools, container images, updating or resizing cluster
+				gcloud container node-pools list --cluster=sample-cluster
+				gcloud container images add-tag gcr.io/myproject/myimage:mytag1 gcr.io/myproject/myimage:mytag2
+				gcloud container operations list
+				gcloud container clusters upgrade sample-cluster  --cluster-version="1.14.7-gke.14"
+				gcloud container clusters resize sample-cluster --num-nodes=2
+				gcloud container clusters update sample-cluster  --enable-autoscaling
+				
+				here take a note of resize vs upgrade vs update
+				
+
+Virtual Machines & Compute Engine
+	IMP - https://cloud.google.com/compute/docs/gcloud-compute/common-commands
+			Get regional Quota
+				gcloud compute regions describe us-west1
+			Get projectwide quota
+				ACE** - gcloud compute project-info describe 
+			gcloud compute zones/regions list
+			
+			create a vm
+				preemptible : gcloud compute instances create myvm --preemptible
+				custom : gcloud compute instances create myvm --custom-cpu=4 --custom-memory=5
+				predefined: gcloud compute instances create myvm --machine-type=n1-standard-1 
+				more config : gcloud compute instances create myvm --async --no-boot-disk-auto-delete --boot-disk-size=10GB --deletion-protection --maintenance-policy=TERMINATE --tags=testvm,perftest --no-address --node=soletenant_node_name 
+				
+			gcloud compute instances reset/start/stop test-instance
+			gcloud compute instances move example-instance-1  --zone us-central1-b --destination-zone us-central1-f
+			gcloud compute instances set-service-account instance1 --scopes=pubsub,trace --zone=us-central1-b  --service-account=example-account
+			
+			gcloud compute instances attach-disk myvm --disk=disk1 [--boot]
+			
+			
+			gcloud compute disks resize example-disk-1 --size=6TB
+			take a disk snapshot
+					gcloud compute disk snapshot diskname --snapshot-names=snapshot-test
+				
+			gcloud compute snapshots list
+			gcloud compute snapshots describe snapshotname
+			
+			SSH into a virtual machine instance	
+				gcloud compute ssh example-instance --zone=us-central1-a
+				(its not not ---- gcloud compute instances ssh instance1)
+				
+			Securely Copy files to vm
+				gcloud compute scp local_file_path vm_name:remote_path
+				
+			Add project-wide custom metadata which will be applied to all vms
+				gcloud compute project-info add-metadata  warmup-vm
+				--metadata action=ziprangewarmup,country=gb
+			Similarly instance level metadata
+				gcloud compute instances add-metadata redis-forwarder \
+				--metadata=key1=value1
+			Note these commands are not executed in "gcloud projects" group.	
+				
+		
+Managed Instance Group
+	gcloud compute instance-groups managed create mig1
+    --size=3
+    --template=mytemplate
+
+	gcloud compute instance-groups managed set-autoscaling mig1 \
+    --max-num-replicas=10\
+    --target-cpu-utilization=80
+			
+			
+			
+				
+App Engine
+		gcloud app deploy
+			gcloud app deploy ~/my_app/app.yaml
+			gcloud app deploy ~/my_app/pom.xml or build.gradle
+		gcloud app browse
+		gcloud app versions/services list
+		gcloud app create
+		gcloud app logs read				
+				
+
+Cloud Storage
+	CHanging storage class of object
+		gsutil rewrite -s nearline gs://bucket1/dog.png
+	Changing the default storage class of a bucket
+		gsutil defstorageclass set coldline gs://bucket1
+
+								
+gcloud config, gcloud iam roles, gsutil related commands are important for ACE exam
+
+gcloud compute zones list | grep us
+	
+	
+--------------------Misc ----------------------------
+	
+gcloud kms decrypt	
+
+gcloud logging logs list -> lists project logs
+
+gcloud sql backups describe -> describe sql instance backup
+
+gcloud sql export sql -> export sql instance into sql file
+
+
+gcloud auth configure-docket -> register gcloud as docker credenitals helper
+
+
+gcloud iam service-accounts keys list --iam-account=dnyanesh.barkade@test.com -> list keys
+
+--------------------Not in scope of ACE ----------------------------
+
+gcloud functions logs read
+gcloud funtions deploy functionname --trigger--http --runtime=nodejs8
+
+gcloud scheduler jobs create jobname --schedule="* * 2 *" --uri=someurl
+
+gcloud compute addresses list  
+
+gcloud alpha monitoring policies list | grep displayName

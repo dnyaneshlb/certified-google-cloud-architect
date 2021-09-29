@@ -1,0 +1,11 @@
+Father of all noSQL databases. 
+Its first no SQL db internally used in google to power almost all google apps like gmail, maps, photos, calender etc.
+
+Fully managed & clustered
+Low latency, massively scalable NoSQL
+
+BigTable does not autoscale. BigTable does not store its data in GCS.
+
+The Compute Engine default service account is created with the Cloud IAM project editor role
+
+To access big table we can use HBase API.

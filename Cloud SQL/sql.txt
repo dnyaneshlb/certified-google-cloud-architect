@@ -1,0 +1,91 @@
+Cloud SQL supports only mananged postgress, mySQL, SQLServer as of now.
+
+When you want to connect to SQL instances from outside of the VPC network or different region than cloud SQL instance, use a proxy to secure its external connection.
+
+If you can host your application in the same region and VPC connected network as your Cloud SQL, you can leverage a more secure and performant configuration using Private IP.
+By using Private IP, you will increase performance by reducing latency and minimize the attack surface of your Cloud SQL instance because you can communicate with it exclusively over internal IPs.
+Remember that you can only connect via Private IP if the application and the Cloud SQL server are colocated in the same region and are part of the same VPC network. If your application is hosted in another region, VPC, or even project, use a proxy to secure its connection over the external connection.
+
+Private service connection?
+
+
+data is encrypted at rest in cloud SQL.
+Supports read replicas.
+
+
+Limitations:
+	Max size 30TB
+	Supports only MySQL, SQLServer and PostGress as of today
+	Max 4000 concurrent connections
+	Its regional resource(You select region when creating SQL instance and it cant be change)
+		Thats why we have spanner which is global.
+
+
+Backing up and restore(ACE IMP***)
+	Backup
+		https://cloud.google.com/sql/docs/mysql/backup-recovery/backups
+		OnDemand Backups
+			 This could be useful if you are about to perform a risky operation on your database, or if you need a backup and you do not want to wait for the backup window. You can create on-demand backups for any instance, whether the instance has automatic backups enabled or not.
+			 On-demand backups are not automatically deleted the way automated backups are. They persist until you delete them or until their instance is deleted. Because they are not automatically deleted, on-demand backups can have a long-term effect on your billing charges if you do not delete them.
+		Automated Backups
+			Automated backups use a 4-hour backup window. Automated backups occur every day when your instance was running during the backup window and by default up to seven most recent backups are retained. You can configure how many automated backups to retain.
+		
+		Backup vs restore 
+			Backups encompass the entire database. Exports can select specific contents.
+			Exports are exported to	cloud storage, while backups are stored separately from the Cloud SQL instance
+			 
+	Restore
+		https://cloud.google.com/sql/docs/mysql/backup-recovery/restore
+		Point-in-time recovery
+			Point-in-time recovery helps you recover an instance to a specific point in time. For example, if an error causes a loss of data, you can recover a database to its state before the error occurred.
+			A point-in-time recovery always creates a new instance; you cannot perform a point-in-time recovery to an existing instance. The new instance inherits the settings of the source instance, similar to how clone creation works.
+
+			Point-in-time recovery is enabled by default when you create a new Cloud SQL instance.
+			You must enable binary-logging for point-in-time recovery****
+			Binary Logging
+				its a general sql term that i didnt know of. The binary log contains a record of all changes to the databases, both data and structure, as well as how long each statement took to execute. Once you enable it, system starts recording these metrics which you can use in case of restore. 
+				https://cloud.google.com/sql/docs/mysql/backup-recovery/pitr
+
+			In recovery, The target instance can be in a different region from the source instance. offcourse possible!
+
+
+HA
+	Read Replicas
+	Failover Replicas
+
+
+Importing data
+	via SQL dump file
+	via csv file
+	
+	
+SQL in a nutshell - sketchnote
+	https://thecloudgirl.dev/gcpsketchnote3.html
+
+
+
+gcloud
+	Initializing data systems with products (ACE**)
+		gcloud sql instances create prod-instance --database-version=MYSQL_5_7 --cpu=2 --memory=4GB
+		gcloud sql databases create prod-database --instance prod-instance
+	
+	Executing queries to retrieve data from data instances (ACE**)
+		gcloud sql connect my-instance --user=root
+		
+	Backing up and restoring data instances  (ACE**)
+		gcloud sql backups create/delete/list --instance=sqlinstance1
+		gcloud sql backups restore --restore-instance=sqlinstance1	
+		
+		gcloud sql export csv prod-instance gs://prod-bucket --query='select * from items'
+		gcloud sql import csv prod-instance gs://prod-bucket --database prod-db --table=items
+		
+Pricing
+	https://cloud.google.com/sql/pricing
+	depends on
+		vCPUs and memory
+		Amount of SSD Storage provisioned
+		number of instances and amount of time they are running
+		
+
+Best Practices
+	Create sql instance in same region as that of service consuming data so that they can communicate using private ip

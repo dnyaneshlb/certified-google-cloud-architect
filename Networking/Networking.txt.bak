@@ -1,0 +1,264 @@
+Links :
+	All in one playlist for networking : https://www.youtube.com/playlist?list=PLIivdWyY5sqJ0oXcnZYqOnuNRsLF9H48u 
+	Best Practices  https://cloud.google.com/architecture/best-practices-vpc-design
+
+Subnet : 	
+	Subnet is fancy way of saying "range of isolated ip addresses"
+	In default network, google adds one subnet per region.
+	We can expand the range of subnet unless its collapsing with CIDR ranges of other subnets in the same network.
+	But we cannot shrink the subnet.
+	AVOID LARGE SUBNETS.
+	Auto mode subnet can be expanded from /20 to max /16
+	imp - Every subnet has 4 reserved IP addresses in its range so choose subnet range wisely.
+				one ip for network address
+				one ip for default gateway
+				one ip for potential future use
+				one ip for broadcast
+	
+
+
+Load Balancer:
+	Which type of load balancer do I need?
+	decision tree -- https://cloud.google.com/load-balancing/images/choose-lb.svg
+	Globla HTTPS load balancer :
+		Asked in exam heavily
+		https://cloud.google.com/load-balancing/docs/https/
+
+Session Affinity
+	IF this header is present in request then load balancer will direct request to the same backend service rather than finding new backend to serve this request.
+
+
+VPC :
+	Global private cloud env that can "span across multiple regions".
+	Traditional VPCs are regional and to be able to talk across regions you have to talk via public internet which is risky as well as time consuming.
+	Hence VPC.
+	
+	Without a VPC network, you cannot create VM instances, containers, or App Engine applications. Therefore, each Google Cloud project has a default network to get you started. Default network has default subnets per region , default routes, and default firewall rules.
+	
+	Note : VPC can span accross multiple zones in a single region.
+	
+	Each subnet has primary range and secondary range. Both cannot intersect.
+			When you have multiple services running on same machine, and you want to give each service different IP then you can use Alias Ip addresess that can come from primary or secondary ip ranges.
+			Each primary or secondary IP range for all subnets in a VPC network must be a unique valid CIDR block.
+	Yuo can expand a subnit but cannot contract it.
+	Longest subnet mask you can use is /29(max 8 ip addresses)
+	
+	You cannot access resource across VPCs using internal IP addresses.
+	You can switch a VPC network from auto mode to custom mode. This is a one-way conversion
+
+	
+	
+	
+Cloud interconnect
+	Dedicated Interconnect
+		10gbps
+	Partner Interconnect
+		less than 10gbps speed
+	
+NAT : 
+	  VM instances without external IP addresses are isolated from external networks. Using Cloud NAT, these instances can access the internet	
+	  explained like a pro https://youtu.be/FTUV0t6JaDA
+	  Network address translation.
+	  Convert set of private ip addresses into set of public ip addresses and vice versa.
+	  Not not needed once ipv6 is in full force.
+	  
+Private Google Access	  
+	  VM instances that have no external IP addresses can use Private Google Access to reach external IP addresses of Google APIs and services. 
+	  By default, Private Google Access is disabled on a VPC network.
+	  https://cloud.google.com/vpc/docs/private-access-options#pga-supported
+	  https://cloud.google.com/nat/docs/monitoring
+	  If vm dont have external IP, it can talk to only resources within VPC. It cant talk to global resources like cloud run, storage bucket etc, also not to internet.
+	  With Private Google Access enabled on subnet, it can now access google services like storage bucket.
+	  This is where NAT comes into picture to access public internet.
+	  
+Shared VPC
+	A Shared VPC network is a VPC network defined in a host project and made available to its service projects.
+	Single Host project
+	Many Service Projects(Child)
+	 
+	Useful when you want to communicate to resources across multiple projects.	
+	  
+	Shared VPC is only available for projects "within an organisation".
+	Advantage is you get central point of administration (host project)for all the VPCs(Service Project), job becomes easy.
+	
+	VPC peering is completely different as it allows communicattion between two or more diffrent vpc networks which may not be in same project or same organization.
+	You can share all host project subnets or selected subnets only with the service projects.
+	see diagram @https://cloud.google.com/vpc/docs/shared-vpc#shared_vpc_overview
+	https://cloud.google.com/vpc/docs/shared-vpc#shared_vpc_overview
+
+VPC Peering
+	VPC networks can be connected to other VPC networks in different projects or organizations by using VPC Network Peering.
+	Traffic stays within Google's network and doesn't traverse the public internet, hence Resources communicate via private IP in vpc peering.
+	it does not matter wheather networks are in same org or different
+	Since service can communnicate via internal Ip addresses,
+			low network latency
+			no risk of exposing service to external world hence tight security
+			no egress charges as data doesnt leave gcp network. Remember google charges you even if services communicate within a same zone via external ip(cause data leaves gcp network and flow over internet) 
+	Google Cloud checks to see if there are any subnets with overlapping IP ranges between the two VPC networks, if it finds then peering will fail.
+	Finally you can have org policy constraint to control which vpc netoworks can peer with which.
+	
+	
+When to choose shared vpc over vpc peering?
+	see shared vpc vs vpc peering.png
+
+
+	
+CIDR :
+	Classless Inter Domain Routing
+	10.10.0.254/24 -> 00001001 10010100 000001001 11111111  
+			This means first 24 bits are locked and next 8 bits can be changed.
+			This effectively means we can have max 256 (2^8) ip addre in this subnet
+			and subnit id address is 10.10.0.255
+	 
+
+Custom network cannot be converted into auto mode network.
+Automatic network has one subnet per region(which we dont need mostly). For newly added regions, subnets are added automatically by gcp.
+
+IP address:
+	Every resource has an internal IP address 
+	If it is internet facing resource then it has internal+external IPs.
+	Extrenal Ip can be static(reserved) IP or ephemeral IP(default is ephemeral)
+	What is Alias Ip address ranges? Whats the purpose?
+	VMs in the VPC network can only send to IPv4 destinations and only receive traffic from IPv4 sources
+	Fun fact : static ip addresses reserved but not in use are charged more than ones in use.
+	
+	
+	
+Routes:
+	Route is way of defining how packets move in between resources and eventually how resources communicate.
+	Every default network has 
+		a routes  that allow every resource in same network send packets to another resource.
+		a default route that allow direct packets to destinations outside the network.
+	But firewall must allow such packet movement.
+	Manual networks dont have such route
+	Dynamic Routes???
+	
+Firewall Rules
+	default fw rule is allow all egress but deny all ingress, present on all networks.
+	Firewall rules allow you to control which packets are allowed to travel to which destinations. Every VPC network has two implied firewall rules that block all incoming connections and allow all outgoing connections.
+	
+	Firewall :
+		VPC firewall rules let you allow or deny connections to or from your virtual machine (VM) instances based on a configuration that you specify.
+		Every VPC network functions as a distributed firewall
+		Always blocked and always allowed traffic?
+		Firewall rules only support IPv4 connections as of now
+		Every VPC network wheather its auto or custom, has two implied firewall rules(not shown in the console).
+				Implied allow egress rule
+				Implied deny ingress rule
+				The implied rules cannot be removed, but they have the lowest possible priorities. You can create rules that override them with high priorities
+		Components of rule
+				direction - ingress/egress 
+										defult ingress if not mentioned
+				target - instances on which rule applies
+								 - all instances in network
+								 - instances having specific network tags
+								 - instances having specific service account
+				source - instances on which rule applies
+				protocol and port - 
+							icmp- selects icmp protocol and all its allowed ports
+							tcp:443,80 - selects tcp protocol and its ports 443 and 80 only
+							udp:67-69 - selects udl protocol and ranges between 67 to 69
+				priority : The rule with highest priority wins in case of conflict, 65535 being lowest
+									 default priority is 1000
+									 https://cloud.google.com/vpc/docs/firewalls#priority_order_for_firewall_rules
+				enforecement status - enabled/disabled		
+				action : allow/deny
+	
+	
+	
+Forwarding Rules
+	
+	
+
+Alias Ip Ranges
+		If you have multiple services running on a single VM instance, you can give each service a different internal IP address by using alias IP ranges. The VPC network forwards packets that are destined to a particular service to the corresponding VM.
+
+		
+Cloud DNS
+		Important from ACE exam POV.
+	
+
+A company wants a maximum availability without having trouble of complex security. What is best choice?
+		Dont create all your resources (compute engines) in same zone. there are likely chances that a zone might have a problem like resource limit exhausted, zone going down etc. As resources are within same network, complex security conifg is not required.
+		
+		Additionally placing resources in different regions even makes it more robust.
+	
+
+IP addresses
+		internal
+		external
+		ephemeral  : ephemeral IP address is released if you stop or delete the resource
+		static		 : they live until you explicitly release it
+		
+		Alias ip ranges : This is useful if you have multiple services running on a VM and you want to assign each service a different IP address. Alias Ip ranges can be allocated from primary ip ranges or secondary ip ranges of subnet.
+		Bring your own IP : IF yuo have services running on certain ip addresses and you dont want to touch the existing set up for some reason, you can bring your ip address to gcp and gcp will manage them in the same way as Google-provided IP addresses
+
+VPC flow logs
+		Yuo can enable the flow logs for each subnet.
+		They are important for
+				monitoring network throughput and performance
+				netpwrk forensics
+				Real time security analysis
+				
+				
+Private Google Access
+		If you want to access any public Google API service(pubsub API, gmail API, CAlender API, Firestore API, Cloud Function API)				
+		AND
+		you have only internal Ip address then you must enable Private Google Access.
+		what is Google API service?
+				https://developers.google.com/apis-explorer/#p/
+				in a nutshell, all google apis can be calle using a service enfpoint url like https://cloudfunctions.googleapis.com.
+				If you want to call it like this way within the conttraint of interal ip address, then it mandatory to enable this private google access.
+		For resources having external ip, they can access any google API service without Private Google Access.
+	
+Private Service Access
+		Just like google as seen above, there can be other third party service providers who wants to expose their services to your applications within vpc as internal ip addresses. In such a case, private service access is useful.
+		This require you to reserve certain CIDR ip range block of your vpc for such service providers. This reserved block cannot be used for your vpc services.
+		  	
+	
+	
+------------------------------ Hybrid COnnectivity ---------------------------------------------------	
+	
+	
+What are different ways to connect your network to gcp network
+Dedicated way(Done via direct connection to gcp)
+	Dedicated Interconnect
+	Direct Peering
+Shared way(Done via partner in between)
+	Partner Interconnect
+	Carrier Peering
+see @cloud interconnect.png
+
+
+Dedicated Interconnect
+	A direct connection between your on prem netpwrk and gcp network.
+	This requires a common physical colocation facility to setup the connection. 
+	This common facility is within gcp geographical boundries.
+	see@dedicated-inteconnect.png
+	The number of dedicated colocation facilities are limited which makes it hard to use hence gcp has partner interconnect.
+	No risk of security since networks are connected using internal IP addresses and traffic never routed via internet.
+	min capacity 10gbps
+	
+Partner Interconnect
+	Helps to establish A connection between on prem and gcp via a third party service provider.
+	Used when dedicated colocation facility is not near.
+	see@partner interconnect.png
+	No risk of security since networks are connected using internal IP addresses and traffic never routed via internet(partner netowrk is still has GCP SLAs and SLOs).
+	max capacity 10gbps
+	
+	
+Direct Peering
+	You can connect your network to gcp netowrk directly via direct peering if you are near to google's any PoP(Point of Presence - PoP is a location on world map where google's netowrk connects rest of the internet)
+	If no, then use carrier peering.
+	Via peering you can access of of google's services directly but via interconnect we cant.	
+	Direct and carrier peering is done via external Ip address.
+	
+Carrier Peering
+	If you want access to all gcp services and you are not close to any PoP then you need carrier peering.
+	
+
+	
+
+
+
+	

@@ -1,0 +1,44 @@
+very easy and very important topic for ACE exam
+
+https://cloud.google.com/sdk/docs/components
+
+default components	
+	gcloud, gsutil, bq
+	Cloud SDK Core Libraries
+	Note that alpha, beta components are not isntalled by default
+	
+	
+Setting up SDK
+	gcloud init
+		Authorizes Cloud SDK tools to use your user account credentials to access Google Cloud
+		Sets up a Cloud SDK configuration and sets a base set of properties
+		
+	If you want to change the account used in current gcloud configuration, you can run 
+		gcloud auth login
+		Here you will be redirected to web login page where you put username/passwrd.	
+		
+	But if you want to login with service account,
+		gcloud auth activate-service-account [ACCOUNT] --key-file=[KEY_FILE]
+		service accounts dont have username/password
+
+
+Configurations
+	A configuration is a named set of SDK properties. The gcloud CLI uses a configuration named "default" as the initial active configuration; default is suitable for most use cases. However, you can also create additional configurations and switch between them as required.
+	
+	
+gcloud commands
+	gcloud components list
+	gcloud components install kubectl   (not installed by default)
+	
+	gcloud config set account dnyanesh4dd@gmail.com
+	gcloud auth reovke accountname     -> removes from local
+	gcloud config configurations create dev
+	gcloud config configurations activate dev
+	gcloud config unset project
+	gcloud config list
+	
+	gcloud auth configure-docker
+	gcloud auth application-credentials  - play around default application credentials
+
+	
+	

@@ -1,0 +1,42 @@
+USed for managed hadoop and spark jobs that you want to run on a gcp cloud.
+
+What is dataproc
+	Dataproc is a managed Spark and Hadoop service that lets you take advantage of open source data tools for batch processing, querying, streaming, and machine learning. Dataproc automation helps you create clusters quickly, manage them easily, and save money by turning clusters off when you don't need them. With less time and money spent on administration, you can focus on your jobs and your data.
+
+What is included in Dataproc?
+	Hadoop
+	Spark
+	Hive
+	Pig
+	
+How its different from on prem hadoop clusters?
+	managed - so you spend less time managing it
+	super fast - ~90secs to start, scale, and shutdown as compared to on prem 5-30 min time
+	Integration - tightly integrated with bigtable, bigquery, cloud storage, pubsub, logging and monitoring, IAM
+	low cost - only 1 cent per virtual CPU in your cluster per hour
+
+
+
+How does it store the data?
+	Dataproc utilizes the Hadoop Distributed File System for storage.
+	Additionally, it automatically installs the HDFS Cloud Storage connector. This allows for data to upload and download to HDFS or Cloud Storage.
+	
+Does my Dataproc data persist when a cluster is shut down?
+	Any data in Google Cloud Storage persists after the cluster is shut down. HDFS data is lost on shutdown unless transferred to Cloud Storage.
+
+Reviewing job status in Cloud Dataproc, Cloud Dataflow, or BigQuery - ACE**
+	https://cloud.google.com/dataproc/docs/concepts/jobs/life-of-a-job
+		
+	Job lifecycle :
+		Pending : job is submitted to dataproc
+		Runnning : when job is acquired for running 
+		Queued : If sufficient resources are not available, the job is delayed
+				 This is bit differnt than what it says, keep in mind. Exam may have tricky Q here.
+		Done : When job is completed
+		Error : Submitted Job is not acquired due to dataproc agent failure, VM network failre or anything.
+	
+	Status of job 
+		gcloud : gcloud dataproc jobs describe job1 --region=us-central1
+		console : see link above
+		status of bigquery job : bq show -j job1
+		

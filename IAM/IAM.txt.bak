@@ -1,0 +1,229 @@
+links :
+	https://youtu.be/etxbSda_ZAU   -------- VEry useful video. Must Watch.
+	https://youtu.be/K3TM7L6de2o   -------- VEry useful video. Must Watch.
+		
+	https://youtu.be/vaylQUuIANk -------- Very resourceful information.	
+	https://cloud.google.com/iam/docs/using-iam-securely ------ Awesome Dos and Donts
+	
+	Best Practices : 
+		https://www.youtube.com/watch?v=tNG4RUpBUso
+
+
+Important youtube channels :
+	https://youtu.be/qXuw--126Bk
+	Cloud Advocate
+	Learn GCP with MAhesh
+
+
+Member :
+	A member is Some google known identity
+	It can be 
+		USER : gmail, gsuite, or any email account validated with google.
+		SERVICE ACCOUNT :  account for App/Service.
+		GROUP : 
+			Group of user and service accounts.
+			Each group has unique email address. developers.mindsphere@azure.com
+			Its best practive to use group for everything
+			You can nest groups as well. e.g. mindspehere developers group and iot subgroup of it and "ie engineer" as sub group and so on
+			
+			
+		DOMAIN : Domain managed by gsuite or cloud Identity
+		allAuthenticatedUsers : any google account or service account(essentially public access)
+		allUsers : No account needed. Public anonymous access is possible.
+	
+
+
+User Account ----> Roles ----> Permissions ----> Resources
+
+Read above like below,
+User has different accounts. Each account has roles. Each role has permissions related to resources. 
+
+e.g. I have gmail account and a service acount. My service account has owner access role. owner has permissions to create, delete and view and edit resource like compte engine, pubsub topic etc.
+
+ 
+See Inheritance Heirarchy.png
+See Inheritance Heirarchy Example.png
+	in example above, you can see that bob has organization level access so he can access reosources across all projects within that organization.
+	But Alice has access to only project2 resources. So she can only access resources under project 2. 
+	
+	
+Roles in GCP :
+	A role is a collection of permissions. You cannot grant a permission to the user directly. Instead, you grant them a role. When you grant a role to a user, you grant them all the permissions that the role contains.
+	Premitive : 
+		Owner
+		Editor
+		Viewer
+		Avoid using these roles if possible, because they include a wide range of permissions across all Google Cloud services.
+	Predefined Roles :
+		Fine grained access, 480 google provided roles like Project Administrator, Bigtable Reader, Storage Admin, Storage Object Creator etc. 
+	Custom Roles
+		Roles you have created by inheriting predefined roles or creating completely new role.
+	
+	
+Member Accounts in GCP :
+Google Account : any google domain account like gmail
+Service Account : An account by using which services can communicate with each other without human intervention.
+					e.g. compute machine from project1 wants to access storage bucket1 from project2 then it happen via service account.
+					Max 100 service accounts per project can be created.
+Google Group Account
+	A bundle of google accounts and service accounts so that we can group similar people together.
+	e.g. Developers can be added in "Dev Contributors" google group and we can apply policy to group rather than managing each and every user individually.
+GSuite Account : Account used for user having Gsuite products puschased.(Gsuite is suite of google products like gmail, gdocs, storage, etc bundled together as single entity)	
+Cloud Identity Domain Account : google hosted domain
+
+Remember that a policy set on a child resource cannot restrict access granted on its parent. 
+
+
+Hierarchy :
+	Organization
+		Folder
+			Project
+				Resource
+				...
+					
+	e.g.
+	Mobiliya
+		Dev
+			Ikea
+				Computer Engine
+					Instance1
+						read, write, edit
+					Instance2
+						read
+		Ops	
+			Dashboard
+				Gke
+					edit service, scale deployment
+					
+					
+	You can set a Cloud IAM policy at any level in the resource hierarchy: the organization level, the folder level, the project level, or the resource level. Resources inherit the policies of the parent resource. If you set a policy at the organization level, it is automatically inherited by all its children projects, and if you set a policy at the project level, it's inherited by all its child resources. 
+	"Child policies cannot restrict access granted at a higher level". 
+	For example, if you grant the Editor role to a user for a project, and grant the Viewer role to the same user for a child resource, then the user still has the Editor role grant for the child resource.
+	
+	
+Custom Roles :
+	If preddefined roles dont suffice your needs then you need to create a custom one with unique name, non consusing title and description.
+	If you no longer wish for people in the your organization to use the role, change its role.stage property to DEPRECATED, and optionally set the deprecation_message to let users know what alternative roles should be used or where to get more information. 
+	Custom roles cannot be applied at folder level.
+	
+What are service accounts?
+	A service account is an identity that an instance or an application can use to run API requests on your behalf.
+	A service account is a special kind of account used by an application or a virtual machine (VM) instance, not a person. Applications use service accounts to make authorized API calls.
+	For example, a Compute Engine VM may run as a service account, and that account can be given permissions to access the resources it needs. This way the service account is the identity of the service, and the service account's permissions control which resources the service can access.
+	A service account is identified by its email address, which is unique to the account.
+	Service accounts do not have passwords, and cannot log in via browsers or cookies.
+	
+	Service Account KEy :
+		Google Managed :
+			Both public and private keys are managed by google with world class security.
+		USer Managed
+			Google only manages public key. Private key is managed outside google cloud.
+	You can create up to 100 service accounts per project 
+	In addition to your custom service account, google also creates some service accounts in your project to manage your project with google resources. This account should not be edited or deleted. These are not listed in the Service Accounts section of the Cloud Console
+	
+	Short Lived Service Account?
+	
+
+Types of Service Accounts
+	User created custom SA
+		created by user for its own purpose.
+	build in SA
+		default SA provided to compute engine and App engine.
+		It has editor role on project.
+		When you start cloud shell, new vm instance is created for you. This vm instance has this SA.(need to confirm)
+	Google APIs internal SA
+		USed to run internal GCP processes on your behalf
+		e.g. live migrating vm instance, schedeuled backup etc. 
+
+
+Policy :
+	A policy is a collection of bindings, audit configuration, and metadata. A binding specifies how access should be granted on resources.
+	etag :
+		When you have multiple systems trying to write to the same Cloud IAM policy at the same time, there is a risk that those systems might overwrite each other's changes.
+		To avoid such scenarios, Cloud IAM supports concurrency control through the use of an etag field in the policy. Whenever you retrieve a policy, be sure that you use the etag from the retrieved policy when you submit your modified policy. If the policy has been modified since you retrieved it, the etag will not match and your update will fail.
+		
+	version :
+		This field describes which policy schema version is being used for creating policy. This is specifically added since policy schema (XSD) is contineously eveolving. 
+		
+	Conditional Policy :
+		You can create policy that expires and starts at some time.
+		
+	Binding :
+		Each policy can contain one or more binding.
+		e.g. Same policy can bind multiple members, dnyanesh@gmail.com a editor access at project level as well as dnyanesh4frnz@gmail.com as viewer access.
+		Each policy can have max 1500 member bindings.
+	Best Practices :
+		When managing multiple user accounts with the same access configurations, use Google groups instead of individual user account.
+		Carefully consider which members are granted access permissions at the organization level.	
+		Specify policy version while sending a getIamPolicy() or setIamPolicy() request.
+		
+		
+		
+Best practices
+	Mirror your Cloud IAM policy hierarchy structure to your organization structure. The Cloud IAM policy hierarchy should reflect how your company is organized, whether it's a startup, a SME, or a large corporation. A startup may start out with a flat policy hierarchy with no organization resource. When more people start collaborating on projects and the number of projects increase, getting an organization resource might make sense. An organization resource is recommended for larger companies with multiple departments and teams where each team is responsible for their own set of applications and services.
+
+	Use projects to group resources that share the same trust boundary. For example, resources for the same product or microservice can belong to the same project.
+
+	Set policies at the organization level and at the project level rather than at the resource level. As new resources are added, you may want them to automatically inherit policies from their parent resource. For example, as new virtual machines are added to the project through auto-scaling, they automatically inherit the policy on the project.
+
+	Use the security principle of least privilege to grant Cloud IAM roles; that is, only give the least amount of access necessary to your resources.
+
+	Grant roles to a Google group instead of to individual users when possible. It is easier to manage members in a Google group than to update a Cloud IAM policy.
+
+	Control the ownership of the Google group used in Cloud IAM policies.
+
+	Grant roles at the smallest scope needed. For example, if a user only needs access to publish messages to a Pub/Sub topic, grant the Publisher role to the user for that topic.
+
+	Remember that a policy set on a child resource cannot restrict access granted on its parent. Check the policy granted on every resource and understand the hierarchical inheritance.
+
+	If you need to grant a role to a user or group that spans across multiple projects, set that role at the folder level instead of setting it at the project level.
+
+	Use labels to annotate, group, and filter resources.
+
+	Audit your policies to ensure compliance. Audit logs contain all setIamPolicy() calls, so you can trace when a policy has been created or modified.
+
+	Audit the ownership and the membership of the Google groups used in policies.
+
+	If you want to limit project creation in your organization, change the organization access policy to grant the Project Creator role to a group that you manage.
+	
+	Be very very careful when granting "ServiceAccountUSer" role to an entity because it will allow access to all the resources service account has access to.
+
+
+FAQ :
+Can I use Google groups with Cloud IAM?
+	Usually. One exception is the owner role. A group can only be assigned the owner role for a project if they are both part of the same organization. Projects without an organization cannot have groups as owners, nor can groups be assigned as owners for projects in different organizations.
+
+Can I use Cloud IAM to create and manage my users?
+	No. You can use Cloud Identity or G Suite to create and manage users. You can also manage your users by your current methods such as LDAP or Google Groups. If you use LDAP to manage your users, you'll need to use Google Cloud Directory Sync to synchronize the data in your Google domain. However you manage your users, you'll need to bind them, preferably using Google Groups, to a role in an IAM policy to allow them to access resources.
+
+How do I grant permissions to resources in my project to someone who is not a member of my organization?
+	Using Google groups, you can add a user outside of your organization to a group and bind that group to the role. Note that Google groups don't have login credentials, and you cannot use Google groups to establish identity to make a request to access a resource.
+	You can also directly add the user to the IAM policy even if they are not a part of your organization.	
+	
+How do I control who can create a service account in my project?
+	Owner and editor roles have permissions to create service accounts in a project. If you wish to grant a user the permission to create a service account, grant them the owner or the editor role.
+
+Can I create a service account under an organization?
+	Currently you can create service accounts only under a project; you cannot create a service account directly under an organization.
+	
+I need to ensure that the teams in my organization cannot access each other's instances. How can I do this?
+	Create two projects one for each team. Then create separate policies for each project to control which teams can access what project and the instances contained within the project. An alternative approach is to use service accounts with different roles.	
+
+	
+Grant roles to a Google group instead of individual users when possible. It is easier to add members to and remove members from a Google group instead of updating a Cloud IAM policy to add or remove users.
+
+
+
+Special case :
+	You cannot grant the owner role to a member for a project using the Cloud IAM API or the gcloud command-line tool.
+	You have to use cloud console
+	Plus the memeber has to accept the mail invitation. 
+	This special process does not happen for any other role. 
+	mail will not be sent if you want to make member within same organization as owner.
+	
+	
+While Deleting and recreating service accounts, choose new name as it may create an unexpected behaviour.
+
+
+You can use Recommender to check AI based IAM recommendations google provides for fine grained security
+		https://console.cloud.google.com/home/recommendations?project=project-id	

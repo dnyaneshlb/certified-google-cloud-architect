@@ -1,0 +1,83 @@
+If you have a existig on prem network then What are different ways to connect your network to gcp network?
+	Dedicated way(Done via direct connection to gcp)
+		Dedicated Interconnect
+		Direct Peering
+	Shared way(Done via partner in between)
+		Partner Interconnect
+		Carrier Peering
+	see @cloud interconnect.png
+
+ACE***
+Interconnects are different from peering in that they give you connectivity using "private address space" into your Google VPC.
+While Peering relies on "external IP addresses".
+
+
+Dedicated Interconnect
+	A direct physical connection between your on prem network and gcp network.
+	This requires a common physical colocation facility to setup the connection. 
+	This common facility is within gcp geographical boundries.
+	see@dedicated-inteconnect.png
+	The number of dedicated colocation facilities are limited which makes it hard to use hence gcp has partner interconnect.
+	No risk of security since networks are connected using internal IP addresses and traffic never routed via internet.
+	
+	min capacity 10gbps
+	Dedicated Interconnect enables you to transfer large amounts of data between networks, which can be more cost-effective than purchasing additional bandwidth over the public internet.
+	
+	
+	
+Partner Interconnect
+	Helps to establish a high speed connection between on prem and gcp via a third party service provider(who have tie up with gcp).
+	Service providers have existing physical connections to Google's network that they make available for their customers to use.
+	Used when dedicated colocation facility is not near.
+	see@partner interconnect.png
+	No risk of security since networks are connected using internal IP addresses and traffic never routed via internet(partner netowrk is still has GCP SLAs and SLOs).
+	has leser speed than dedicated interconnect. max capacity 10gbps
+	
+	
+Direct Peering
+	You can connect your network to gcp netowrk directly via direct peering if you are near to google's any PoP(Point of Presence - PoP is a location on world map where google's netowrk connects rest of the internet)
+	If no, then use carrier peering.
+	Via peering you can access any of google's services directly but via interconnect we cant.	
+	"Direct and carrier peering is done via external Ip address."
+	***Note that peering(Carrier and Direct) is used only if you need Google Workspace and supported Google APIs only. Otherwise Cloud interconnect is recommended way.
+	
+	
+Carrier Peering
+	If you want access to all gcp services and you are not close to any PoP then you need carrier peering.
+	***Note that peering(Carrier and Direct) is used only if you need Google Workspace and supported Google APIs only. Otherwise Cloud interconnect is recommended way.
+	
+	
+How to choose when to use which of the above service?
+	https://cloud.google.com/network-connectivity/docs/how-to/choose-product
+	
+	
+Which services can I use to connect to google cloud?
+	https://cloud.google.com/network-connectivity/docs/how-to/choose-product#google-cloud
+	Cloud VPn: slow
+	Cloud Internconnect : fast, high throughput
+	Cloud Router : creates a BGP session
+	
+	***Note that peering(Carrier and Direct) is used only if you need Google Workspace and supported Google APIs only. Otherwise Cloud interconnect is recommended way.
+
+
+
+Peering Has no setup or maintenance costs but interconnect has.
+If you want to connect google cloud use
+	Interconnect
+	VPN
+	Clou Router
+But
+If you want to connect to other google services like workspace,youtube then use direct/carrier peering.
+
+
+	
+Links :
+	All in one playlist for networking : https://www.youtube.com/playlist?list=PLIivdWyY5sqJ0oXcnZYqOnuNRsLF9H48u 
+	Best Practices  https://cloud.google.com/architecture/best-practices-vpc-design
+
+
+gcloud
+
+Best Practices
+
+Pricing

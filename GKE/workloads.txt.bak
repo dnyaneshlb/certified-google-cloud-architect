@@ -1,0 +1,368 @@
+Kubectl
+		The interface via which we can interact easily with the cluster.
+		config for kubectl is stored at $HOME/.kube/config file
+		Optionally we can pass --kubeconfig param at runtime to run with different config
+		It cannot create a cluster, for that you have to use gcloud.
+		
+		format : kubectl action target name flags
+		example
+				kubectl get pods
+				kubectl describe pod my-test-pod
+				kubectl get pod my-pod -o=yaml
+				
+		see kubctl command format.png  and 	kubectl working.png
+		
+Kubectl Actions		
+		get
+		describe
+		exec
+				Its used to run some commands inside a pod.
+				Its used for troubleshooting a failing pod but not recommended in prod env.
+				kubectl exec pod1 --ls : to list all files under current directory in pod
+				kubectl exec pod1 -- export ZONE=us-central1-a : sets env variable ZONE inside a pod
+		logs
+				get logs of the pod.
+						kubectl logs pod2 
+				If more than one container is running in a pod then we can get logs of that container as well.
+						kubectl logs pod1 -c container1
+				
+---------------------------------------------------------------------------------------------------------------------------	
+		
+Deployment
+		"A desired state of the pod"
+		Deployments are a declarative way to ensure that the number of Pods running is equal to the desired number of Pods, specified by the user.
+		A deployment defines a replicaset and number of pods in that replicaset. if node goes down, pods are moved to new node to maintain the desired state.
+		Deployment is read and executed by Deployment controller.
+		
+		
+		imp - deployments are suitable for stateles apps.
+		
+		There are 3 ways to create deployment in gcp
+				yaml deployment file(kubectl -f apply filename)
+				pass params at runtime to kubectl 
+				google cloud console
+		
+		Scaling Deployment
+				Manual - changing number of pods from this to that
+								 kubectl scale deployment deploymentname --replicas 5
+				Automatic - automatic change in number of pods based on certain criteria
+								 kubectl autoscale deployment deploymentname --min 5 --max 10 --cpu-percent 80
+		We can also use HPA.						 
+		HorizontalPodAutoScalar
+				HPA changes the shape of your Kubernetes workload by automatically increasing or decreasing the number of Pods in response to the workload's CPU or memory consumption, or in response to custom metrics reported from within Kubernetes or external metrics from sources outside of your cluster.
+
+		Updating Deployment
+				By using google cloud console
+				By updating yaml file and then applying changes using kubectl 			 				 
+				By kubectl edit command
+						kubectl edit deployment deploymentname
+						This command opens a deployment in vim editor. Upon closing it automatically applies the deployment just like way 2 above
+			
+		What happens after updating deployment?
+				Whenever we update the deployment then a new replicaset is created and new pods are spinned up.
+				Pods from the old replicaset retires.
+				
+				Note that new rollout happens only when we update the labels or container image of the deployment.
+				Other updates, such as scaling the deployment, do not trigger a rollout.
+				
+				
+		How to make sure that after updating the deployment, the existing uders are not affected during update process?
+				Recreate Strategy
+					All the old pods are deleted first before creating the new pods in this strategy.
+					This clearly hampers HA of application
+				
+				Rolling Update Strategy
+					Defines the max unavailable pods "across all ReplicaSets" - to control the existing traffic to old replicaset pods
+					Defiens the max surge - to control how many new pods can be spinned up concurrently in new replicaset
+				This allows smooth transition from old replicaset to new.
+				
+				Blue Green Deployment Strategy
+					Instead of creating pods within the same deployment v1, create a different deployment v2 altogether and use service to migrate traffic to new deployment.
+					deployment v1 can be kepyt standby for some time and then deleted.
+					Deployments with this strategy are quick and less error prone but involves obviously more resource usage.
+					
+				Canary Deployment Strategy
+					THis is extension of BlueGreen strategy and its the one we have been using since long.
+					Simply divert some percentage of traffic to new version and get confidence on new deployment then gradually migrate all the traffic to new deployment.	
+					
+					What if you wanted to ensure that a user didn't get served by the Canary deployment? A use case could be that the UI for an application changed, and you don't want to confuse the user. In a case like this, you want the user to "stick" to one deployment or the other.
+					You can do this by creating a service with "session affinity". This way the same user will always be served from the same version. In the example below the service is the same as before, but a new "sessionAffinity" field has been added, and set to ClientIP. All clients with the same IP address will have their requests sent to the same version of the application
+					
+					
+		How to rollbac the deployment when something goes wrong
+				You cannot rollback using cloud console!!!
+				So use cloud shell
+					kubectl rollout undo deployment deloymentname
+					kubectl rollout undo deployment deloymentname --to-revision=2
+					kubectl rollout history deployment deloymentname --revision=2
+					
+		
+		Now that you are rolling out a new version of your app using canary deployment. So there are two versions of you app live now.
+		You want to ensure that all requests from a single client will always connect to the same Pod	so that client dont get abrupt system behaviour. How to handle this?
+				All requests from a single client will never connect to the same Pod by default. Each request is treated separately and can connect to either the old version of app or to the new version. This potential to switch between different versions may cause problems if there are significant changes in functionality in the canary release. To prevent this you can set the sessionAffinity field to "ClientIP" in the specification of the service if you need a client's first request to determine which Pod will be used for all subsequent connections.	
+						
+				
+					
+		What other rollout/deployment management operations do we have?
+				Pausing and resuming a deployment
+						kubectl rollout pause deployment 
+						kubectl rollout pause deployment 
+				Deleting a deployment
+						kubectl delete deployment deploymentname
+						
+						
+---------------------------------------------------------------------------------------------------------------------------
+
+Jobs
+		A job is a workload similar to deployment which can run once or repeatedly.
+		It spins up pods and terminates when job is done.
+		Jobs are managed by job controller, one more component within control plane.
+				Job controller make sure that the job is completed successfully. It spins up pod to do job, keeps on monitoring, if pod fails for any reason, it loads new pod but ultimately make sure that the desired state of the job is "completed".
+		
+		When a Job completes, the Job stops creating Pods. The Job API object is not removed when it completes, which allows you to view its status. Pods created by the Job are not deleted, but they are terminated. Retention of the Pods allows you to view their logs and to interact with them.
+		
+		Types?
+			Non-Parallel : only one pod is created
+			parellel : multiple pods are created to run the job
+			
+		How to run a job?
+			create a manifest file and run kubectl apply -f filename.yaml
+			or runtime arguments to kubectl command
+		
+		Commands	
+		kubectl get jobs	
+		kubectl describe job jobname	
+		kubectl delete job jobname
+		kubectl delete job -f filename
+		
+						
+
+Cronjob
+		Same as job except its a scheduled job. It can run once or repeatedly.			
+		kubectl get cronjobs	
+		kubectl describe cronjob jobname	
+		
+		In order to stop the CronJob and clean up the Jobs associated with it you must delete the CronJob.
+		
+		
+AutoScalar
+		One step towards pay for only what u use.
+		it automatccally downscales or upscales a cluster nodes based on requirement.					
+		
+		During downscaling we can prevent which node should not be picked for deletion.
+				if a pod marked with 'safe-to-evict' as false
+				if we set Restrictive pod disruption budget
+				if we set scale-down-disabled as false on node
+				
+				
+Nodepool
+		A node pool is a group of nodes within a cluster that all have the same configuration.
+		A cluster can be created as multiple node pools each having different set of compute engines but remember that all nods in nodepool are of identical configuration.
+		e.g. nodepool A - 2 CPUs(16gb) min:1 max:6
+			 nodepool B - 4 CPUs(32gb) min:2 max:10
+		
+		You cannot configure a single node in a node pool; any configuration changes affect all nodes in the node pool.
+		You can explicitly deploy a Pod to a specific node pool by setting a "nodeSelector" in the Pod manifest. This forces a Pod to run only on Nodes in that node pool.
+		Nodepool is GKE feature and it doesnt exists in kubernetes.
+		
+		imp: while creating cluster we choose whether its a zonal cluster or multizonal(we choose say 3 zones)
+				 Size of the nodepool is number of nodes running in nodepool per zone.
+				 So if we increase size of the nodes from say 3 to 4  then gcp will add one node per zone hence total nodes per zone will be 5.
+				 But all nodes across the clusters across the all 3 zones are 12 now.
+				 
+		When we resize the cluster from 5 nodes to 4 then any random node will be picked no matter it has running pods or not. So be careful.
+		In such cases, if we have replication controller like statefulSet or ReplicaSet controller defined then all pods will be gracefully terminated.
+						
+		For a pod, we can choose which node to run on	using "nodeSelector" label in pod manifest. Then it will run only and only on that node.
+	
+	
+Pod Scheduling on node
+		node selector
+		node affinity : defines which node should be selected to run a pod on
+		node anti-affinity : : defines which node should NOT be selected to run a pod on
+		
+		e.g. if you want to force apps that caches data run on pods on same node , then you can define node affinity to select only that pod.
+		Similarly if you want to force actual apps to be run on pods that span across different nodes(to achieve HA) then you can use these features.
+		Similaraly we would definitely want to run one actual app and one cache app on same node. But we dont want to run two cache apps or two actual apps on same node.
+		
+
+Taint and Toleration
+		POd scheduling explained above is to allow or restrict a pod scheduling on a node and its defined in pod manifest.
+		But what if we need a sideby feature to give power to node to decide which pod can run on it?
+		Hence Taint
+		Taint is defined in Node manifest. It gives power to node to allow pods having certain labels to run on it.
+		hmm but what if we want to override the taint and give even more power to pod to ignore the taint and run on a certain node?
+		hence Toleration.
+		Toleration is defined in pod manifest.
+		
+		
+
+Helm Charts???
+		Easier way to run workloads
+		dig more
+		
+		
+------------------------------------------------- Exposing Kubernetes Applications -------------------------------------
+
+Pod Netwroking:
+		Each pod has a single IP address.
+		All containers within the pod use the same ip address but can run on different port.
+		All pods use NIC interface of pod to communicate with each other as they are on same node host.
+		Nodes get Ip addresses from the VPC network CIDR address range.
+		
+		Pods get internal alias ip addresses which are different from node address range hence virtually we can have massive number of pods in a cluster in which each pod has different ip address. This is how we dont need to reserve of big block of CIDR ranges in vpc.
+		Each node maintains such alias address space. This is how pods can directly communicate with each other without netowrk address translation.
+		In GKE, what is the source of the IP addresses for Pods?
+				Address ranges assigned to your Virtual Private Cloud
+			
+Service
+		An easiest way to expose the pods to external world in load balanced way.
+		Ip address of service never changes even though pods keep on starting and terminating, getting new ip address every time. Hence end users get a single IP to communicate.
+		ip address of Service is taken from range of ip addresses that GKE reserves for services.
+		
+		
+Finding Services
+		By default, services know whcih pods to route traffic to, based on labels.
+		As we know pods keeps on starting and terminating, id addresses keeps on changing. So kubelet(running on node) add the label(to be used by service for routing traffic) to each pod as it spawns. 
+		
+		THere are different ways for a pod to find a service 			
+				Environment Variable : Relying on env variables for service discovery is not reliable and recommended.
+				DNS Service  - kube-dns
+				Istio
+				
+				
+
+Exposing Apps
+		Service
+				ClusterIp
+						its a type of a service that routes traffic within the cluster across pods. It has static internal alias IP.
+						Accessible within the cluster only not outside.
+						Its the basic service type object.
+						kind : service, type: CluserIP
+				Nodeport
+						Its built on top of ClusterIP
+						When a nodeport service is created ClusterIP service is automatically created in backend.
+						It exposes a specific port on every node so external world can access apss via any ip/port combination of any node. You can add one more "self managed" loadbalancer on top of it to have only one IP exposed to externla world.
+						kind : service, type: NodePort
+		LoadBalancer		
+				I think avalable only in GKE where a netowrk loadbalancer is setup ouside the cluster which give sinlge ip address to external world. It then forwards traffic to any node within the cluster.
+				Keep in mind, for LoadBalancer a kind is LoadBalancer and not service.
+				kind : LoadBalancer 
+		Ingress
+				Ingress is a Kubernetes resource that encapsulates a collection of rules and configuration for routing external HTTP(S) traffic to internal services.On GKE, Ingress is implemented using Cloud Load Balancing. When you create an ingress resource in your cluster, GKE creates an HTTP(S) load balancer and configures it to route traffic to your application.
+				
+				Its a powerful "set of rules" that can expose set of services within a cluster using single ip address.
+				Its a service for services in a cluster.
+				kind: Ingress		
+						e.g. traffic from lab.google.com and demo.myapp.com can be served using ingress rule -- see host label in ingress configuration 1.png
+						Also lab.google.com/register and lab.google.com/login can be served using ingress rule -- see path label in ingress configuration 1.png
+				commands
+						kubectl edit ingress ingressname
+						kubectl replace ingress -f filename
+						
+									 
+		Container-Native Load Balancing
+				Double Hopp Problem
+						Traditional laod balancing techniques first route external traffic to any random node(first hopp) and then node routes to any available pod(secong hopp) which may be on same node or another node which increase latency.
+						We can avoif that using ExternaltrafficPolicy=local field in manifest which force node to route traffic only to pod within a same node. But if each time same node is selected by load balancer, it may keep pods on other nodes being idle.
+						Hence we have Container-Native Load Balancing.
+						
+						Here instead of choosing a any random node, container native load balancer will have direct mapping of pods that can serve the requests and it will directly choose the pod. SO no two hopps.
+						
+						Only available in GKE and recommended. Its integrated with other services like IAP, Stackdriver etc.
+						
+						
+Network Security
+		By default its disabled, hence by default any pod can access any pod.
+		What if we dont want this?  hence netowrk security within cluster.
+					kind: NetworkPolicy
+					
+						
+
+------------------------------------------------- Persistent Data and Storage -------------------------------------
+
+Volumes
+		Volumes are methods by which you attach storage to pods.
+		can be Ephemeral or persistent.
+		see @ volumes summary.png
+
+Ephemeral 				
+		EmptyDir
+				Its a ephemeral volume attached to a pod and is accessible to all the containers within pod only.
+				It created automatically when pod is created and destryoed with a pod.
+				Use it for short term purposes considering pod can terminate abruptly anytime.
+				
+		ConfigMaps
+				Used to pass configuration information to pods like servername, port etc.
+				Ephemeral
+				USed to store env variable, ports, other config information at pod level so that all containers can use it.
+				Word of Caution
+						configmap values are updated after every few mins. If we have any conf which changes frequently, then config map is not right choice. 
+				ConfigMaps bind configuration files, command-line arguments, environment variables, port numbers, and other configuration artifacts to your Pods' containers and system components at runtime. ConfigMaps enable you to separate your configurations from your Pods and components. But ConfigMaps aren't encrypted, making them inappropriate for credentials. This is the difference between secrets and ConfigMaps: secrets are encrypted and are therefore better suited for confidential or sensitive information such as credentials. ConfigMaps are better suited for general configuration information such as port numbers.
+				
+		Secrets				
+				Used to pass secret information to pods	like access keys, passwords etc.
+				Ephemeral
+				You supply the values of Secrets in base64 form.
+				
+				ConfigMaps and Secrets can be consumed in containers by using environment variables or mounted volumes
+				
+		DownwardAPI
+				USed to pass any information from pod to downward containers on a pod
+	
+	
+Persistent Volume
+		In case of persistent volume, Note that actual storage can be anything like external persistent disk on node, NFS file system. So data is stored outside the pod hence data survives even though pod terminates. 
+		
+		Old Approach : still used though
+		We first create persistent volume by creating persistent disk and then mount that disk to pods using pod manifest.
+		If pod get destryoed and recreated on new node then persistent disk get detached from old now, also attached to new node and gets mounted on new pod.
+		Pod manifesst file has details about which volume to mount whne ots getting created.
+		This data can be then mounted on another pod volume as new pods come online.
+		This is two step process(creating disk and then mountig disk to pod). Also we hardcode disk details on pod manifest. It may create issues when we move from one storage option to another or onprem env. Hence we have Persistent Volume Abstraction.
+		
+		New Approach :
+		Persistent Volume Abstraction
+				It has two entities, Persistent Volume and Persistent Volume Claims
+				Persistent Volume  is now a cluster level resource rather than pod level. Hence any number of pods can claim it and mount it.
+				Pods use PVC to request a persistent volume
+				See @Persistent Volume Abstraction.png
+				Note previously we directy mounted a extenal durable storage to a pod directly. But now extenal durable storage is a cluster level resource and it can be used my multiple pods by claiming PVC.
+				
+				Persistent Volume can be created with fine grained control like
+						accessModes : 
+								readWriteOnce 	- read and write but mount volume to one node
+								readOnlyMany 		- read only but mount volume to many nodes
+								readWriteMany 	- persistent disk dont support it.
+						capacity : 100G
+						
+				Use regional persistent disks to make HA of persistent volumes.
+				
+				PersistentVolumes are storage that is available to a Kubernetes cluster. PersistentVolumeClaims enable Pods to access PersistentVolumes. Without PersistentVolumeClaims Pods are mostly ephemeral, so you should use PersistentVolumeClaims for any data that you expect to survive Pod scaling, updating, or migrating.
+				Most of the time, you don't need to directly configure PV objects or create Compute Engine persistent disks. Instead, you can create a PVC, and Kubernetes automatically provisions a persistent disk for you.
+
+				
+Stateful Set
+		A StatefulSet is like a Deployment, except that the Pods are given unique identifiers.
+		Deployment vs stateful set??
+		its similar to deployment(which run and maintain given number of pods) but it also maintains state of each pod.
+		Designed for stateful apps.
+		
+		The objects created in stateful set has numbering in incremental manner
+		pod1, pod2, pod3, pod4 ...					
+		vol1, vol2, vol3, vol4....
+		If any pod fails, new pod has the exact same name as that of failed pod.
+		
+		
+		
+				
+		
+		
+		
+		
+		
+		
+								
+		
+		
+		

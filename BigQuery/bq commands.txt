@@ -1,0 +1,23 @@
+ACE**
+	get job status
+		bq show -j job123
+	
+	bq cancel job123
+
+	export table data to Cloud Storage
+		bq extract --destination_format=CSV myDataset.myTable gs://my-bucket/myFile.csv.gzip
+		
+	create a query job that runs the specified SQL query
+		bq query 'SELECT * FROM PERSONS'
+		bq query 'SELECT * FROM PERSONS' --dry_run
+
+	create dataset
+		bq mk babynames
+	
+	https://cloud.google.com/bigquery/docs/reference/bq-cli-reference
+	
+syntax : 	
+	PROJECT:DATASET.TABLE		
+	
+	
+	

@@ -1,0 +1,82 @@
+
+Basics :
+	ephemeral, pre-configured VM running G1 Small Compute Engine
+	Virtual machine running a Debian-based Linux operating system
+	5Gb of persistance storage mounted as your $HOME directory
+	Pre installed with java, node, npm, go, python, git, gcloud sdk etc.
+	Full root previliges(can run sudo commands)
+
+Preinstalled tools :
+	https://cloud.google.com/shell/docs/how-cloud-shell-works#tools
+	java, node, npm, go, python, Ruby, .Net Core
+	bash, vim, git
+	gcloud, gsutil, bq, kubectl	
+	docker, MySQL Client, gRPC, Tensorflow
+	build in web code editor and web preview
+
+
+Cautions : 
+	When you first connect to Cloud Shell, you will be automatically assigned to the closest available geographical region. You cannot pick your own region and zone.
+	
+	The Cloud Shell container image is updated weekly . This means Cloud Shell always comes with the latest versions of Cloud SDK, Docker, and all its other utilities.
+
+	You can install additional software packages on the virtual machine instance but the installation will not persist after the instance terminates unless you install the software in your $HOME directory or create a custom environment.
+
+
+Boost mode :
+	Boost mode temporarily increases the power of your Cloud Shell VM - from the default g1-small machine type offering to a n1-standard-1 VM instance. 
+	Once activated, all sessions will be boosted for the next 24 hours.
+	
+	
+Safe Mode
+	Cloud Shell will immediately close connection if there is a problem in your .bashrc or .tmux.conf(this is technology for having multiple superfast sessions to VMs) files. To resolve this, open Cloud Shell in safe mode by appending cloudshellsafemode=true to the URL. This will restart your Cloud Shell and log you in as root, allowing you to fix any issues in the files.
+
+
+
+Notes :
+		Cloud shell connection is auto terminated after 1 hour of inactivity. But contents written to $HOME directory will be persisted. Your $HOME directory is private to you and cannot be accessed by other users.
+
+		When you first connect to Cloud Shell, you'll automatically be assigned the closest available geographical region.	
+		You cannot pick your own region.
+		
+		If you dont use cloud shell for 120 days, your $home directly contents are wiped.
+
+		OOTB you dont get alpha and beta versions of gcloud, you have to install them using the "gcloud components install" command.
+		
+		The Cloud Shell container image is updated weekly to ensure prepackaged tools are kept up to date. This means Cloud Shell always comes with the latest versions of Cloud SDK, Docker, and all its other utilities. So its more secure and feature loaded than your local cloud sdk installation.
+
+		Cloud Shell can be disabled for G Suite and Cloud Identity managed user accounts.
+		
+
+The gcloud CLI is a part of the Google Cloud SDK. Additional functionality is available in SDK components named alpha and beta.
+e.g. gcloud beta ...
+The alpha and beta components are not installed by default when you install the SDK. You must install these separately using the gcloud components install command.	
+
+
+Whenver we open cloud shell instance, we neeed to do lot of boilersetting for region, zone etc.
+We can automate this process.
+Just add config file with correct settings and add this file as env variables using "source"  command
+To automate further, in linux there is file called .profile which gets run when instance started.
+Just add this command "source path_to_file" in .profile file and when instance starts, this file is scanned. The added command tells the os to add entries in path_to_file as env variables.(path_to_file contains key/val pair of env variables)
+So no matter how many cloud shell instances you open, it will pick right settings automatically.
+
+
+Q: If you want to run gcloud commands on specfic version on cloud sdk, how can you do it?
+Ans : You can use Cloud SDK Docker image and choose any version you want from container registry.
+			The Cloud SDK Docker Image is essentially Cloud SDK installed on top of a Debian-based OS image.
+
+
+
+gcloud commands
+	gcloud cloud-shell ssh
+	gcloud cloud-shell scp
+
+Best Practices:
+		https://cloud.google.com/sdk/docs/scripting-gcloud#best_practices
+		Use gcloud interactive shell(gcloud beta interactive) to autocomplete commands
+			gcloud components install beta & gcloud beta interactive
+
+Pricing
+	It comes OOTB and free to use.
+
+

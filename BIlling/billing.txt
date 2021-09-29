@@ -1,0 +1,170 @@
+One of the awesome docs you dont wanna miss about reducing and optimizing cloud cost
+		https://cloud.google.com/architecture/cost-efficiency-on-google-cloud
+		
+		
+
+
+You must have a valid Cloud Billing account even if 
+	you are in your free trial period OR
+	you only use Google Cloud resources that are covered by the Google Cloud Free Tier(Compute Engine, Cloud Storage, and BigQuery and so on, within monthly usage limits).		
+
+Its is recommended 
+		to have only one billing account unless absolutely required(like need to pay in different currency).
+		to enable billing exports to big query on day one
+		to assign key roles to more than one person (reasonable redundancy)
+
+You can create many billing accounts. But a project is associated with max one billing account(offcourse). 
+One billing account can be associated with multiple projects.
+
+see@ Billing Overview.png
+Note that..Payment profile is google level resource and not in GCP. So if you want to change payment related stuff you cannot use gcp. Question may come in this direction..keep watch
+
+
+Billing Account viewer role can view billing details of the billing account(no matter how many projects it has)
+So if you want to restrict user to view billing of only project he is part of you can use Project Viewer role.
+Alternatively if you need to just know how much each project is spending then you can use Billing Account Viewer
+
+ACE(VIMP**)
+Billing Account viewer   - view account billing. 
+						   Billing Account Viewer access would usually be granted to finance teams, it provides access to spend information	
+Billing Account User	 - view account billing + link projects to a billing account
+Project Billing Manager  - Link/unlink "the project(only one)" to/from a billing account
+Billing Account Admin    - view account billing + add new project under billing account + more
+						   Manage billing accounts (but not create them)	
+Billing Account Creator  - Create new self-serve (online) billing accounts.
+
+
+
+To move your project to a different billing account, you must be a Project Owner or Project Billing Manager on the project, "AND" Billing Account Administrator or Billing Account User for the target Cloud Billing account.
+https://cloud.google.com/billing/docs/how-to/modify-project#change_the_billing_account_for_a_project
+see @Q2.png
+OR
+Billing Account Administrator role granted at the Organization level will have adequate permissions to perform this task.
+
+
+How to pay bill
+		Online( as called as Self Serve)
+				paid via credit/debit card
+		Offline
+				paid via Cheque or wire transfer
+				
+				
+Sample payment invoice has data like, 
+		Product : Compute Engine
+		resource type : Persistent Disk, Micro instance running in Americas etc
+		usage interval : Jan1 to Jan31
+		useage	: 36 hours
+		Amount : 24$
+		
+Billing account is associated with exactly one currency and it cannot be changed.
+
+If you need to look more details about each billing data in invoice use billing reports in cloud console.
+
+Budget	
+	Budget can be created for 
+		selected projects under billing account, 
+		selected services across projects under billing account, 
+		sleected labels on resources across projects under biling account
+		Subaccounts - select one or more billing subaccounts that you want to apply the budget alert to
+	Exceeding Budget wont stop billing, its just budget.
+
+
+Billing Alerts
+		Note you can set up biling alerts for 
+				a specific billing account(project1)
+				specific project linked to billing account(project1 in my-billing-account)
+				combination of projects and selected products within them (project1, project2, compute Egine, BigQuery)
+				a specific product as well (Cloud Run)
+		see @billingalerts.png
+
+		You can create multiple alerts to track your cost.
+		e.g. you can create an alert for unused gcp services and as soon as you get charged for them then you can get an alert which you can later check if this is intended usage or malicious one.
+
+		Alert can be for actual cost or forecasted cost.
+		
+		Alert can be channeled to pubsub for programmatic actions further like shut down resource etc.
+
+		Setting a budget does not automatically cap Google Cloud Platform usage/spending. Its just an alert.
+
+
+On Billing account, billing report page, you can filter billing report by location and labels as well.(This is new than project level billing viewer can do)
+
+				
+Billing Export(ACE**) :
+		Yuo can setup export billing information to either csv/json File export(not supported now, its deprecated) and Bgquery export(highly recommended)
+		You can run sofisitcated analysis on this data to find the patterns and even predict the future usage.
+		Further u can connect it to Data Studio for beautiful visualization charts and graphs.
+		GCP recommends that you enable Cloud Billing data export to BigQuery at the same time that you create a Cloud Billing account.
+		Steps :
+			Select project and verify billing is enabled
+			"Enable the BigQuery Data Transfer Service API"
+					This API provides capability to transfer data to bigquery
+			Create a BigQuery dataset
+			Enable Cloud Billing export to the BigQuery dataset
+
+		Example queries for Cloud Billing data export
+			https://cloud.google.com/billing/docs/how-to/bq-examples
+		
+		
+Cost control 
+		Using Budgets and Alerts
+			see above
+		Using Quotas
+			Allocation Quota
+					5 vms in project demo
+					1gb of bigquery scans per user in project
+					10 cloud run instances in us-central1 region
+			Rate Quota
+					App engine service can handle only 10req per seconds			
+			Quota management exists under Iam->quota and there are some predefined(some enabled and some disbaled) quotas.
+			Yuo can edit as per your needs.
+			Some quotas require you to contact gcp support, provide the reason and "decrease" the limit.
+			Budget Alert will not stop you from using the resource but Quota will, so configure them carefully.
+		
+		
+		Using Commited Usage Discounts(CUDs) 
+			https://youtu.be/3aNDcgoJ-_8?t=1771
+			They are actually very good tools for reducing cost.
+			Committed use discounts are ideal for workloads with predictable resource needs. When you purchase a committed use contract, you purchase compute resource (vCPUs, memory, GPUs, and local SSDs) at a discounted price in return for committing to paying for those resources for 1 year or 3 years
+			You buy a commitment about using certain resource for certain time with daily certain usage and google slashes down the price.
+			The commited time can be 1yr or 3 years hence choose commitment carefully.
+			its diffrent than SUstained Usage Discount as you need to buy CUD beforehand while SUDs are automatic and applied at the end of billing cycle(only if you used resource for significant time )	
+			
+			CUDs are applicable only for compute engine resources -> vCPUs , disks, SSDs
+			
+			Any resources that do not qualify for committed use discounts automatically qualify for sustained use discounts. You can't combine committed use discounts and sustained use discounts for the same resources.
+			Commitments
+					Software Commitments - for buying and using software for commited time
+					Hardware Commitments - as explained above, certain resource for certain time with daily certain usage	
+
+			Once you buy a commitment you can still modify the resources.
+			e.g. you have bought commitment with 96 vCPUS which are clubbed into a group of 16 each. Later you came to know that you need a vCPU group of 32 each then you are welcome to do as number of vCPUs in commitment remains 96
+			Same goes with memory.
+					
+					
+		Using Advanced cost control measures			
+			Alert can be channeled to pubsub for programmatic actions further like shut down resource etc.
+			
+		Using Resource Cleanup
+			Finding idle resources
+			Finding Over provisioned Resources
+			Finding part-time idle resources
+			Is there any programmatic way to do this??	- Recommender Service
+			
+		IMP : google provides ready to use cloud function code that we can use to perform cost control action like find and delete unused external ip addresses, move nonused cloud storage data to coldline, delete non attached PDs and so on
+		https://github.com/GoogleCloudPlatform/gcf-automated-resource-cleanup
+		
+		You can use Recommender to check AI based cost recommendations google provides for cost control
+		https://console.cloud.google.com/home/recommendations?project=project-id
+				
+
+Best Practices
+	see @Billing Account Best Practices.png
+
+
+				
+Billing management Courses
+			  Understanding Your Google Cloud Platform (GCP) Costs ---- partially done, collect a badge here
+			  Optimizing Your Google Cloud Platform (GCP) Costs ---- partially done. this has very intersting labs remaining, collect a badge here.
+			  
+			 	
