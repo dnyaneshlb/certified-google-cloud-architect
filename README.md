@@ -1,1 +1,1 @@
-# certified-google-associate-cloud-engineer
+# certified-google-cloud-architect
