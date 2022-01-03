@@ -1,0 +1,143 @@
+------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+20% discount on EXAM FEES
+https://www.linkedin.com/posts/dansullivanpdx_get-20-off-google-cloud-certification-exams-activity-6842126320797933568-fmNL
+		redeem the voucher before December 31, 2021.
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+
+
+Google's study guide
+	https://cloud.google.com/training/cloud-infrastructure/?skip_cache=true#cloud-architect-learning-path
+	Architecting with google compute engine - https://googlecourses.qwiklabs.com/course_templates/316
+	Design and process
+	Cloud Architecture Quest
+	Challange GCP architecture Quest
+	Preparing for GCA exam
+	Professional GCA study guide book
+	My two cents
+		highly recommended whizzlab mock test
+		highly recommended testpreptraining mock test	
+	
+	
+	
+Online Training 	
+	A Cloud Guru
+		?
+		
+	Coursera/googlecourses
+		https://googlecourses.qwiklabs.com/course_templates/316  -- PCA learning path
+		https://www.coursera.org/lecture/hybrid-cloud-infrastructure-foundations-anthos/anthos-technology-stack-WATO3  - must
+		
+	Udemy
+		Ranga Karnam	https://www.udemy.com/course/google-cloud-professional-cloud-architect-certification/
+		Dan Sullivan	https://www.udemy.com/course/google-cloud-professional-architect-get-certified/
+	
+	Antonit
+		https://sso.teachable.com/secure/556841/checkout/2751928/google-cloud-professional-cloud-architect -- best course according to many
+		https://training.antonit.com/p/google-cloud-professional-cloud-architect
+	
+	Dan Sullivans course - https://www.udemy.com/course/google-cloud-professional-architect-get-certified/?couponCode=84F8F61886039C9025D0
+	
+	All the essential classroom trainings 	https://cloud.google.com/training/courses#/month=Sep_2021,Oct_2021,Nov_2021&language=English&title=Architecting_with_Google_Cloud%3A_Design_and_Process,Preparing_for_the_Professional_Cloud_Architect_Exam,Security_in_Google_Cloud	
+	
+	Youtube
+		Testpreptrainng videos playlist - must watch
+			https://www.youtube.com/watch?v=99HFLtfwM6M&list=PLkchPR_4TgGVnaQKyeYMWRdXJ1UEw1IG-
+		Case Studies
+			https://www.youtube.com/watch?v=wJqmcacktOE
+			https://www.youtube.com/watch?v=Y5OUe8nYPfE&t=10s
+			https://www.youtube.com/watch?v=chMj0idFGPg
+		Learn GCP with Mahesh - 
+			https://www.youtube.com/watch?v=V_wcPt9f7w4 ----- Done
+			https://www.youtube.com/watch?v=iSyJo6mAKdA&list=PLPS8Ty7UpM1Wt3RDhNVOnNdmrJKyTa1Fs
+			https://www.youtube.com/playlist?list=PLPS8Ty7UpM1Wt3RDhNVOnNdmrJKyTa1Fs
+		Curated playlist for PCA exam(must watch) 
+			https://www.youtube.com/playlist?list=PLn30eDG8lKAAgxvc4h-SnEXT8qE-ZUBap
+
+		Case study review by sun,sea and me (prio#1)
+			https://www.youtube.com/playlist?list=PLiGDmIpNsrc186jo3qelMAWvRCd2zzk7P
+			
+		QnA
+			https://youtu.be/VevzDu09uHU
+		
+		Channels
+			Ashutosh Sharma(He has top rated udemy course as well)
+				Channel has all latest 2021 updated info
+				https://www.youtube.com/channel/UCxne1lw5xAbPzrcXnHT7OSw/videos
+			It Cheer up
+				Checkout this channel, pretty cool info.
+				https://www.youtube.com/watch?v=2DydzKPGlhI
+			
+	Qwicklabs
+		Cloud Architecture
+		Cloud Architecture: Design, Implement, and Manage
+
+
+
+Free Exam
+	https://www.codeusingjava.com/google/gcp
+	https://gcp-examquestions.com/gcp-professional-cloud-architect-practice-exam-part-1/
+	https://gcp-examquestions.com/gcp-professional-cloud-architect-practice-exam-part-2/
+	https://gcp-examquestions.com/gcp-professional-cloud-architect-practice-exam-part-3/
+	https://gcp-examquestions.com/gcp-professional-cloud-architect-practice-exam-part-4/
+	https://gcp-examquestions.com/gcp-professional-cloud-architect-practice-exam-part-5/
+	****************** DUMPS ------- https://www.youtube.com/watch?v=rR7l8lJIbK8
+
+
+
+Exam guides and Experiences - 
+	https://jayendrapatil.com/   --- this guy has been renowned in certification community. Many uses his notes.
+		He suggest to spend 30$ on course which has 6 real life exams. Very helpful https://www.braincert.com/course/16401-Google-Cloud-Certified-Professional-Cloud-Architect-Practice-Exams?token=72913f6bb2
+
+	https://www.samratpriyadarshi.com/post/passing-the-professional-cloud-architect-my-journey
+
+	https://blog.pythian.com/gcp-professional-cloud-architect-certification-guide/
+
+	********************** https://kasna.com.au/professional-cloud-architect-exam-study-guide/
+
+	https://acloud.guru/overview/kubernetes-deep-dive
+	
+	https://medium.com/startcloudnow/google-cloud-professional-cloud-architect-exam-prep-sheet-v2-new-exam-e826283f1e3f
+	
+	https://www.startcloudnow.com/google%20cloud.html
+		https://drive.google.com/file/d/1_UfKnzxodTTk5CuwT0ScSmXegtmgpV5v/view
+		
+	https://www.reddit.com/r/googlecloud/comments/o7nd60/new_version_of_gcp_professional_cloud_architect/
+	
+	https://www.linkedin.com/pulse/how-pass-google-cloud-professional-architect-sales-guy-rolf-siegel
+	
+	https://cloud.google.com/architecture/framework
+	https://cloud.google.com/architecture/global-data-distribution
+	Cloud Architecture Center  - https://cloud.google.com/architecture
+	
+	https://gist.github.com/dmunn/9874418f620b8aaf91d12507a91563ad
+	
+	https://thecertsguy.com/bytes/how-to-pass-the-google-cloud-professional-cloud-architect-exam-in-30-days
+	
+	Amazing stuff at C:\D\personal\git\certified-google-associate-cloud-engineer\Certification Study Plan
+	
+	
+	
+	
+Must to do components
+	Kubernetes
+		Istio
+		Service Mesh
+	Anthos
+		(https://www.coursera.org/specializations/architecting-hybrid-cloud-infrastructure-anthos)
+		https://www.youtube.com/watch?v=RQFt-nAEyFU
+	Cloud Run
+	Cloud Endpoints
+	Traffic Director(https://cloud.google.com/traffic-director/docs/overview)
+	VPC Service Controls (https://cloud.google.com/vpc-service-controls/docs/overview)
+	
+	Mountkirk games wants you to know GCP Gameserver component. Study it.
+	https://thecertsguy.com/bytes/case-study-review-mountkirk-games
+	
+
+	
+
+Outcomes
+	My sample exam result    		https://docs.google.com/forms/d/e/1FAIpQLSdvf8Xq6m0kvyIoysdr8WZYCG32WHENStftiHTSdtW4ad2-0w/viewscore?viewscore=AE0zAgAVqKn9pXpwMVZnlYQLXg_TD34qzKawNkSs2NGaAkjoSB1WeVGsG37LOo62aHZ7ho4
+

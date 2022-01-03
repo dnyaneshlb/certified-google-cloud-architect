@@ -1,3 +1,6 @@
+
+https://cloud.google.com/hybrid-connectivity
+
 If you have a existig on prem network then What are different ways to connect your network to gcp network?
 	Dedicated way(Done via direct connection to gcp)
 		Dedicated Interconnect
@@ -49,6 +52,7 @@ Carrier Peering
 	
 How to choose when to use which of the above service?
 	https://cloud.google.com/network-connectivity/docs/how-to/choose-product
+	https://cloud.google.com/hybrid-connectivity
 	
 	
 Which services can I use to connect to google cloud?
