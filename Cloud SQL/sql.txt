@@ -20,6 +20,7 @@ If you can host your application in the same region and VPC connected network as
 By using Private IP, you will increase performance by reducing latency and minimize the attack surface of your Cloud SQL instance because you can communicate with it exclusively over internal IPs.
 Remember that you can only connect via Private IP if the application and the Cloud SQL server are colocated in the same region and are part of the same VPC network. If your application is hosted in another region, VPC, or even project, use a proxy to secure its connection over the external connection.
 
+
 Private service connection?
 
 
@@ -36,6 +37,7 @@ Limitations:
 
 
 Connection
+	https://cloud.google.com/sql/docs/postgres/connect-overview#overview
 	private ip
 		makes services reachable without going through the internet, more secure hence recommended way
 		accessed only through vpc
@@ -109,6 +111,12 @@ Backing up and restore(ACE IMP***)
 			Backups encompass the entire database. Exports can select specific contents.
 			Exports are exported to	cloud storage, while backups are stored separately from the Cloud SQL instance
 			 
+		IMP : 
+			Cloud SQL backups are incremental. They contain only data that changed after the previous backup was taken. Your oldest backup is a similar size to your database, but the sizes of subsequent backups depend on the rate of change of your data. When the oldest backup is deleted, the size of the next oldest backup increases so that a full backup still exists.	 
+			
+			By default backups are multiregional, they are placed in region different but geographically closest to primary instance.
+			
+			 
 	Restore
 		https://cloud.google.com/sql/docs/mysql/backup-recovery/restore
 		Point-in-time recovery
@@ -122,16 +130,84 @@ Backing up and restore(ACE IMP***)
 				https://cloud.google.com/sql/docs/mysql/backup-recovery/pitr
 
 			In recovery, The target instance can be in a different region from the source instance. offcourse possible!
+		
+			https://cloud.google.com/sql/docs/postgres/backup-recovery/restore#tips-restore	
 
 
-HA
-	Read Replicas
-	Failover Replicas
+Disaster Recovery :
+	https://cloud.google.com/architecture/intro-to-cloud-sql-disaster-recovery
+	https://cloud.google.com/architecture/cloud-sql-postgres-disaster-recovery-complete-failover-fallback
+		OR https://cloud.google.com/architecture/intro-to-cloud-sql-disaster-recovery
+		
+		
 
+
+Read Replicas
+	A read replica is a copy of the primary instance that reflects changes to the primary in almost real time, in normal circumstances
+	Read replicas are read-only; you cannot write to them.
+	A read replica is charged at the same rate as a standard Cloud SQL instance. There is no charge for the data replication but cross-region  network egress charges are included.
+	Read replicas neither provide high availability nor offer it. --- IMP
+	A primary instance cannot failover to a read replica, and read replicas are unable to failover in any way during an outage. For that purpose we have failover replica. But you can promote read replica to standalone SQL instance(thus detaching it from primary instance. Now it can handle both read and write traffic just like any other instance)
+	CPUs and memory of read replica cannot be less than primary instance.
+	You cannot configure backups and maintaince window on the replica.
+
+	Promoting a replica(to standalone instance) is done manually and intentionally. It is not the same as high availability, where a standby instance (which is not a replica) automatically becomes the primary in case of a failure or zonal outage.
+
+	https://cloud.google.com/sql/docs/postgres/replication#read-replicas
+	https://cloud.google.com/sql/docs/postgres/replication#rr-info
+	Regional Read Replicas : 
+		Can be in same zone or different
+		As a best practice, put read replicas in a different zone than the primary instance when you use HA on your primary instance. This practice ensures that read replicas continue to operate when the zone that contains the primary instance has an outage.
+	Cross region read replicas :
+		read replicas in a different region from the primary instance. 
+			They 
+				improve read performance by making replicas available closer to your application's region
+				Provide additional disaster recovery capability to guard against a regional failure
+
+
+Logical Replication
+	Logical replication is the flagship feature built on logical decoding.
+	https://cloud.google.com/sql/docs/postgres/replication/configure-logical-replication#introduction
+	
+	Cloud SQL enables you to configure YOUR OWN REPLICATION SOLUTIONS
+		Standard replication from a primary instance to a replica
+		Selective replication of only certain tables or rows
+		Replication across PostgreSQL major versions
+		Replication to non-PostgreSQL databases
+		Change data capture (CDC) workflows where all database changes are streamed to a consumer
+
+	
+
+HA					
+	https://cloud.google.com/sql/docs/postgres/high-availability
+	primary instance - instance to maintain HA 
+	standby instance - instance to failover on in case of primary instance failures
+		
+	After a failover, the instance that received the failover continues to be the primary instance, even after the original instance comes back online. Original instance is destroyed and recreated which becomes the standby instance there onwards.
+
+	FAILBACK - After failover the standby instance becomes the primary. The new primary instance is in another zone now. If you need to have the primary instance in the zone that had the outage, you can do a FAILBACK. A failback performs the same steps as the failover, only in the opposite direction, to reroute traffic back to the original instance
+
+	Read replicas cannot be made highly available like primary instances.
+	Read replicas also switch over to new primary instance after failover.
+	
+	If there is zonal failure in zone where read replicas are provisioned then replication stops. Once zone becomes available then read replicas start replication as usual.
+	VIMP : As a best practice, put read replicas in a different zone from the primary and standby instances. For example, if you have a primary instance in zone A and a standby instance in zone B, put the read replicas in zone C. This practice ensures that read replicas continue to operate even if the zone for the primary instance goes down. You should also add business logic in the client application to send reads to the primary instance when read replicas are unavailable.
+	
+	how failover works?
+	https://cloud.google.com/sql/docs/postgres/high-availability#failover-overview
+	
+	
+	
 
 Importing data
 	via SQL dump file
 	via csv file
+	Best practices : https://cloud.google.com/sql/docs/postgres/import-export	
+	
+Data Migration
+	There is a separate service "Data Migration Service" in GCP that does exactly what attunity is doing, transferring data from on prem to GCP.
+	https://cloud.google.com/database-migration/docs/postgres   --- interesting
+	
 	
 	
 SQL in a nutshell - sketchnote
