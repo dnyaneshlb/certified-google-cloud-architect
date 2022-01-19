@@ -21,7 +21,7 @@ How Instances are Managed(*ACE)
 	Manual Scaling
 		Manual scaling specifies the number of instances that continuously run regardless of the load level.
 	Basic Scaling
-		Its a lazy scaling where it creates instances when your application receives requests.
+		Its a lazy scaling where it creates instances only when your application receives requests.
 		Ideal for work that is intermittent or driven by user activity, ie. Adhoc workload
 		App egnine tries to keep cost low, It tries to reduce cost by scaling instances to 0.
 		Not supported by AE Flex env. 
@@ -30,7 +30,7 @@ How Instances are Managed(*ACE)
 		we can specify min and max number of instances that we want regardless of traffic.
 		Recommended for contineuos running workload*** - offcourse, as we have min instances setting here
 
-F1 - Automatic sclaing instances
+F1 - Automatic scaling instances
 B1 - Basic scaling instancees		
 	
 Deploying App(*ACE)
@@ -39,17 +39,17 @@ Deploying App(*ACE)
 	gcloud app deploy app.yaml
 
 Splitting Traffic(*ACE)	
-	When you add new features to application then you need to check hoe your new version behaves to end users
+	When you add new features to application then you need to check how your new version behaves to end users
 	You can achieve that using % traffic splitting.
 	command : 
 		gcloud app services set-traffic dsa-svc --splits v1=90%,v2=10% --split-by [IP_OR_COOKIE]
 		The exact split values do not matter, only their relation to each other. For example, v1=2,v2=2 is equivalent to v1=.5,v2=.5
 		
 	Splitting:
-		Splitting can be done you incomeing request parameters like ip address or cookie.
+		Splitting can be done using incoming request parameters like ip address or cookie.
 		ip address : 
 			default
-			HEre certain ip addresses are diverted to v2 of app  but as there are high chances that user keeps moving from network to another effectively changing ip addresses, he might get different responses as sometimes he diverted to V1 and sometimes V2.
+			Here certain ip addresses are diverted to v2 of app  but its not the optimal way as there are high chances that user keeps moving from network to another effectively changing ip addresses, he might get different responses as sometimes he diverted to V1 and sometimes V2.
 		cookie : 
 			Here, if a requets has a "GOOGAPPUID" cookie then it will be diverted to V2 else v1.
 			above problem is no more here.
@@ -58,13 +58,16 @@ Splitting Traffic(*ACE)
 		For example, the following URLs split traffic because they target all the available versions within the specified service:
 		[MY_PROJECT_ID].appspot.com - Distributes traffic to versions of the default service.
 		[MY_SERVICE].[MY_PROJECT_ID].appspot.com - Distributes traffic to versions of the MY_SERVICE service.
+		but 
+		if url is v1-dot-dsa-dot-ingka_ofd_dsa_prod-europewest1.r.appspot.com
+		then we cant apply traffic splitting cause it specifically targets the V1 version
 		
 	
 App Engine Standard
 	Instance startup in milliseconds/seconds
 	free or low cost service for "low traffic apps"
 	Automatic scale down to zero instances and	scale up very fast for traffic with extreme spikes
-	Apps can be written in java, go, nodeJs, php, Ruby, Python. For lannguagges other than these(.Ne :)) use AE flex.
+	Limited Language suuport - Apps can be written in java, go, nodeJs, php, Ruby, Python. For lannguagges other than these(.Ne :)) use AE flex.
 	Billing
 		free daily usage
 		billing depends on number of instances and instance class(F or B)
@@ -84,8 +87,8 @@ App Engine Standard
 App Engine Flex
 	Instance startup in minutes
 	Most cost-effective for applications that serve traffic continuously since you can mention how many minimum instances to run(called as resident instances).
-	Apps can be written in java, go, nodeJs, php, Ruby, Python and .Net(The Sole difference). Even apps written in another lannguagges like Rust, Cobol can be run using containers hosted on AE.
-	No sandbox constraints like app engine standard, hence can ssh compute engine instances  for debugging purposes
+	Virtually all language support - Apps can be written in java, go, nodeJs, php, Ruby, Python and .Net(The Sole difference). Even apps written in another lannguagges like Rust, Cobol can be run using containers hosted on AE.
+	No sandbox constraints like app engine standard, hence can ssh compute engine instances for debugging purposes
 	Manual and auto scaling only. Scale down to zero not possible, min 1 instance.
 	Billing
 		no free daily usage
@@ -93,7 +96,8 @@ App Engine Flex
 	Logging
 		Since its a contairized env, logs can be written to syserror/sysout.
 	Can attach ephemeral local disks
-	Provides access to background processes
+	Provides access to background processes. 
+	By default, SSH access to the VM instances in the flexible environment is disabled. If you choose, you can enable root access to your app's VM instances.
 	Used to run Cotainerised workloads where you dont need to look after the infrastructure like we do in kubernetes, hence complete PaaS experience.
 	Even apps written in another lannguagges can be run using containers hosted on AE.
 	https://cloud.google.com/appengine/docs/flexible
@@ -106,15 +110,15 @@ How to choose right App engine env?
 
 Fully Serverless, planetscale
 
-Stackdriver in intergrated out of the box. You can write logs to console and AE flex will take care of the rest.
+Stackdriver in integrated out of the box. You can write logs to console and AE flex will take care of the rest.
 For standard env, write logs using language specific app engine SDK.
 
 
 Types of instances in AE	
 	resident
-		 A resident instance runs all the time
+		 A resident instance runs all the time. The instances added as a min instances are resident instances.
 		 good for contineuos request processing app
-		 We can fix some resident instances and AE will ad new dynamoc instances based on app needs. Once need over, those will be removed automatically.
+		 We can fix some resident instances and AE will add new dynamoc instances based on app needs. Once need over, those will be removed automatically.
 		 
 	dynamic
 		A dynamic instance starts up and shuts down automatically based on current needs
@@ -161,8 +165,8 @@ gcloud
 Notes : 
 	**** You can create only one app engine app per project. You cannot change region of app engine once created. 
 	
-	You create services under ap engine app. If you need to create app engine in another region, you cant create in same project. You have to create in another project.
-	When yuo create app engine for first time, gcloud will ask you to select region but once first app is created, it wont ask you to select the region for further services.  
+	You create services under app engine app. If you need to create app engine in another region, you cant create in same project. You have to create in another project.
+	When you create app engine for first time, gcloud will ask you to select region but once first app is created, it wont ask you to select the region for further services.  
 		
 	[MY_PROJECT_ID].[REGION_ID].r.appspot.com
 		This will point to 'default' service created by gcp when you created your first app engine app.
@@ -175,11 +179,10 @@ Practive tests
 	https://googlecourses.qwiklabs.com/course_sessions/180780/quizzes/63797		
 	
 	
-	
-Prcing
+Pricing
 	Standard 
 		free daily usage
-		based on number of instancehours and instance class
+		based on number of instance hours and instance class
 	Flexible
 		no free quota
 		based on vCPUS, memory and disk used per hour

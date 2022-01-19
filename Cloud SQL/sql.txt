@@ -1,3 +1,17 @@
+Cloud SQL is the managed SQL so you focus on your data and GCP can do all the heavy lifting for your DB to run smoothly.
+Fully managed relational database service for MySQL, PostgreSQL, and SQL Server. Run the same relational databases you know with their rich extension collections, configuration flags and developer ecosystem, but without the hassle of self management.
+	Backup 
+	Patching
+	Point in time recovery
+	High Availability and failover
+	Encryption
+	Import and Export capabilities
+	Encyyption
+	Query insights
+	Monitoring and logging of instance
+	Automatic replication across multiple zones
+
+
 Cloud SQL supports only mananged postgress, mySQL, SQLServer as of now.
 
 When you want to connect to SQL instances from outside of the VPC network or different region than cloud SQL instance, use a proxy to secure its external connection.
@@ -15,10 +29,71 @@ Supports read replicas.
 
 Limitations:
 	Max size 30TB
-	Supports only MySQL, SQLServer and PostGress as of today
+	Supports only MySQL, SQLServer and Postgre as of today
 	Max 4000 concurrent connections
 	Its regional resource(You select region when creating SQL instance and it cant be change)
 		Thats why we have spanner which is global.
+
+
+Connection
+	private ip
+		makes services reachable without going through the internet, more secure hence recommended way
+		accessed only through vpc
+		When we enable private ip connection, behind the scene GCP create an internal VPC of /24 size(this subnet range comes from your VPC range) and uses it to place SQL instance in it. It then peers this internal network with your VPC. 
+		fun fact - If you place create another instance in another region, GCP wont use the same old internal VPC of /24 size, it creates new one. So its always good to have your VPC to be bigger size.
+		
+		Connecting to private IP SQL instance
+			If client who wants to connect SQL instance is on same network or shared VPC network as that of SQL instance is connected to, then direct connection.
+			If client is serverless oferring, then via serverless VPC connector.
+			If its external client then, https://cloud.google.com/sql/docs/postgres/configure-private-ip#vpn
+	public ip
+		anyone outside the GCP can access
+		external connections can be secured with the Cloud SQL Auth proxy or with the SSL/TLS protocol
+			'Cloud SQL Auth proxy' 
+				The Cloud SQL Auth proxy provides secure access to your instances without a need for Authorized networks or for configuring SSL.
+				Its a binary running on vm which knows who can connect to SQL instance with help from IAM then it takes decision.
+				its a protection by authorization - meaning it controls who can coonnect to database
+				https://cloud.google.com/sql/docs/postgres/sql-proxy#what_the_provides
+			'Self-managed SSL/TLS certificates'
+				Generate cerificate on a server and distribute to clients. So only clients having valid certificate can connect.
+			'Authorized networks'
+				If Public IP is enabled, IP addresses authorized to connect to the instance are only from authorized netowork
+		You can apply ORG contraint "Restrict public IP access on Cloud SQL instances" to disable the creation of SQL instance with public ip. 	
+		
+	fun fact : You can use both public IP and private IP to connect to the same Cloud SQL instance. Neither connection method affects the other.
+			
+		
+Cloud SQL Auth proxy
+	Its a binary that you install as client.
+	https://cloud.google.com/sql/docs/postgres/sql-proxy#how-works
+
+	It can be used for both public and private connections.
+	
+	Things to consider when using it in prod env
+		https://cloud.google.com/sql/docs/postgres/sql-proxy#production-environment
+		
+		
+		
+
+Which database to choose in Cloud SQL?
+	https://cloud.google.com/sql/docs/postgres/feature_support
+	Based on above feature checklist, MySQL seems to support more features. 
+	
+	
+
+Cloud SQL fine tuning
+	database flags : https://cloud.google.com/sql/docs/postgres/flags
+	
+	You should set storage provisioning to auto so that when the storage used by your data is about to full, GCP can automatically add more storage. Adding more storage wont restart instance but charge you for extra storage.
+
+
+Design Considerations
+	
+	
+	
+FAQ
+	https://cloud.google.com/sql/faq
+		
 
 
 Backing up and restore(ACE IMP***)
@@ -63,7 +138,6 @@ SQL in a nutshell - sketchnote
 	https://thecloudgirl.dev/gcpsketchnote3.html
 
 
-
 gcloud
 	Initializing data systems with products (ACE**)
 		gcloud sql instances create prod-instance --database-version=MYSQL_5_7 --cpu=2 --memory=4GB
@@ -78,7 +152,84 @@ gcloud
 		
 		gcloud sql export csv prod-instance gs://prod-bucket --query='select * from items'
 		gcloud sql import csv prod-instance gs://prod-bucket --database prod-db --table=items
+	
+	
+	
+Important Considerations
+	You cannot reuse the ID of a deleted instance for a few days after the instance is deleted - just like cloud task
+	
+	You cannot backup a single database or a table using cloud SQL OOTB backup option. 
+	
+	But, you can export only a single database or even table, depending on the export format you choose.
+	
+	If a backup is in another region and that region is unavailable then you cannot restore instance from that backup(even if the instance is in available region)
+	
+	A point-in-time recovery always creates a new instance; you cannot perform a point-in-time recovery to an existing instance
+	
+
+Query Insights
+	Query Insights helps you detect, diagnose, and prevent query performance problems for Cloud SQL databases. It provides self-service, intuitive monitoring, and diagnostic information that goes beyond detection to help you to identify the root cause of performance problems.
+	You view metrics for queries on the Query Insights dashboard. The dashboard provides a series of filters that help you view database load for queries by user, database, IP address, time range, CPU capacity, CPU and CPU wait, IO Wait, and Lock Wait.
+	https://cloud.google.com/sql/docs/postgres/using-query-insights#using-db-load-graph
+	
+	tags : Query insight can give you information and insights about each query but you can use query tags as well.
+			Its another dimension of analysing the query/database performance.
+			https://cloud.google.com/sql/docs/postgres/using-query-insights#filter_by_query_tags
+		   https://cloud.google.com/sql/docs/postgres/using-query-insights#adding-tags-to-sql-queries
+		   
+	
+	
+Maintainance Window	
+	Maintainace window is only for disruptive hard updates to SQL instance(updates that needs instance restarts)
+	However
+		other minor soft updates which dont want restart are applied anytime
+		There as some disruptive hard updates which will be applied anytime and they wont respect maintenance windows. Such update frequency is once in few months though.
+	
+	There is a 'deny maintaince period'	setting as well which overrides maintaince window. It can be upto 1-90 days. 
+	Good, we can add this during chrismas days to avoid even 2 min downtime.
+	
+	Reschedule planned maintenance
+	https://cloud.google.com/sql/docs/postgres/maintenance#reschedule-maintenance
+	Maintenance window notifications are send 1 week before. Yuo can postpone the maintenance or apply immediately as well instead of waiting for the scheduled maintenance window.
+		Postponing - you can choose next available window or specfic time within 7 days.
+		You cannot postpone more than 7 days.
 		
+	how it works?
+		https://cloud.google.com/sql/docs/postgres/maintenance#how_maintenance_works
+		
+	Read replicas don't observe maintenance windows and can receive maintenance updates at any time. There is no guarantee as to when the updates occur and updates might overlap or occur very close to the primary instance update.
+
+
+
+Security and Access Control	
+	Cloud SQL IAM database authentication 		
+		The daefault db level username/password authentication is very error prone and pose a security risk.
+		Hence we have IAM level authentication for database access.
+		Here you provide necessary roles to a user using IAM and when user tries to login then a short lived token is created for authentication. When user leaves org then he wont be able to login but in first case user can login provided he can reach the database and username/password avent changed.	
+		To turn on IAM Authentication, turn on the database flag cloudsql.iam_authentication flag
+		Automatic Way
+			With automatic IAM database authentication, users need to pass only the IAM database username in a connection request from the client. The access token is added to it automatically to reaplce the password attribute on behalf of the client. 
+			Automatic IAM database authentication is strongly recommended for authenticating applications.
+		Manual Way
+			Manual IAM database authentication requires the IAM principal to explicitly pass the access token for the password attribute in the client connection request. Principals must first log in to Google Cloud and explicitly request the access token from IAM.
+			Not recommended as you have to re login after short lived access token has expired
+
+	Project access controls
+		Its a broaded level access control where we can define who can have access to which SQL resources using IAM.
+		e.g. Allow user A to connect to specific instances on specific days of the week.
+			 Allow user B to view only dev and test instances.
+	
+	Database level access
+		You can restrict user using database level roles and permissions also.
+		DB level user can have roles like CREATEROLE, CREATEDB, and LOGIN which defines what he can do.
+		https://cloud.google.com/sql/docs/postgres/create-manage-users		
+	
+	Client Side encryption
+		You can enable Client Side Encryption and encrypt the certain sensitive columns like credit card numbers, phone numbers etc.
+		You can use CLoud KMS to achieve this.
+
+	
+	
 Pricing
 	https://cloud.google.com/sql/pricing
 	depends on

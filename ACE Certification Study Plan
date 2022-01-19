@@ -1,0 +1,327 @@
+Step 0(Done) 	 - Go through all videos of parvez mulla on youtube
+Step 1(Done)  	 - Go through all the required courses on googlecourses/coursera/pluralsight
+Step 2(Done) 	 - Go through "Architecting with Google Compute Engine" course -  recommeded
+Step 3(Done) 	 - Go through "Architecting with Google Kubernetes Engine" course's first two modules(foundation, workloads)
+Step 4(Done)	 - Read missed Documentation links given in each video
+Step 5			 - Follow and read through all github links in step 11
+Step 6(Done)     - Read Best Practices of each component
+Step 7			 - more qeiklabs quests as found below
+Step 8(Done) 	 - free udemy course designed by Dan Sullivan, see below
+Step 9			 - more Quests for ACE exam by Philipp Maier
+Step10			 - watch youtube videos as found below		
+Step11			 - practice tests
+							 You have access to PluralSight check if there are any practice tests?
+Step12			 - Review if you covered all study topics from google certification guide
+						https://docs.google.com/spreadsheets/d/1I6aVFQc9KF_4nzN49r0FMG4HEem2j8KClEHaiA_WQUU/edit#gid=844844854
+				   Revise "preparing for ACE exam" course
+				   https://github.com/truar/gcp-learning/tree/master/gcp-study-guide-associate
+
+				   
+0. Googlecourses study plan
+	For ACE : https://googlecourses.qwiklabs.com/course_templates/230
+	For GCA : https://googlecourses.qwiklabs.com/course_templates/231
+	
+				   
+1. Go through all the courses on googlecourses
+			1. Praparing for ACE certification
+				Deliberately not marked all videos as completed. Revisit them. Collect the badge here.
+			
+			2. Architecting with Google Kubernetes Engine: 
+						Done - Foundations(Must for ACE Exam)
+							
+						Done - Workloads(Good to have for ACE exam)
+							
+						Production (Not really required for ACE but for GCA)
+			
+			3. Architecting with Google Compute Engine
+					Done - Essential Cloud Infrastructure: Foundation --- Done
+								
+					Done - Essential Cloud Infrastructure: Core Services --- Done  
+								
+					Done - Elastic Google Cloud Infrastructure: Scaling and Automation --- Done	
+								
+					Done - Google Cloud Platform Fundamentals: Core Infrastructure --- Done
+									
+					Reliable Google Cloud Infrastructure: Design and Process -- Not required for ACE but must for GCA.
+										
+			
+			4. Dan Sullivan, the guy who designed gcp certification
+						Done - free udemy course
+							   https://www.udemy.com/course/how-to-pass-google-cloud-certification-exams
+					
+
+
+2. Done - Read all the documentation links present in the each video
+		
+   ACE Exam focused documentation for timesaving and quick turnaround(scroll down till Syllabus details section)
+   Done - https://www.testpreptraining.com/tutorial/google-associate-cloud-engineer-exam/
+   https://medium.com/tech-guides/gcp-certification-series-4-4-managing-data-solutions-87e98c0c7f7e
+   https://prashantapaudel.medium.com/
+
+
+3. Read Best Practices for each component
+		Partially Done.
+
+3. Go through all the quicklabs present in resources section of each video.
+		Also cover all quicklabs recommended by Pravez mulla(https://youtu.be/RbIbS0YMFs4?t=1338)
+				Badges
+					Done - Networking in the Google Cloud(parvez)
+					Done - Kubernetes in Google Cloud(parvez)
+					Done - Cloud engineering(parvez)
+					Done - Baseline infrastructure(parvez)
+					Done - Googel Cloud Essentials(parvez)
+					Done - DevOps Essentials(parvez)
+				Skills
+					Done - Create and Manage Cloud Resources(parvez)
+					Done - Perform Foundational Infrastructure Tasks in Google Cloud(parvez)
+					Done - Build and Secure Networks in Google Cloud(parvez)
+					Deploy to Kubernetes in Google Cloud(parvez)
+					Done - Set Up and Configure a Cloud Environment in Google Cloud(parvez)
+				Other
+					Done - Security & Identity Fundamentals -- imp
+					Done - Google Cloud's Operations Suite - Stackdriver
+					
+4. Quick Labs
+			Gooogle recommended quicklabs for ACE exam by Philipp Maier
+				Quest: Kubernetes in Google Cloud - Quest and challenge lab both**************************************
+				Quest: Google Kubernetes Engine Best Practices: Security
+				Done - Self-Paced Lab: Cloud Functions - Qwik Start
+				Quest: Application Development - Java
+				
+				
+		    Billing management Courses
+			    Understanding Your Google Cloud Platform (GCP) Costs ---- partially done, collect a badge here
+			    Optimizing Your Google Cloud Platform (GCP) Costs ---- partially done. this has very intersting labs remaining, collect a badge here.
+				  
+			 
+5. For topics not clear watch custom made youtube videos. 
+	 Youtube videos to follow
+			learn gcp with mahesh - recommended CoursesDan suvillan
+			cloud advocate
+			playlists
+				Done - very good google playlist by parvez mulla - https://www.youtube.com/watch?v=RbIbS0YMFs4
+				Done - A complete playlist for just ACE certification
+						https://www.youtube.com/watch?v=XQdugxsj7m0&list=PL9A8Vqutkh9PWmneOnIV5bKALr07wEfgm
+				Done - cloud academy playlist
+						https://www.youtube.com/watch?v=LEBl6Wav1II&list=PLczBwDf63iczvwKLfhCxO_ebSjE5IW_7q
+				Done - Super important playlist QnA by Sathish JV
+						https://www.youtube.com/playlist?list=PLQMsfKRZZviRwqJwNmh1eAWnRMvlrk40x
+				You cannot watch all cloud next videos. So here is cloud next rewind playlist			
+					https://www.youtube.com/playlist?list=PLIivdWyY5sqJ4u5PgkYV4XL6-vFHX27Gr
+				
+				https://www.youtube.com/hashtag/bigqueryspotlight
+				
+				Done  - https://www.youtube.com/hashtag/cloudstoragebytes	
+	
+	
+6. signup and get 7 days free access to linux academy. Use it wisely. 		
+	 signup to pluralsight and get 14 days free account to see videos and practice tests at https://www.pluralsight.com/pricing/skills
+
+
+5. 	Discuss within a group of interested people about exam, questions, unclear topics
+		Talk to person who has already passed exam.
+
+
+6. 	Take dummy exams
+
+	Dan sullivan hacked book questions	https://books.google.se/books?id=2wGQDwAAQBAJ&printsec=frontcover&dq=associate+cloud+engineer&hl=en&sa=X&ved=2ahUKEwiYjszv8fnwAhWm_CoKHVxkCp4Q6AEwAXoECAoQAg#v=onepage&q=associate%20cloud%20engineer&f=false
+	
+	Done - https://www.dropbox.com/sh/rkm9rruokxtmapt/AAA-dVXRe4WLtNlkFKXhpPOqa?dl=0   ---- 50 questions
+	
+	
+
+	take exam at
+	https://app.pluralsight.com/roleiq/roles/c0bd24c9-a7cc-486e-943c-703bdf5df67e
+	https://app.pluralsight.com/library/
+
+	IMP --- Go through all the practice exams under each module within the quicklab courses.---IMP
+	
+	Done  -  2 Practice tests of 50 questions each
+		ashokkaitke@gmail.com - quest@123
+		https://www.udemy.com/course/google-certified-associate-cloud-engineer/
+	
+	
+	2 tests desigend by Dan Sullivan for ACE exam
+	https://www.udemy.com/course/google-cloud-associate-cloud-engineer-practice-examspractice-exams/
+	
+	https://www.udemy.com/course/associate-cloud-engineer-practice-test-google-certification/?couponCode=73B9558E9DF36CD7236F
+	
+	Done -  https://www.dumps4u.com/demo/Associate-Cloud-Engineer-demo-file.pdf
+	
+	Done - 	https://quizlet.com/434286726/gcp-assoc-engineeer-flash-card-set-2-flash-cards/
+	
+	Done - 	https://quizlet.com/417797139/gcp-ace-flash-cards/
+	
+	Done -	https://quizlet.com/212776254/gcp-certification-flash-cards/
+	
+	free 172 questions https://www.examtopics.com/exams/google/associate-cloud-engineer/view/1/
+	
+	free test: https://www.testpreptraining.com/google-associate-cloud-engineer-exam-questions
+	
+	638 questions paid test: https://www.testpreptraining.com/google-cloud-certified-associate-cloud-engineer-practice-exam
+	
+	https://gcp-examquestions.com/google-associate-cloud-engineer-practice-exam-pr00061-part-1/
+	
+	Done - 	https://myblockchainexperts.org/gcpfreepracticequestions/
+	
+	Very trusted link https://www.youtube.com/redirect?event=video_description&redir_token=QUFFLUhqbjlTR1Y2MzN4bWxUZ1NiRXJfV1J3TG1waDN1UXxBQ3Jtc0tuQWJocDZBX3hrR0dfeTNGN0JLcDRJZGFyczQxNDdwbHY5ZGFCLTlDQ0NRWWlQZTRya1JmbnZuSjA4RGpCOUkyb0hoT1poNHEtc3lYOFFLUEJGdW44eXBURjhCSk1sSHY3VmdUQ1ZxVjdGSHdmVjRXWQ&q=https%3A%2F%2Fwww.udemy.com%2Fcourse%2Fgoogle-associate-cloud-engineer-certification-practice-test1%2F
+	
+	Done(can revisit) - https://www.vcedumps.com/demo/Associate-Cloud-Engineer.pdf
+	
+	Done - 	https://www.certkillers.net/demo/Associate-Cloud-Engineer.pdf
+	
+	Done -	https://www.certification-questions.com/google-exam/associate-cloud-engineer-dumps.html
+	
+	file:///C:/Users/dnbar/Downloads/google.testinises.professional-cloud-architect.rapidshare.2021-mar-11.by.frank.105q.vce.pdf
+	
+	Done(Can revisit) -	https://dumpslibrary.com/google-associate-cloud-engineer-pdf-dumps/
+	
+	Done(Can Buy) - https://skillcertpro.com/product/google-cloud-certified-associate-cloud-engineer-practice-exam-set/
+	
+	Done(Can Buy) - CAn buy test @20$ at https://www.whizlabs.com/google-cloud-certified-associate-cloud-engineer/practice-tests/
+	
+	my accuracy with ACE free practice exam by google : https://bit.ly/3yMhCFp
+	
+
+8.	Practice gcloud, gsutil, bq, kubectl commands
+
+
+9.	You have credits, you can practice tough components quicklabs.
+
+
+10  Other important gcp links
+
+	VIMP prep material
+	https://github.com/dnyaneshlb/associate-cloud-engineer
+	
+	Never ever miss to study this link https://github.com/sathishvj/awesome-gcp-certifications
+	
+	Done - gcp networking playlist https://www.youtube.com/playlist?list=PLIivdWyY5sqJ0oXcnZYqOnuNRsLF9H48u
+	
+	NA - One of the awesome course to learn kubernetes : https://www.youtube.com/watch?v=X48VuDVv0do
+	
+	NA - One fo the good videos on terraform  : https://www.youtube.com/watch?v=l5k1ai_GBDE
+			She has amazing content on her channel..
+
+	
+11. Must
+		Done - https://github.com/gregsramblings/google-cloud-4-words
+	https://github.com/truar/gcp-learning/tree/master/gcp-study-guide-associate
+	https://gist.github.com/dmunn/9874418f620b8aaf91d12507a91563ad
+	https://github.com/truar/gcp-learning/tree/master/gcp-study-guide-associate
+		Done :	https://docs.google.com/document/d/1u6pXBiGMYj7ZLBN21x6jap11rG6gWk7n210hNnUzrkI/edit
+		Done : 	https://docs.google.com/document/d/1-8vSS5rNOWmxVQWmTaWus7V5uZvgWZKY-Nl4bYMWDbk/edit
+		Done : 	https://www.linkedin.com/pulse/google-cloud-jumpstart-tutorials-community-david-das-neves/
+		Done: https://github.com/ddneves/awesome-gcp-certifications#Google-Cloud---Associate-Cloud-Engineer
+		Done : 	https://medium.com/google-cloud/a-gcp-flowchart-a-day-2d57cc109401
+	https://medium.com/@joaovitor/associate-cloud-engineer-study-guide-cf7e74da1bb6
+		Done - https://github.com/priyankavergadia/GCPSketchnote
+	https://docs.google.com/document/d/1if7Bbzrui1r-RaPO8ikwvcyg7Cv9sIFFZuE_fZP-9xE/edit#heading=h.n2bowj9d4vqj
+	https://myblockchainexperts.org/2019/09/27/gcp-associate-cloud-engineer-deep-dive-notes-preparing-for-the-exam/
+	https://medium.com/@raigonjolly/cheat-sheets-gcloud-bq-gsutil-kubectl-for-google-cloud-associate-certificate-4093b8977a01
+		Done - https://sathishvj.medium.com/writing-and-passing-the-google-cloud-associate-engineer-certification-a60c2f6d99c2
+	
+	https://www.linkedin.com/pulse/how-i-prepared-google-cloud-associate-engineer-nischay-goyal
+	https://jayendrapatil.com/google-cloud-associate-cloud-engineer-certification-learning-path/
+	
+	https://medium.com/tech-guides/gcp-certification-series-4-4-managing-data-solutions-87e98c0c7f7e
+		https://prashantapaudel.medium.com/
+		Done - https://medium.com/gowthamlabs/google-cloud-associate-engineer-notes-gcp-ace-8d2260cb3882
+	
+	
+12  Experiences of people
+	https://medium.com/@fahed.dorgaa/i-have-passed-the-associate-cloud-engineer-exam-373076d07288
+	https://medium.com/@fahed.dorgaa/notes-from-my-google-cloud-associate-cloud-engineer-section-2-5469797b1079
+	https://github.com/sathishvj/awesome-gcp-certifications/blob/master/associate-cloud-engineer.md#posts
+	
+	
+
+	
+	
+	
+	
+	
+
+---------------------------------- ACE Extra stuff  ----------------------------------------------------------
+
+
+--- Billing export check practically on console
+--- Cloud Storage JSON XML API
+vpn, dns, datastore, spanner, sql, bigtable related qwicklabs
+--- Cloud Composer, Cloud Data fusion, datalab, data catlog, 
+--- Binary Authorization, 
+--- Roles to understand for exam
+	•Cloud Storage – Admin vs Creator vs Viewer
+	•Compute Engine – Admin vs Instance Admin
+	•Spanner – Viewer vs Database User
+	•BigQuery – User vs JobUser
+	•App Engine – Viewer vs Deployer
+	
+--- Auditors are referenced on almost all GCP exams. Project Roles to give to Auditors such as Org viewer, project viewer.	
+
+	
+
+
+
+--- Roles in billing, compute engine, app engine, iam, vpc
+--- Get more familiar with gcloud compute disks/snapshots/images/instances commands
+--- gcloud, bq, gsutil, kubectl commands revision
+
+--- Backing up and restoring data instances (e.g., Cloud SQL, Cloud Datastore)
+--- Reviewing job status in Cloud Dataproc, Cloud Dataflow, or BigQuery
+
+--- Executing queries to retrieve data from data instances (e.g., Cloud SQL, BigQuery, Cloud Spanner, Cloud Datastore, Cloud Bigtable)
+
+--- Moving objects between Cloud Storage buckets
+
+--- Viewing Google Cloud Platform status
+--- Configuring Cloud DNS
+--- Creating a VPN between a Google VPC and an external network using Cloud VPN
+--- Estimating costs of a BigQuery query
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------- More Extra stuff  ----------------------------------------------------------
+
+
+Practive Questions hack:
+	go to https://www.google.se/search?tbm=bks&hl=en&q=associate+cloud+engineer
+	and select any book, navigate to QnA section using page button near top right corner of the screen.
+	if not there search in pages where QnA are Voila you got free practice questions.
+	
+
+https://www.udemy.com/course/google-cloud-platform-professional-cloud-developer-certification	
+A must quicklab for architecture exam.	
+	Cloud Architecture
+	Cloud Architecture: Design, Implement, and Manage	
+	
+https://medium.com/@earlg3/google-cloud-architect-exam-study-materials-5ab327b62bc8
+
+GCP architecture related stuff and best practices	
+https://cloud.google.com/architecture
+
+
+Free Online Traning sessions on gcp
+	https://cloud.google.com/training/courses#/country=Sweden
+In case you dont have access to coursera, claim 50% off on some courses   				https://inthecloud.withgoogle.com/training-discount/register.html?utm_source=google&utm_medium=website&utm_content=cgc-training-app-mod-promo2
+
+
+Awesome tutorials written by community for the community
+https://cloud.google.com/docs/tutorials
+
+https://cloud.google.com/developers
+https://codelabs.developers.google.com/?cat=Cloud
+
+	
+	

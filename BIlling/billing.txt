@@ -1,8 +1,6 @@
 One of the awesome docs you dont wanna miss about reducing and optimizing cloud cost
 		https://cloud.google.com/architecture/cost-efficiency-on-google-cloud
 		
-		
-
 
 You must have a valid Cloud Billing account even if 
 	you are in your free trial period OR
@@ -43,18 +41,15 @@ Billing Account Administrator role granted at the Organization level will have a
 
 
 How to pay bill
-		Online( as called as Self Serve)
-				paid via credit/debit card
-		Offline
-				paid via Cheque or wire transfer
-				
-				
-Sample payment invoice has data like, 
-		Product : Compute Engine
-		resource type : Persistent Disk, Micro instance running in Americas etc
-		usage interval : Jan1 to Jan31
-		useage	: 36 hours
-		Amount : 24$
+	Online(as called as Self Serve) - paid via credit/debit card
+	Offline - paid via Cheque or wire transfer
+								
+	Sample payment invoice has data like, 
+			Product : Compute Engine
+			resource type : Persistent Disk, Micro instance running in Americas etc
+			usage interval : Jan1 to Jan31
+			usage	: 36 hours
+			Amount : 24$
 		
 Billing account is associated with exactly one currency and it cannot be changed.
 
@@ -64,7 +59,7 @@ Budget
 	Budget can be created for 
 		selected projects under billing account, 
 		selected services across projects under billing account, 
-		sleected labels on resources across projects under biling account
+		selected labels on resources across projects under biling account
 		Subaccounts - select one or more billing subaccounts that you want to apply the budget alert to
 	Exceeding Budget wont stop billing, its just budget.
 
@@ -91,9 +86,9 @@ On Billing account, billing report page, you can filter billing report by locati
 
 				
 Billing Export(ACE**) :
-		Yuo can setup export billing information to either csv/json File export(not supported now, its deprecated) and Bgquery export(highly recommended)
-		You can run sofisitcated analysis on this data to find the patterns and even predict the future usage.
-		Further u can connect it to Data Studio for beautiful visualization charts and graphs.
+		You can setup export billing information to either csv/json File export(not supported now, its deprecated) and Bgquery export(highly recommended)
+		Yuu can run sofisitcated analysis on this data to find the patterns and even predict the future usage.
+		Further you can connect it to Data Studio for beautiful visualization charts and graphs.
 		GCP recommends that you enable Cloud Billing data export to BigQuery at the same time that you create a Cloud Billing account.
 		Steps :
 			Select project and verify billing is enabled
@@ -107,6 +102,8 @@ Billing Export(ACE**) :
 		
 		
 Cost control 
+		https://www.youtube.com/playlist?list=PLIivdWyY5sqKeXavu1XuBNBDLBO31kzM0
+		https://www.youtube.com/watch?v=cwbcNQDo3Eg
 		Using Budgets and Alerts
 			see above
 		Using Quotas
@@ -117,7 +114,7 @@ Cost control
 			Rate Quota
 					App engine service can handle only 10req per seconds			
 			Quota management exists under Iam->quota and there are some predefined(some enabled and some disbaled) quotas.
-			Yuo can edit as per your needs.
+			You can edit as per your needs.
 			Some quotas require you to contact gcp support, provide the reason and "decrease" the limit.
 			Budget Alert will not stop you from using the resource but Quota will, so configure them carefully.
 		
@@ -128,9 +125,9 @@ Cost control
 			Committed use discounts are ideal for workloads with predictable resource needs. When you purchase a committed use contract, you purchase compute resource (vCPUs, memory, GPUs, and local SSDs) at a discounted price in return for committing to paying for those resources for 1 year or 3 years
 			You buy a commitment about using certain resource for certain time with daily certain usage and google slashes down the price.
 			The commited time can be 1yr or 3 years hence choose commitment carefully.
-			its diffrent than SUstained Usage Discount as you need to buy CUD beforehand while SUDs are automatic and applied at the end of billing cycle(only if you used resource for significant time )	
+			CUDs are different than SUstained Usage Discount as you need to buy CUD beforehand while SUDs are automatic and applied at the end of billing cycle(only if you used resource for significant time )	
 			
-			CUDs are applicable only for compute engine resources -> vCPUs , disks, SSDs
+			CUDs are applicable only for compute engine resources(Now Even for Cloud Run :)) -> vCPUs , disks, SSDs
 			
 			Any resources that do not qualify for committed use discounts automatically qualify for sustained use discounts. You can't combine committed use discounts and sustained use discounts for the same resources.
 			Commitments
@@ -142,11 +139,11 @@ Cost control
 			Same goes with memory.
 					
 					
-		Using Advanced cost control measures			
+		Using Advanced cost control measures
 			Alert can be channeled to pubsub for programmatic actions further like shut down resource etc.
 			
 		Using Resource Cleanup
-			Finding idle resources
+			Finding fully idle resources
 			Finding Over provisioned Resources
 			Finding part-time idle resources
 			Is there any programmatic way to do this??	- Recommender Service
