@@ -31,7 +31,7 @@ Kubectl Actions
 Deployment
 		"A desired state of the pod"
 		Deployments are a declarative way to ensure that the number of Pods running is equal to the desired number of Pods, specified by the user.
-		A deployment defines a replicaset and number of pods in that replicaset. if node goes down, pods are moved to new node to maintain the desired state.	
+		A deployment defines a replicaset and number of pods in that replicaset. If node goes down, pods are moved to new node to maintain the desired state.	
 		Deployment is read and executed by Deployment controller.
 		
 		imp - deployments are suitable for stateles apps.
@@ -71,20 +71,20 @@ Deployment
 					This clearly hampers HA of application
 				
 				Rolling Update Strategy
-					Defines the max unavailable pods "across all ReplicaSets" - 
+					Defines the MAX UNAVAILABLE pods "across all ReplicaSets" - 
 						how many pods can be unavailable from desired number of pods
 						default 25%
-					Defines the max surge - how many pods can be more than desired number of pods
+					Defines the MAX SURGE - how many pods can be more than desired number of pods
 				This allows smooth transition from old replicaset to new.
 				
 				Blue Green Deployment Strategy
 					Instead of creating pods within the same deployment v1, create a different deployment v2 altogether and use service to migrate traffic to new deployment.
 					deployment v1 can be kept standby for some time and then deleted.
 					Deployments with this strategy are quick and less error prone but involves obviously more resource usage.
-					A major downside of blue-green deployments is that you will need to have at least 2x the resources in your cluster necessary to host your application
+					A downside of blue-green deployments is that you will need to have at least 2x the resources in your cluster necessary to host your application
 					
 				Canary Deployment Strategy
-					THis is extension of BlueGreen strategy and its the one we have been using since long.
+					This is extension of BlueGreen strategy and its the one we have been using since long.
 					Simply divert some percentage of traffic to new version and get confidence on new deployment then gradually migrate all the traffic to new deployment.	
 					
 					What if you wanted to ensure that a user didn't get served by the Canary deployment? A use case could be that the UI for an application changed, and you don't want to confuse the user. In a case like this, you want the user to "stick" to one deployment or the other.
@@ -100,7 +100,7 @@ Deployment
 					
 		
 		Now that you are rolling out a new version of your app using canary deployment. So there are two versions of you app live now.
-		You want to ensure that all requests from a single client will always connect to the same Pod so that client dont get abrupt system behaviour. How to handle this?
+		You want to ensure that all requests from a single client will always connect to the same Pod so that client dont experience abrupt system behaviour. How to handle this?
 				All requests from a single client will never connect to the same Pod by default. Each request is treated separately and can connect to either the old version of app or to the new version. This potential to switch between different versions may cause problems if there are significant changes in functionality in the canary release. To prevent this you can set the sessionAffinity field to "ClientIP" in the specification of the service if you need a client's first request to determine which Pod will be used for all subsequent connections.	
 						
 				
@@ -141,15 +141,15 @@ Jobs
 
 Cronjob
 		Same as job except its a scheduled job. It can run once or repeatedly.			
-		kubectl get cronjobs	
+		kubectl get cronjobs
 		kubectl describe cronjob jobname	
 		
 		In order to stop the CronJob and clean up the Jobs associated with it you must delete the CronJob.
 		
 		
-AutoScalar
+Cluster AutoScalar
 		One step towards pay for only what u use.
-		it automatccally downscales or upscales a cluster nodes based on requirement.					
+		it automatically downscales or upscales a cluster nodes based on requirement.					
 		
 		During downscaling we can prevent which node should not be picked for deletion.
 				if a pod marked with 'safe-to-evict' as false
@@ -163,15 +163,15 @@ Nodepool
 		e.g. nodepool A - 2 CPUs(16gb) min:1 max:6
 			 nodepool B - 4 CPUs(32gb) min:2 max:10
 		
-		You cannot configure a single node in a node pool; any configuration changes affect all nodes in the node pool.
+		You cannot configure a single node in a node pool; any configuration changes of nodepool affect all nodes in the node pool.
 		Nodepool is GKE feature and it doesnt exists in kubernetes.
 		
 		imp: while creating cluster we choose whether its a zonal cluster or multizonal(we choose say 3 zones)
 				 Size of the nodepool is number of nodes running in nodepool per zone.
-				 So if we increase size of the nodepool from say 3 to 4  then gcp will add one node per zone hence total nodes per zone will be 3->4.
+				 So if we increase size of the nodepool from say 3 to 4 then gcp will add one node per zone hence total nodes per zone will be 3->4.
 				 But all nodes across the clusters across the all 3 zones are 4*3=12 now.
 				 
-		When we resize the cluster from 5 nodes to 4 then any random node will be picked no matter it has running pods or not. So be careful.
+		When we resize the cluster from 5 nodes to 4 then any random node will be picked NO MATTER IT HAS RUNNING PODS OR NOT. So be careful.
 		In such cases, if we have replication controller like statefulSet or ReplicaSet controller defined then all pods will be gracefully terminated.
 						
 		For a pod, we can choose which node to run on using "nodeSelector=node1"(node1 is label applied on one of the node) label in pod manifest. Then it will run only and only on that node.
@@ -182,13 +182,15 @@ Pod Scheduling on node
 		node affinity : defines which node should be selected to run a pod on
 		node anti-affinity : : defines which node should NOT be selected to run a pod on
 		
-		e.g. if you want to force apps that caches data run on pods on same node , then you can define node affinity to select only that pod.
+		e.g. if you want to force apps that caches data, to run on pods on same node , then you can define node affinity to select only that node.
 		Similarly if you want to force actual apps to be run on pods that span across different nodes(to achieve HA) then you can use these features.
 		Similaraly we would definitely want to run one actual app and one cache app on same node. But we dont want to run two cache apps or two actual apps on same node.
 		
+		node selector, node affinity, node anti-affinity, Toleration are defined in pod manifest.
+		
 
 Taint and Toleration
-		POd scheduling explained above is to allow or restrict a pod scheduling on a node and its defined in pod manifest.
+		Pod scheduling explained above is to allow or restrict a pod scheduling on a node and its defined in pod manifest.
 		But what if we need a sideby feature to give power to node to decide which pod can run on it?
 		Hence Taint
 		Taint is defined in Node manifest. It gives power to node to allow pods having certain labels to run on it.
@@ -196,8 +198,9 @@ Taint and Toleration
 		hence Toleration.
 		Toleration is defined in pod manifest.
 		
+		Taint is defined in Node manifest.
 		
-
+		
 Helm Charts???
 		Easier way to run workloads
 		dig more

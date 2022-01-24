@@ -117,7 +117,7 @@ Exam guides and Experiences -
 	
 	Amazing stuff at C:\D\personal\git\certified-google-associate-cloud-engineer\Certification Study Plan
 	
-	
+	https://medium.com/@ayushi.nig/the-exam-experience-google-cloud-certified-professional-cloud-architect-c7ac198286bd
 	
 	
 Must to do components

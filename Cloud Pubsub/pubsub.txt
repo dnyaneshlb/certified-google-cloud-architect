@@ -1,9 +1,9 @@
 Pub/Sub is an asynchronous messaging service that decouples services that produce events from services that process events. Pub/Sub offers durable message storage and real-time message delivery with high availability and consistent performance at scale.
 Features :
-	Promises At least once delivery
+	Promises at least once delivery
 	Heavilly used inside google.
 	Supports offline consumers.
-	durable message storage(7 days, can be extended to 30 days)
+	Durable message storage(7 days, can be extended to 30 days)
 
 
 Topic

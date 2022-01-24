@@ -3,6 +3,10 @@ Review ACE exam notes
 	Not watching the youtube videos - Need to revisit
 	Also skipping some links - Need to revisit
 	Sktechnotes by pvergadia - Need to Revisit
+	Links
+		https://cloud.google.com/architecture/framework/performance-optimization
+		https://www.googlecloudcommunity.com/gc/Architecture-Framework-Guidance/tkb-p/cloud-architecture-framework-guidance
+	
 
 Watch online content and take notes
 	GoogleCourses
@@ -30,6 +34,17 @@ Master Important topics
 		Architecture center
 	Qwiklabs
 		find relevent and kill em'll
+			vpc service controls
+			Orgnization policies
+			Billing setup and alerts
+			Cloud Data Loss Prevention
+			Cloud Armour
+			Anthos
+			Cloud run Continuous deployment from Git using Cloud Build 
+			Cloud Run webbsockets - https://cloud.google.com/run/docs/tutorials/websockets
+			How to use secret manager to store env variables in cloud run
+			Write a cloud schedular to trigger cloud run/function which can give report of min instances. Later improve it to set min instances to 0 EOD and set back to whatever value
+			SQL failover and read replicas
 	Articles
 		
 

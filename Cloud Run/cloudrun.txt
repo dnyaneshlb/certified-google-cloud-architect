@@ -2,6 +2,93 @@ Built on top of kNative, built on top of of kubernetes.
 
 Made for stateless workloads as opposed to gke which can be configured to handle both stateful and stateless
 
+Revisions
+	each revision is automatically scaled to the number of container instances needed to handle all incoming requests.
+	concurrency : To give you more control, Cloud Run provides a concurrency setting that specifies the maximum number of requests that can be processed simultaneously by a given container instance.
+	
+	Cloud Functions have a fixed concurrency of 1 while CR can be between 1 to 1000 max. default 80
+
+	min instances : When a revision does not receive any traffic, by default it is scaled in to zero container instances. However, if desired, you can change this default to specify an instance to be kept idle or "warm" using the minimum instances setting.
+
+	Cloud Run does not immediately shut down instances once they have handled all requests. To minimize the impact of cold starts, Cloud Run may keep some instances idle for a maximum of 15 minutes. These idle instances are ready to handle requests in case of a sudden traffic spike.
+	To keep idle instances permanently available, use the min-instance setting.
+	
+	Cloud run can survive the zonal outages bt it cant survice in regional outages. It is advised to deploy services in multiple regions for safety.
+
+
+How to trigger cloud run service?
+	https://cloud.google.com/run/docs/triggering/https-request
+	Https calls
+	GRPC 
+	websockets
+	pubsub push based subscriptions
+	Cloud Scheduler
+	Cloud Task
+	Webhook
+	
+	
+	
+I dont want to use gibberish cloud run URL, can I use my own?
+	Yes off course.
+	You can create one or more custom domains and map them to same cloud run service.
+		Map a custom domain using an global external HTTP(S) load balancer
+		Map a custom domain using Firebase Hosting
+		Map a custom domain using Cloud Run domain mapping 
+
+	Once mapped, you can call stock-atp with whatismystock.com/SE/STO.002 OR getmystock.com/sweden/STO.002 OR any possible domain name you like.
+	
+	
+Cloud run is regional service. How can I cater my global user demand?
+	You can use external global HTTPS load balancer and add regional cloud run services as backend instances to load balancer. Global users can access a single unified domain mapped to load balancer public IP. Internally request will be routed to closest available cloud run service automatically.
+	https://cloud.google.com/run/docs/multiple-regions
+	
+	
+Binary Authorization	
+Binary Authorization is a deploy-time security control that ensures only trusted container images are deployed on Google Kubernetes Engine (GKE) or Cloud Run. With Binary Authorization, you can require images to be signed by trusted authorities during the development process and then enforce signature validation when deploying.	
+	
+	
+	
+	
+
+
+
+Learnings
+	By default, Cloud Run container instances are only allocated CPU during request processing and container startup. You can change this behavior so CPU is always allocated and available even when there are no incoming requests.
+	When instance is not serving any request its called idle instance. Idle instance doesnt have a CPU hence "always on CPU" feature is introduced so even though there arent any request still CPU is allocated.
+
+	Your container instances must listen for requests within 4 minutes after being started.
+	Such a completely Idle instances are evicted after 4 minutes.
+	
+	Instances became idle after serving few requests will not be kept idle for longer than 15 minutes --- unless you have min instances setting
+
+	Second genration execution env of cloud run can file systems.
+	https://cloud.google.com/run/docs/about-execution-environments
+	
+	Avoid background activities if you havent allocated "always on CPU".
+	Running background threads with this kind of CPU allocation can result in unexpected behavior
+	
+	Handle all exceptions and do not let your service crash on errors. A crash leads to a cold start while traffic is queued for a replacement container instance.
+
+	You can deploy container images from OTHER Google Cloud project as well.
+	
+	Cloud run supports contineuos direct deployment using github, bitbucket and cloud source repos(offcourse). So you dont need to build the container.
+	IF you dont want to build containers and do related heavy lifting, Cloud run deploy command supports handy --source flag which does job for you.
+	gcloud run deploy --source source_directory
+	If a Dockerfile is present in the source code directory, it will be built using that Dockerfile, otherwise it will use Google Cloud buildpacks.
+	
+	VVVVIMP
+		After you deploy a service, you can create a new revision and assign a tag that allows you to access the revision at a specific URL without serving traffic.
+		https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration#tags
+
+
+	By default, Cloud Run downgrades HTTP/2 requests to HTTP/1 when those requests are sent to the container. If you want to explicitly set your service to use HTTP/2 end-to-end, with no such downgrading, you can configure it for HTTP/2.
+	https://cloud.google.com/run/docs/configuring/http2
+	
+	Inrestesting https://cloud.google.com/run/docs/configuring/static-outbound-ip
+	
+	
+	
+
 gcloud commands(ACE**)
 	gcloud run deploy myservice 
 		--image gcr_path
