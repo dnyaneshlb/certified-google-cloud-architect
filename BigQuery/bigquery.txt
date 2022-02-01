@@ -1,3 +1,4 @@
+What is bigquery?
 Serverless, Highly scalable and cost effective data warehouse system.
 - pertabyte scale
 - fully managed
@@ -9,18 +10,21 @@ Serverless, Highly scalable and cost effective data warehouse system.
 You pay for data storage and querying data.
 
 When we store data in big query for more than 90 days and dont modify it, google automatically applies 50% discount.
-BigQuery helps you perform interactive analysis of petabyte-scale databases, and it enables near-real time analysis of massive datasets. It offers a familiar SQL 2011 query language and functions.
+BigQuery helps you perform interactive analysis of petabyte-scale databases, and it enables near-real time analysis of massive datasets. It offers a familiar SQL query language and functions.
 
 Data stored in BigQuery is highly durable. Google stores your data in a replicated manner by default and at no additional charge for replicas. With BigQuery, you pay only for the resources you use. Data storage in BigQuery is inexpensive. Queries incur charges based on the amount of data they process: when you submit a query, you pay for the compute nodes only for the duration of that query. You don't have to pay to keep a compute cluster up and running.
 
-Big query ccaches the results so next query takes even less time and money.
+Big query caches the results so next query takes even less time and money.
 
 
-Datasets: A dataset is a grouping mechanism that holds zero or more tables. A dataset is the lowest level unit of access control. Datasets are owned by GCP projects. Each dataset can be shared with individual users.
+Building Blocks
+	Datasets: 
+		A dataset is a grouping mechanism that holds zero or more tables and views. Datasets are owned by GCP projects. Each dataset can be shared with individual users.
+		They are useful as for example, you can configure a dataset's default table expiration time, which applies to all tables in the dataset
 
-Tables: A table is a row-column structure that contains actual data. Each table has a schema that describes strongly typed columns of values. Each table belongs to a dataset.
+	Tables: A table is a row-column structure that contains actual data. Each table has a schema that describes strongly typed columns of values. Each table belongs to a dataset.
 
-Projects contain datasets, and datasets contain tables.
+	Projects contain datasets, and datasets contain tables.
 
 
 There are two ways to query data in bigquery.
@@ -33,35 +37,170 @@ Slots :
 	A BigQuery slot is a virtual CPU used by BigQuery to execute SQL queries. BigQuery automatically calculates how many slots are required by each query, depending on query size and complexity.
 
 	You have a choice of using an on-demand pricing model or a flat-rate pricing model. Both use slots for data processing. The flat-rate model gives you explicit control over slots and analytics capacity, whereas the on-demand model does not.
+	For example, if you purchase 2,000 BigQuery slots, you pay for 2,000 slots until you delete them.
+	Throughput is limited to a predefined slot quota, which is shared among the queries that run in a project.
 	https://cloud.google.com/bigquery/docs/slots
 	
 
 BigQuery Jobs
 	Jobs are actions that BigQuery runs on your behalf to load data, export data, query data, or copy data.
-	When you use the Cloud Console or the bq command-line tool to load, export, query, or copy data, a job resource is automatically created, scheduled, and run
+	When you use the Cloud Console or the bq command-line tool to load, export, query, or copy data, a job resource is automatically created, scheduled, and run.
 	Job status(ACE**)
 		Because jobs can potentially take a long time to complete, they execute asynchronously and can be polled for their status.
 		gcloud : bq show -j jobid
+	https://cloud.google.com/bigquery/docs/jobs-overview	
+
+
+Querying Internal Data
+	You can query data resides within bigquery. It can be across projects, across datasets.
+	But it should not be across locations.
+	e.g. 	
+		project1  dataset1    us-east1
+		project1  dataset4    us-east1		
+		project1  dataset2    us-east2 	
+		project2  dataset3    us-east1 	
+	
+		You can query in dataset1, dataset4 and dataset3 
+		You Cannot query in dataset1 and dataset2
 		
-Querying extenral data sources		
+		
+		
+Querying external data sources		
+	Its such a powerful tool that you dont even need to bring data in BQ platform, assess your data where it lives.
 	BigQuery supports querying data from 
 		Cloud Storage data : https://www.youtube.com/watch?v=jBfx1K3-97k
-		google drive
+		sheets on google drive 
 		Cloud SQL : https://www.youtube.com/watch?v=0cyTHbkARwY
 		Bigtable
+		Cloud Spanner
 	Cons :
 		Query performance is relatively slow
 		Results would not be cached
-		No data size estimates(get to know once query completes)
+		No data size estimates(you get to know once query completes)
 	Usecases :
 		less accessed and but frequently changed data can be treated for external data sources for bigquery
 
+
+Query Optimizations while Querying BQ
+	select only required data
+		select * from abc ----- strictly NO
+	Use partioning and clustering to reduce the number of rows scanned.
+	Dont over normalise BQ tables. so the scans will be reduced.
+		e.g. In ecom, Keep order id and ALL ordered products together in same table. 
+			order1 {"product1: Laptop", "product1: Mouse", "product1: Monitor"}
+			This helps in scanning a single coloumn "ordered products" rather then many columns in another table if we normalise.
+	
+	Filter before join(with where clause) than join and then filter.
+	
+	Unlike postgres, where clause position matters. Try to keep such a where clause first which can filter most of the data.
+	e.g. select * from master_zip where country = 'GB' and zip like '%AA%'
+	This query will filter all the other countries and restrict further data processing only on smaller dataset as compared to other way round.
+
+
+
+BigQuery Storage
+	BigQuery stores data using a columnar storage format that is optimized for analytical queries. BigQuery presents data in tables, rows, and columns and provides full support for database transaction semantics (ACID). BigQuery storage is automatically replicated across multiple locations to provide high availability.
+	https://cloud.google.com/bigquery/docs/storage_overview
+	
+	
+Ingesting data into BigQuery
+	Batch Load
+	Streaming Insert
+	Generated data
+		Use SQL statements to insert rows into an existing table
+
+
+Autorized Views
+	It allows you to provide access to QUERIED RESULTS to another user without giving access to undelying tables and datasets.
+	e.g. atp master table contains PII information about phone number, address, name etc. If you want to share information from master table but want to limit access to only non PII info then,
+		1. run query to fetch non PII info from set of tables and save it in seperate table.
+		2. create seperate dataset to be shared with analyst
+		3. create a view in this dataset 
+		4. populate this view with data from table created in step 1
+		5. Give analyst permission to access new data set.
+
+
+Logical Views vs Materilized Views
+	Logical views are created and wont be updated. They are just representation of data in base tables.
+	While materialized views are recomuted from base tables contineously in the background.
+
+
+Misc important features
+	Time Travel
+		https://cloud.google.com/bigquery/docs/time-travel
+		BigQuery lets you use time travel to access data stored in BigQuery that has been changed or deleted. You can access the data from any point within the last seven days. Time travel lets you query data that was updated or deleted, restore a table that was deleted, or restore a table that expired.
+
+		limited to 7 days only.
+		
+		e.g. query a historical version of the table from one hour ago
+		SELECT *
+		FROM `atp.master_zip_codes`
+		  FOR SYSTEM_TIME AS OF TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 HOUR);	
+		
+	Query History
+		BQ saves last run 1000 queries so you can navigate to desired query quickly.
+		
+	Saved Queries
+		For important queries that run many times so you donthave to write it again and again
+	
+	Scheduled Query
+	
+	SHaring Query
+		Sharing your query to another user via short link.
+		
+	Query Results	
+		Temporary tables
+			BQ saves results of your query in Temporary table and save them for 24 hours. Thats how BQ dont charge even if you run same query many times, cause the data will be pulled from Temporary table for that query.
+		
+		Permanant Table
+			You can force BQ to save the query results in permanant table instead of temporary table. Such table will be there in your dataset till you delete and you will be charged for the same as oppposed to temporary tables.
+		
+		Materilized Views
+			Who want to write a time consuming query with complex joins when we can create materialized views.
+			Just click on the save view button in query results pane and save it. There is no storage cost for views as they are logical in nature.
+		
+		Saving Results Externally
+			Query result can also be saved by clicking save results button(very easy to find).
+			It can be saved in Googel sheets, Google drive or locally.
+	
+	UDFs(User Defined Functions)
+		These are common functions that you can create and store for possible future use.
+		e.g. Things like trim spaces, remove special chars and convert zipcode to numneric can combined together in common function zip_cleanup() and can be used directly in SQL query.
+		So SQL query look neat and clean, complexity hidden.
+		You can create UDF in SQL or javascript
+		
+		
+	
+	
+		
+Advanced BigQuery Usages
+	Bigquery Omni : 
+		run BigQuery analytics on data stored in AWS S3 or Azure blob storage
+	Bigquery ML : 
+		create and execute machine learning models in BigQuery using standard SQL queries
+	Geospatial analytics : 
+		store geospatial data(latitude and longitude etc) in bigquery and efficiently run analytics workloads on it.
+	Data Transfer Service:
+		automatic data movement into BigQuery on a scheduled, managed basis without writing single line of code.
+
 Pricing
+	Pricing Model
+		On Demand Pricing
+			Charged for bytes scanned and not for slots used.
+		Flat Rate Pricing
+			You purchase commitments and buy slots.
+			Charged for slots usage in advance.
+			Reservations :
+				You can create many reservations and then assign them to orgnization, project or folders.
+				e.g. I bought commitment of 100 slots. Then created reservation of 10 slots and assigned it to folder "costing". Then all projects under costing folder can use this reservation of 10 slots.
+				For example, you might create a reservation named prod for production workloads, and a separate reservation named test for testing. That way, your test jobs don't compete for resources that your production workloads need
+				All in all its tool for effectively using the BQ capacity.
 	https://cloud.google.com/bigquery/pricing
 	Pay as you go service
 	storage cost : 
 		Amount of data stored
 		Long term storage data : If you ad data in BigQuery and dont modify it for 90 days, its called as long term storage data. The cost for it will be 50% of normal storage cost.
+		Short Term Storage : data less than 90 days, bit more expensive then long term storage.
 	query cost : 
 			Amount od data scanned in each query
 			1st TB of data used in query processing is free in each month
@@ -101,19 +240,21 @@ An application is writing and reading data for OLAP processing at very high scal
 	So answer could be BigTable or Spanner.
 
 
-
 Notes :
 	If you have a table that is not edited for 90 consecutive days, the price of storage for that table automatically drops by 50 percent to $0.01 per GB, per month. This is the same cost as Cloud Storage Nearline.
 
 
-
 Best Practices :
-	Not really required for ACE exam
+	???
 	
 	
+Links :	
+	Complete bigquery playlist on google cloud tech channel
+		https://www.youtube.com/hashtag/bigqueryspotlight
 	
-Complete bigquery playlist on google cloud tech channel
-	https://www.youtube.com/hashtag/bigqueryspotlight
-	
+	Awesome must watch GCP recommended playlist for bigquery
+		https://cloud.google.com/bigquery/docs/introduction#bigquery-video-tutorials
+		
+		
 	
 				   

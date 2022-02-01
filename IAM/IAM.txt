@@ -27,7 +27,7 @@ Policy :
 		the project level, 
 		the resource level.
 	This policy inheritance is transitive; in other words, resources inherit policies from the project, which inherit policies from folders, which inherit policies from the organization. Therefore, the organization-level policies also apply at the resource level.	
-	--> you cannot assign narrower access as we gon down the resource hierarchy.
+	--> you cannot assign narrower access as we go down the resource hierarchy.
 		i.e. If A user having a editor role at org level. You cannot set him viewer(which is more narrower than editor) at your resource level.
 	etag :
 		When you have multiple systems trying to write to the same Cloud IAM policy at the same time, there is a risk that those systems might overwrite each other's changes.
@@ -67,7 +67,7 @@ Member :
 		SERVICE ACCOUNT :  account for App/Service.
 		GROUP : 
 			Group of user and group of service accounts.
-			Each group has unique email address. developers.mindsphere@azure.com
+			Each group has unique email address. developers.atp@google.com
 			Its best practice to use group for everything
 			You can nest groups as well. e.g. mindspehere developers group and iot subgroup of it and "ie engineer" as sub group and so on
 		Google Workspace domain : Domain managed by gsuite
@@ -100,12 +100,16 @@ Roles in GCP :
 			Viewer
 			Browser : Most restrictive than viewer. Can just list projects and folders
 					  gcloud iam roles describe roles/browser
-		Avoid using these roles if possible, because they include a wide range of permissions across all Google Cloud services. Use them only in case of small team or if gcp dont have predefined role you want(99/99% cases gcp has it).
+		Avoid using these roles if possible, because they include a wide range of permissions across all Google Cloud services. Use them only in case of small team or if gcp dont have predefined role you want(99% cases gcp has it).
 	Predefined Roles :
-		Fine grained access, 480 google provided roles like Project Administrator, Bigtable Reader, Storage Admin, Storage Object Creator etc. 
+		Fine grained access, 480 google provided roles like Project Administrator, Bigtable Reader, Storage Admin, Storage Object Creator etc.
+		These are pre meditated roles with each role holding permissions to do the exact job.
 	Custom Roles
 		Roles you have created by inheriting predefined roles or creating completely new role.
-	
+		Most of the time you wont need it but its good to create custom role if you really need it.
+		e.g. Cloud Task Executor role
+				this combines two roles cloud task creator and consumer together.
+				
 
 Roles syntax:
 	Iam role has a specfic syntax.
@@ -133,7 +137,7 @@ GSuite Account : Account used for user having Gsuite products puschased.(Gsuite 
 Cloud Identity Domain Account : google hosted domain. ikea.com is a google recognised domain hence users in this domain are valid gcp members.
 
 Remember that a policy set on a child resource cannot restrict access granted on its parent. 
-
+In other words, most least restrictive policy wins.
 
 Hierarchy :
 	Organization
@@ -156,11 +160,11 @@ Hierarchy :
 			Dashboard
 				Gke
 					edit service, scale deployment
-					
-					
+									
 	You can set a Cloud IAM policy at any level in the resource hierarchy: the organization level, the folder level, the project level, or the resource level. Resources inherit the policies of the parent resource. If you set a policy at the organization level, it is automatically inherited by all its children projects, and if you set a policy at the project level, it's inherited by all its child resources. 
 	"Child policies cannot restrict access granted at a higher level". 
 	For example, if you grant the Editor role to a user for a project, and grant the Viewer role to the same user for a child resource, then the user still has the Editor role grant for the child resource.
+	In other words, most least restrictive policy wins.
 	
 	
 Custom Roles :
@@ -273,7 +277,7 @@ Best practices
 
 	Set policies at the organization level and at the project level rather than at the resource level. As new resources are added, you may want them to automatically inherit policies from their parent resource. For example, as new virtual machines are added to the project through auto-scaling, they automatically inherit the policy on the project.
 
-	Use the security principle of least privilege to grant Cloud IAM roles; that is, only give the least amount of access necessary to your resources.
+	Use the security principle of least privilege to grant Cloud IAM roles; that is, only give the least amount of access to your resources necessary to perform the job.
 	Grant roles at the smallest scope needed. For example, if a user only needs access to publish messages to a Pub/Sub topic, grant the Publisher role to the user for that topic.
 
 	Grant roles to a Google group instead of to individual users when possible. It is easier to manage members in a Google group than to update a Cloud IAM policy.
@@ -315,8 +319,8 @@ Can I create a service account under an organization?
 I need to ensure that the teams in my organization cannot access each other's instances. How can I do this?
 	Create two projects one for each team. Then create separate policies for each project to control which teams can access what project and the instances contained within the project. An alternative approach is to use service accounts with different roles.
 
-If I have service account json file then I can access any services that the service account has access to ?
-	A person having service account cannot use it unless he has "Service Account User" role on that service account.
+If I have service account key json file then I can access any services that the service account has access to ?
+	A person having service account key cannot use SA unless he has "Service Account User" role on that service account.
 	https://cloud.google.com/iam/docs/service-accounts#user-role
 	 For example, if a service account has been granted the Compute Admin role (roles/compute.admin), a user that has been granted the Service Account Users role (roles/iam.serviceAccountUser) on that service account can act as the service account to start/stop/delete a Compute Engine instance.
 	 Therefore, be cautious when granting the Service Account User role to a user.
@@ -334,7 +338,6 @@ Grant roles to a Google group instead of individual users when possible. It is e
 		This process is only if you want to make member outside your orgnization as owner. For members within org, you can directly add them using gcloud/console.
 	
 	
-
 Workload Identity 
 	If you use Google Kubernetes Engine, then you might be running a combination of different applications on a single GKE cluster. The individual applications are likely to differ in which resources and APIs they need to access
 	If you attach a service account to a GKE cluster or one of its node pools, then all pods running in cluster get access to resource permission granted by SA which might be too restrictive or too over permissive.
@@ -348,7 +351,7 @@ Workload Identity
 
 Workload Identity Federation
 	Its not related to GKE
-	If you have apps running on on prem or other cloud providers like AWS then, you cannot attached gcp service account to them to talk to GCP services. But you can use them as identity provider using credentials provided these on prem or other clouds. This is called Workload Identity Federation.
+	If you have apps running on on prem or other cloud providers like AWS then, you cannot attach gcp service account to them to talk to GCP services. But you can use them as identity provider using credentials provided by these on prem or other clouds. This is called Workload Identity Federation.
 	https://cloud.google.com/iam/docs/best-practices-for-using-and-managing-service-accounts#use-workload-identity-fed
 
 
@@ -370,7 +373,7 @@ Best Practices:
 
 	USe Workload Identity for GKE applications
 
-	If your applications runs on on prem or in other cloud providers, then use "Workload Identity Federation" to directly talk to google cloud services using authentication mechanism used in on prem or other cloud provider.
+	If your applications runs on on-prem or in other cloud providers, then use "Workload Identity Federation" to directly talk to google cloud services using authentication mechanism used in on prem or other cloud provider.
 
 	Service account key is the last option to choose. If none of above option is viable in your case.
 	Dont forget to rotate keys regularly.

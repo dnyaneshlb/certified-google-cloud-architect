@@ -1,4 +1,5 @@
-Father of all noSQL databases but used for analytics, super high throuput read/writes. 
+Father of all noSQL databases, super high throuput read/writes. 
+Cloud Bigtable is a sparsely populated table that can scale to billions of rows and thousands of columns, enabling you to store terabytes or even petabytes of data
 Its first no SQL db internally used in google to power almost all google apps like gmail, maps, photos, calender etc.
 
 Fully managed & clustered, you need to provision the nodes.
@@ -15,29 +16,104 @@ Yuo can directly query bigtable from bigquery(similar to cloud sql, google drive
 Big query is read intensive while bigtable is write intensive.
 
 You need to enter the number of BigTable nodes you'll provision.
-BigTable is priced by provisioned nodes. BigTable does not autoscale. BigTable does not store its data in GCS
-
-
+BigTable is priced by provisioned nodes. BigTable does not autoscale. BigTable does not store its data in GCS.
 
 Bigtable has a limit of 1,000 tables per instance, but in most cases, you should have far fewer tables than that. Creating many small tables is a "Bigtable anti-pattern"
 
----------------------------------------------------------------------------------------------------------------------------------------
-
-GCA
-
-
-https://codelabs.developers.google.com/codelabs/cloud-bigtable-intro-java/index.html#3
-
 BigTable is a third dimensional database. Meaning, a cell can store many historical timestamped values. 
 
+-----------------------------------------------------------------------------------------------------------------------------------
+Storage Model
+	node
+		data is never stored in Bigtable nodes themselves, but in underlying collosus file system.
+		Node merely points to collsus.
+		Hence When a Bigtable node fails, no data is lost.
+	table
+		 The table is composed of rows, each of which typically describes a single entity, and columns, which contain individual values for each row
+	column family
+		Group of similar columns
+	column 
+		represents a single attribute
+	column qualifier
+		name of column
+		Column qualifiers take up space in a row, since each column qualifier used in a row is stored in that row. As a result, it is often efficient to use column qualifiers as data.
+	row key
+		key for a row, its indexed by default
+	cell 
+		contains a unique timestamped versions of the data for row and column
+		can be one or many values in single cell.
+	Bigtable tables are sparse; if a column is not used in a particular row, it does not take up any space.
+
+
+Instance can have many clusters 
+	Cluster can have at least one node 
+		Node connects to collosus file system
+			bigtable table is columnar storage in collosus
+
+
+Connection Pools in Bigtable
+	https://cloud.google.com/bigtable/docs/connection-pools
+
+
+
+Schema Design
+	https://cloud.google.com/bigtable/docs/schema-design
+	Designing a Bigtable schema is different than designing a schema for a relational database. 
+	Rowkey Design
 	
+	
+Misc IMp
+	Bigtable is a key/value store, not a relational store. It does not support joins, and transactions are supported only within a single row.
+
+	Each table has only one index, the row key. There are no secondary indices. Each row key must be unique.
+
+	Rows are sorted lexicographically by row key. So consider this while designing row key of table.
+	
+	All operations are atomic at the row level. This means that an operation affects either an entire row or none of the row.
+
+	Bigtable tables are sparse. A column doesn't take up any space in a row that doesn't use the column.
+
+
+
+Row key Design
+	Avoid designing a row key that requires full table scan.
+	e.g. random string as row key used in region service collection of firestore.
+	In many cases, you should design row keys that start with a common value and end with a granular value
+	asia#india#bangalore#415521
+	
+	Values expressed as raw bytes rather than human-readable strings. Raw bytes are fine for column values, but for readability and troubleshooting, use string values in row keys.
+	
+	Don't use a timestamp by itself or at the beginning of a row key, because this will cause sequential writes to be pushed onto a single node, creating a hotspot.
+
+	Using one table for all tenants is the most efficient way to store and access multi-tenant data.
+	Here we make use of natural sorting of rowkeys very effectively.
+	
+	
+	
+Garbage Collection 
+	Garbage collection is a continuous process in which Bigtable checks the rules for each column family and deletes expired and obsolete data accordingly. In general, it can take up to a week from the time that data matches the criteria in the rules for the data to actually be deleted. You are not able to change the timing of garbage collection.
+	https://cloud.google.com/bigtable/docs/garbage-collection
+	
+
+
+
+Application profiles
+	https://cloud.google.com/bigtable/docs/app-profiles
+	An app profile specifies the routing policy that Bigtable uses to handle an instance's incoming requests.
+	Single Cluster Routing - requests goes to single cluster always
+	Multi Cluster Routing  - requests goes to nearest available cluster
+
+
+
+GCA
+https://codelabs.developers.google.com/codelabs/cloud-bigtable-intro-java/index.html#3
+
 	
 Architechture :
 		https://cloud.google.com/bigtable/docs/overview#architecture
 	Instance
 		An instance contain one or more clusters.
 		
-
 	cluster
 		A cluster contain one or more nodes
 		All clusters created under instance share instace properties like SDD/HDD storage, application profile etc.

@@ -159,7 +159,7 @@ Cluster AutoScalar
 				
 Nodepool
 		A node pool is a group of nodes within a cluster that all have the same configuration.
-		A cluster can be created as multiple node pools each having different set of compute engines but remember that all nods in nodepool are of identical configuration.
+		A cluster can be created as multiple node pools each having different set of compute engines but remember that all nodes in nodepool are of identical configuration.
 		e.g. nodepool A - 2 CPUs(16gb) min:1 max:6
 			 nodepool B - 4 CPUs(32gb) min:2 max:10
 		
@@ -240,7 +240,7 @@ Exposing Apps
 		Service
 				ClusterIp
 						its a type of a service that routes traffic within the cluster across pods. It has static internal alias IP.
-						Accessible within the cluster only not outside.
+						Accessible within the cluster only, not possible outside.
 						Its the basic service type object.
 						kind : service, type: CluserIP
 				Nodeport
@@ -249,7 +249,7 @@ Exposing Apps
 						It exposes a specific port on every node so external world can access apss via any ip/port combination of any node. You can add one more "self managed" loadbalancer on top of it to have only one IP exposed to externla world.
 						kind : service, type: NodePort
 		LoadBalancer		
-				I think avalable only in GKE where a netowrk loadbalancer is setup ouside the cluster which give sinlge ip address to external world. It then forwards traffic to any node within the cluster.
+				I think available only in GKE where a netowrk loadbalancer is setup ouside the cluster which give sinlge ip address to external world. It then forwards traffic to any node within the cluster.
 				Keep in mind, for LoadBalancer a kind is LoadBalancer and not service.
 				kind : LoadBalancer 
 		Ingress
@@ -268,7 +268,7 @@ Exposing Apps
 		Container-Native Load Balancing
 				Double Hopp Problem
 						Traditional load balancing techniques first route external traffic to any random node(first hopp) and then node routes to any available pod(secong hopp) which may be on same node or another node which increase latency.
-						We can avoif that using ExternaltrafficPolicy=local field in manifest which force node to route traffic only to pod within a same node. But if each time same node is selected by load balancer, it may keep pods on other nodes being idle.
+						We can avoid that using ExternaltrafficPolicy=local field in manifest which force node to route traffic only to pod within a same node. But if each time same node is selected by load balancer, it may keep pods on other nodes being idle.
 						Hence we have Container-Native Load Balancing.
 						
 						Here instead of choosing any random node, container native load balancer will have direct mapping of pods that can serve the requests and it will directly choose the pod. SO no two hopps.
@@ -297,7 +297,7 @@ Ephemeral
 				Use it for short term purposes considering pod can terminate abruptly anytime.
 				
 		ConfigMaps
-				Used to pass configuration information to pods like servername, port etc.
+				Used to pass configuration information to pods like servername, port(not passwords :)) etc.
 				Ephemeral
 				USed to store env variable, ports, other config information at pod level so that all containers can use it.
 				Word of Caution
@@ -305,7 +305,7 @@ Ephemeral
 				ConfigMaps bind configuration files, command-line arguments, environment variables, port numbers, and other configuration artifacts to your Pods' containers and system components at runtime. ConfigMaps enable you to separate your configurations from your Pods and components. But ConfigMaps aren't encrypted, making them inappropriate for credentials. This is the difference between secrets and ConfigMaps: secrets are encrypted and are therefore better suited for confidential or sensitive information such as credentials. ConfigMaps are better suited for general configuration information such as port numbers.
 				
 		Secrets				
-				Used to pass secret information to pods	like access keys, passwords etc.
+				Used to pass secret information to pods	like access keys, passwords etc. Secrets are encrypted and are therefore better suited for confidential or sensitive information
 				Ephemeral
 				You supply the values of Secrets in base64 form.
 				
@@ -320,8 +320,8 @@ Persistent Volume
 		
 		Old Approach : still used though
 		We first create persistent volume by creating persistent disk and then mount that disk to pods using pod manifest.
-		If pod get destryoed and recreated on new node then persistent disk get detached from old now, also attached to new node and gets mounted on new pod.
-		Pod manifesst file has details about which volume to mount whne ots getting created.
+		If pod get destryoed and recreated on new node then persistent disk get detached from old node, also attached to new node and gets mounted on new pod.
+		Pod manifesst file has details about which volume to mount when its getting created.
 		This data can be then mounted on another pod volume as new pods come online.
 		This is two step process(creating disk and then mountig disk to pod). Also we hardcode disk details on pod manifest. It may create issues when we move from one storage option to another or onprem env. Hence we have Persistent Volume Abstraction.
 		
@@ -331,12 +331,12 @@ Persistent Volume
 				Persistent Volume  is now a cluster level resource rather than pod level. Hence any number of pods can claim it and mount it.
 				Pods use PVC to request a persistent volume
 				See @Persistent Volume Abstraction.png
-				Note previously we directy mounted a extenal durable storage to a pod directly. But now extenal durable storage is a cluster level resource and it can be used my multiple pods by claiming PVC.
+				Note previously we directy mounted a extenal durable storage to a pod directly. But now extenal durable storage is a cluster level resource and it can be used by multiple pods by claiming via PVC.
 				
 				Persistent Volume can be created with fine grained control like
 						accessModes : 
 								readWriteOnce 	- read and write but mount volume to one node
-								readOnlyMany 		- read only but mount volume to many nodes
+								readOnlyMany 	- read only but mount volume to many nodes
 								readWriteMany 	- persistent disk dont support it.
 						capacity : 100G
 						

@@ -1,7 +1,11 @@
 Compute Engine is a computing and hosting service that lets you create and run virtual machines on Google infrastructure. Compute Engine offers scale, performance, and value that lets you easily launch large compute clusters on Google's infrastructure. There are no upfront investments, and you can run thousands of virtual CPUs on a system that offers quick, consistent performance. 
+	wide range of security updated OSs
+	live migration
+	?
+	?
 
 
-VM Storage		
+VM Storage Options		
 	Persistent disks(pd-standard)
 		high latency, low cost
 	  Persistent disks are "durable" "network storage devices" that you can mount on VMs. 
@@ -10,10 +14,10 @@ VM Storage
 	  
 		Data on transit and at rest wrt persistent disks is encrypted by default.		
 
-		By default, each Compute Engine instance has a single boot persistent disk (PD) that contains the operating system. It is used for booting the instance.
+		By default, each Compute Engine instance has a single bootable persistent disk (PD) that contains the operating system. It is used for booting the instance.
 		
 		A disk can be attached to multiple VMs in read mode but to only one VM in read/write mode.
-		You can resize a persistent disk aor add more disks to running VM.
+		You can resize a persistent disk or add more disks to running VM.
 
 	SSD
 		low latency, high cost
@@ -42,7 +46,7 @@ VM Storage
 
 
 Preemtible VM
-	 A preemptible instance is an instance you can create and run at a much lower price than normal instances. However, Compute Engine might terminate (preempt) these instances if it requires access to those resources for other tasks. 
+	 A preemptible VM is an instance you can create and run at a much lower price than normal instances. However, Compute Engine might terminate (preempt) these instances if it requires access to those resources for other tasks. 
 	 ***** Preemptible instances will always terminate after 24 hours not matter what.
 	 
 	 How can you safeguard yourself in this case?
@@ -54,27 +58,31 @@ Preemtible VM
 		Pick smaller machine shapes, larger instances are more likely to be preempted, since they take up more space
 		Run large preemptible VM clusters during off peak times(weakends and night time)
 		Design your applications to be fault and preemption tolerant
-		Retry creating instances that have been preempted
-		Use shutdown scripts
+		Recreate instances that have been preempted
+		Use shutdown scripts to perofrm clean up and save checkpoint.
+
+Spot VMs??
+
 
 
 VM Lifecycle
 		Provisioning : finds a host and allocates resources like vCPUs, memory, root and persistent disk
-		Staging 	: resources are acquired, prepares for first boot
-		Running 	: the VM starts booting up(thats when gcloud completes),
-					  instance startup script 
-				      and rest of stuff you do with VM
-		Terminating : shutdown script
-		Terminated  : You stopped the VM, or the VM encountered a failure
-		Reset 		: you can reset a VM to wipe the memory contents of the VM and reset the VM to its initial state
-					  The VM remains in the RUNNING state through the reset.
-		Suspended   : Suspending a VM is analogous to closing the lid of your laptop. 
-					  USed when You don't need the VM at this time 
+		Staging 	 : resources are acquired, prepares for first boot
+		Running 	 : the VM starts booting up(thats when gcloud completes),
+					   instance startup script 
+				       and rest of stuff you do with VM
+		Terminating  : shutdown script
+		Terminated   : You stopped the VM, or the VM encountered a failure
+		Reset 		 : you can reset a VM to wipe the memory contents of the VM and reset the VM to its
+					   initial state
+					   The VM remains in the RUNNING state through the reset.
+		Suspended    : Suspending a VM is analogous to closing the lid of your laptop. 
+					   Used when You don't need the VM at this time 
 								but want to be able to bring it back up quickly with its OS and application state already initialized.
 								You still get charged.
-		Suspending  : Whne you click suspend
-		Repairing	: Repairing occurs when the VM encounters an internal error 
-					  or the underlying machine is unavailable 	due to maintenance
+		Suspending   : Whne you click suspend
+		Repairing	 : Repairing occurs when the VM encounters an internal error 
+					   or the underlying host is unavailable due to maintenance
 					  
 
 VM Lifecycle :
@@ -91,8 +99,7 @@ VM Lifecycle :
 			|
 		Delete(Optional)
 	
-	****When  VM is terminated, you do not pay for memeory and CPU but pay for attached disks and allocated ip addresses.
-
+	****When  VM is terminated, you do not pay for memory and CPU but pay for attached disks and allocated ip addresses.
 					  
 
 VM Manager
@@ -127,6 +134,8 @@ VM scripting
 
 
 Create a new service account rather than using the Compute Engine default service account(Remember default service account has editor role on project, a wider scope) & Grant IAM roles to that new service account for only the resources that it needs.
+Also remember that you need to enable the access scopes as well along with valid service account
+e.g. even if your service accout has permissions for cloud storage admin but cloud storage access scope is not enabled then you cannot interact with cloud storage.
 
 
 gcloud beta billing accounts list
@@ -154,9 +163,10 @@ Instance Metadata :
 		e.g.
 			"bucket url" can be added in custom metadata which will be used by startup script to download the jar from the bucket and run the app.
 	
+	
 Special Mention:
 	A VM can be created with a delete protection. By setting the "deletionProtection" flag, a VM instance can be protected from accidental deletion. If a user attempts to delete a VM instance for which you have set the deletionProtection flag, the request fails.
-	82 VMs delete protected vms are created, due to owner SA key gone public. 
+	82 delete protected vms are created, due to owner SA key gone public. 
 	
 	
 Machine Types
@@ -179,7 +189,8 @@ Machine Types
 
 Machine Family :
 		see @machine_families.png
-		General purpose : Machine types for common workloads, optimized for cost/performance ratio
+		General purpose : 
+				Machine types for common workloads, optimized for cost/performance ratio
 				Series
 						First gen
 								N1
@@ -189,6 +200,7 @@ Machine Family :
 								N2D
 						N1 and E2 machine families support shared core VMs where multiple VMs utilize same vCPU.
 								f1-micro, g1-small, e2-micro, e2-small, e2-medium		
+						TAU ????		
 		Compute Optimized : 
 				High-performance per core hence used for compute-intensive workloads 
 				Series: 	C2
@@ -196,20 +208,21 @@ Machine Family :
 				Large-memory machine types for memory-intensive workloads because they offer more memory per core than other machine types
 				Series :	M1
 				These machine types are suited for in-memory databases and in-memory analytics, such as SAP HANA and business warehousing (BW) workloads, genomics analysis, SQL analysis services, etc.
-		Accelerator Optmized
+		Accelerator Optimized
 				Machine Learning workloads
 				Series : A2
 				
-		Note : E2 are cheapest machines while N2/N2D are most performance/cost efficient.		
+		Note : E2 are cheapest machines while N2(Intel processor)/N2D(AMD processor) are most performance/cost efficient.		
 				
 				
 	
 Machine Types:
 	Shared Core
-		Micro (Shared Core) : cost-effective for running small, non-resource intensive applications
-		Small (Shared Core) : cost-effective for running small, non-resource intensive applications
-		Medium (Shared Core) : cost-effective for running small, non-resource intensive applications
+		Micro (Shared Core) : cost-effective for running small, less resource intensive applications
+		Small (Shared Core) : cost-effective for running small, less resource intensive applications
+		Medium (Shared Core) : cost-effective for running small, less resource intensive applications
 	Standard
+		n1, n2, e2, n2d
 	HighMem
 	HighCPU	
 		
@@ -221,20 +234,19 @@ Machine Types:
 	
 	Also, remember that this number at the end is always powers of two.
 	So n1-standard-10 is invalid machine type
-	Note this is for only predefined genenal purpose machine family . Custom Machine and Compute optimized and Memory Optimized  machine family can have cpus number not power of 2.
+	Note this is for only predefined genenal purpose machine family. Custom Machine and Compute optimized and Memory Optimized  machine family can have cpus number not power of 2.
 	
 	See Q23 in practice test 2 of udemy. Its interesting!!
 	
 	Shared Core machines types
-		 cost-effective for running small, non-resource intensive applications
+		 cost-effective for running small, non-to-less resource intensive applications
 		 CPU Bursting
 		 		Since multiple shared core machines run on single vCPUs, they offer bursting capabilities that allow instances to use additional physical CPU for short periods of time. Bursting happens automatically when your instance requires more physical CPU than originally allocated.
 		 		Bursting doesn't incur any additional charges. 
 			f1-micro
 			g1-small
 	
-	The number at the end of the machine type indicates how many CPUs it has, and the type tells you where in the range of 
-	allowable RAM that machine falls--from minimum (highcpu) to balanced (standard) to maximum (highmem). 
+	The number at the end of the machine type indicates how many CPUs it has, and the type tells you where in the range of allowable RAM that machine falls -- from minimum (highcpu) to balanced (standard) to maximum (highmem). 
 	amount of ram --
 			highCPU(les ram than CPU) < standard(Balanced ram with CPU) < highmem( more ram than CPU)
 			
@@ -250,7 +262,7 @@ Instance Group :
 	https://youtu.be/uaoauF5p7gw cloud next video
 	An instance group is a collection of virtual machine (VM) instances that you can manage as a single entity.
 	Managed instance groups
-		group of identical instances
+		group of instances having identical configuration.
 		If a VM in the group stops, crashes, or is deleted, it automatically recreates that new VM of same config.
 		Instances in MIG can be spread across a single zone or multiple zone in single region.
 		Support Auto healing, auoscaling
@@ -270,7 +282,9 @@ Instance Group :
 			options	: autoscale, autoscaling off, autoscale only up 
 		
 		Autoscaling will reduce MIG instances to defined "min instances" setting when no/less traffic and increase instances to "max instances" setting to absorb the traffic spike.
-		You can use "predictive autoscaling" which scales your MIG based on historical data of scaling.
+		You can use "predictive autoscaling" which in advance scales your MIG based on historical data of scaling.
+		Schedules Autoscaling : 
+		Predictive Autoscaling : 
 		
 		Autoscalar can scale based on
 				CPU utlization
@@ -282,7 +296,7 @@ Instance Group :
 			Zonal MIGS, Regional MIGs
 		
 	UnManaged instance groups
-		heterogeneous instances that you have to manage on your own.
+		Group of heterogeneous instances that you have to manage on your own.
 		They do not offer autoscaling, autohealing, rolling update support, multi-zone support, or the use of instance templates and are not a good fit for deploying highly available and scalable workloads
 	
 		You dont create VMs in unmanaged instance group(as like MIGs) but you add existing VMs in same zone/vpc to unmanaged instance group.
@@ -302,7 +316,7 @@ Instance Templates :
 	Health check :
 		It contains a port, url to check for vm health.
 		we can configure like
-			vm is healthy if health probe successes two times  a row with 5 seconds delay.
+			vm is healthy if health probe successes two times a row with 5 seconds delay.
 			vm is unhealthy if health probe fails two times in a row with 5 seconds delay in between.
 
 	Please note that labels defined within an instance template are applied to all instances that are created from that instance template. The labels do not apply to the instance template itself.
@@ -311,21 +325,19 @@ Instance Templates :
 	You can also override instance template fields when creating a VM instance from an instance template.
 
 
-	
-
 
 Compute Engine Ip addresses :
-	Each VM instance network interface must have "one" primary internal IP address, can have one or more alias IP ranges, and can have one external IP address.
-	To communicate between instances on the same Virtual Private Cloud (VPC) network, you can use the internal IP address for the instance. To communicate with the internet, you must use the instance's external IP address unless you have configured a proxy of some kind. 
+	Each VM instance's network interface must have "one" primary internal IP address, can have one or more alias IP ranges, and can have one external IP address.
+	To communicate between instances on the same Virtual Private Cloud (VPC) network, you can use the internal IP address of the instance. To communicate with the internet, you must use the instance's external IP address unless you have configured a proxy of some kind. 
 	Similarly, you must use the instance's external IP address to connect to instances outside of the same VPC network unless the networks are connected in some way, like by using Cloud VPN. Both external and internal primary IP addresses can be either ephemeral or static.
 	Compute engine has 
-		internal Ip address
+		internal Ip address(mandatory)
 				static
 				ephemeral
-		external Ip address
+		external Ip address(optional)
 				static
 				ephemeral
-		Alis ip ranges :
+		Alis ip ranges(optional)
 				If you have more than one service running on a VM, you can assign each service its own unique IP address.
 				These alias ip addreses can come from either primary or secondary range of vpc.
 				
@@ -334,7 +346,7 @@ Compute Engine Ip addresses :
 	The External IP addresses for VM instances are ephemeral by default. If an instance is stopped, any ephemeral external IP addresses assigned to the instance are released back into the general Compute Engine pool and become available for use by other projects. When a stopped instance is started again, a new ephemeral external IP address is assigned to the instance. Alternatively, you can reserve a static external IP address, which assigns the address to your project indefinitely until you explicitly release it. Be alert, as the charges for static external ip are more if its not used.
 
 	You cannot use internal ip addresses to ping to VMs in different VPC(even though source and destn vm reside in same region and zone.....come on they are on diffrent sub network all togethter).
-	You have to use external Ip address.
+	You have to use external Ip address(for which internet is used to route this traffic).
 	
 	**To assign multiple external IP addresses to a single instance, you can set up multiple forwarding rules to point to a single target instance.
 	
@@ -342,7 +354,7 @@ Compute Engine Ip addresses :
 	Same goes for interal addresses.
 	
 	Note that 
-			An external ip address reserved but not used will cost you more if its in use.
+			An external ip address reserved but not used will cost you more if its not in use.
 			Communicating with a resource using an external IP address can cause more billing, even if the sender is in the same VPC network. Because the traffic flows over the internet(hot potato routing) and egress charges are applied. So always try to communiate using interal IP wherever possible.
 	
 	If you dont want to work with ip addresses then you can use FQDN(Fully Qualified Domain Name) of your resource and communicate with it using it. Google internally resolves it to ip addresses.
@@ -350,25 +362,6 @@ Compute Engine Ip addresses :
 			curl "http://metadata.google.internal/computeMetadata/v1/instance/hostname" -H "Metadata-Flavor: Google"
 	
 
-
-Interacting with Instance(ACE*******)
-	Generating/uploading a custom SSH key
-		see below Managing Access via SSH keys
-	Attaching GPU and Installing CUDA libraries
-		see below GPUs
-	Configuring a VM for Stackdriver monitoring and logging
-		see below Monitoring VMs using stackdriver
-	SSH/RDP into VM
-		see below Connecting to VM
-	Availability policy
-		see VM Availbility Policy below
-	Assessing compute quotas and requesting increases
-		see below
-	Instance Metadata
-		see above Instance Metadata
-		Instance ID
-		
-	
 Important from ACE pov	
 		Generating/uploading a custom SSH key for instances
 		Configuring a VM for Stackdriver monitoring and logging
@@ -379,16 +372,19 @@ Assessing compute quotas and requesting increases
 	gcloud compute regions describe europe-west1
 		it prints region info with quotas used vs quotas limit
 
-	VM quotas are managed at the regional level.
+	Every project has a limited set of quota for cloud resources in each region. 
+		e.g. VMs in europe-west1 can be max 1000 for your project
+			 SQL instances in us-west1 can be 100 for your project
+	similarly VM quotas are managed.
 	You can increase quota by going to IAM->quota page and editing service quota.
 	But request to descrease quota is rejected by default. You have to reply to the rejection email mail with valid reason for decrease.
 	
 	
-
 Live Migration:
+	Its a process of migrating compute engine instance from one host to another without loosing any data or downtime.
 	During host maintenance, the VM is set default for live migration. 
 	The live migration process just transfers a running VM from one host machine to another host machine "within the same zone". All VM properties and attributes remain unchanged, including internal and external IP addresses, instance metadata, block storage data and volumes, OS and application state, network settings, network connections, and so on.
-	However, you can have the VM terminated instead of migrated.Just edit the availability policy by clicking edit vm btn.
+	However, you can have the VM terminated instead of migrated. Just edit the availability policy by clicking edit vm btn.
 	VMs having GPUs and TPUs, configdential VMs cant be live migrated.
 	Note "Confidential VMs and Preemptble VMs" dont support live migration.
 
@@ -414,7 +410,7 @@ Compute Engine Disks :
 		fastest performance
 		risk of data loss
 		
-	You can increase a size of persistent disk but cant shrink it. SUbnet size is also increased but cant be descreased.	
+	You can increase a size of persistent disk but cant shrink it. Subnet size is also increased but cant be descreased.	
 	
 	
 VM price change based on region but stays same for all zones within a region.
@@ -425,12 +421,13 @@ Some properties of a VM are integral to the VM, are established when the VM is c
 
 Sole tenancy 
 	see @soletenancy.png
-	By default, a single hardware can host VMs from multpile users. If you have complience requirement to have only your VMs on that hardware for whatever reasons then you can opt for sole tenancy.
+	By default, a single host hardware can host VMs from multpile users/companies. If you have complience requirement to have ONLY YOUR VMS on that hardware for whatever reasons then you can opt for sole tenancy.
 	e.g. 
 		Finance or healthcare workloads with security and compliance requirements.
 		Gaming workloads with performance requirements.
 	Just like instance template and instance group, we have node template and node group for sole tenant nodes.
 	node affinity and anti-affinity
+	
 	Its has super heavy pricing, just check on pricing calculator.
 
 	
@@ -481,7 +478,7 @@ TPUs
 
 Managing Access to VMs
 		Using metadata	
-			By default, Compute Engine uses custom project or instance metadata to configure SSH keys and to manage SSH access. If you use OS Login, metadata SSH keys are disabled.
+			By default, Compute Engine uses custom 'project or instance' metadata to configure SSH keys and to manage SSH access. If you use OS Login, metadata SSH keys are disabled.
 			Note, If a user presents their private SSH key, they can use a third-party tool to connect to any instance that is configured with the matching public SSH key file, even if they aren't a member of your Google Cloud project. 
 			A user can only connect to an instance if their public SSH key is available to the instance through the metadata server and if they have the matching private SSH key.
 			Types :
@@ -497,7 +494,7 @@ Managing Access to VMs
 			https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys#block-project-keys
 			
 		Using OS Login
-			No relying on ssh keys. Let IAM handle the login to vm as well, based on the IAM roles/permissions assigned to user.
+			No relying on ssh keys. Let IAM handle the login to vm as well, based on the IAM roles/permissions assigned to user. Here we can impose granular control on what user can do with vm as opposed to admin role with ssh keys.
 
 
 Private Google Access(ACE**)
@@ -507,15 +504,17 @@ Private Google Access(ACE**)
 	  https://cloud.google.com/vpc/docs/private-access-options#pga-supported
 	  https://cloud.google.com/nat/docs/monitoring
 	  If vm dont have external IP, it can talk to only resources within VPC. It cant talk to global resources like cloud run, storage bucket etc, also not to internet.
-	  With Private Google Access enabled on subnet, it can now access google services like storage bucket.
-	  This is where NAT comes into picture to access public internet.
+	  With Private Google Access enabled on subnet, it can now access google services like storage bucket, cloud logging, bigquery and so on.
 	  
+	  Private Google Access is limited to google APIs and Services.
+	  This is where NAT comes into picture to access public internet.
+	  https://cloud.google.com/nat/docs/overview#specifications
 
 
 VM Security
 		OS Login : 
 				This was a potential sec bug which google fixed. 
-				How? You have granular roles for each resource via IAM but once you ssh into vm then you can do anything. IAM cant do much within a VM previously. hence OS login to tie IAM roles to user SSHing a VM.
+				How? You have granular roles for each resource via IAM. But when you access VM usin ssh keys then you can do anything. SO principal of least previledge is not honoured here. IAM cant do much within a VM previously. Hence OS login to tie IAM roles to user SSHing a VM.
 				
 				Use OS Login to manage SSH access to your instances using IAM without having to create and manage individual SSH keys.
 				You can directly tie a Linux user account to a user's Google identity
@@ -539,7 +538,7 @@ VM Security
 
 
 Managing Access via SSH keys(ACE**)	
-	2 min video exmplain everything https://www.youtube.com/watch?v=JGcW1QdEQGs
+	2 min video explains everything https://www.youtube.com/watch?v=JGcW1QdEQGs
 	You can login to VM using
 		console(clicking ssh button), 
 			where gcp  automatically manages the full lifecycle of keys related to your signed in account.
@@ -554,7 +553,7 @@ Managing Access via SSH keys(ACE**)
 			ssh keys are helpful when you want to set up a new general purpose account on vm.
 			e.g. setup vmuser account which can be used by anyone rather than logging in to VM by your own account.
 			
-	Best option is to use OS Login, which tightly copuples with IAM hence only authernticated users having right permission can access VMs with limited rights(viewer etc.)  
+	Best option is to use OS Login, which tightly couples with IAM hence only authernticated users having right permission can access VMs with limited rights(viewer etc.)  
 
 
 Instance Schedules
@@ -566,7 +565,7 @@ Connecting to VM
 	rdp to windows instance
 		First enable serial port and then connect
 		gcloud compute instances add-metadata instance1 --metadata=serial=port-enabled=1
-		gcloud compute connect-serial-port isntance1 --port=2
+		gcloud compute connect-serial-port instance1 --port=2
 
 
 Connecting to vm instance that does not have external ip
@@ -601,20 +600,21 @@ VM Availbility Policy(ACE**):
 											 migrating them.
 	Automatic Restart : yes/no - decide to restarts vm stopped due to system event(not user action)
 						default is yes.
+						If vm is stopped due to user intentional action then it wont be automatically restarted.
 	Preemptible : yes/no 
 	
 
 Compute Engine Default Service Account?
-		Google creates the Compute Engine default service account with "IAM project editor role" and adds it to your project automatically once you enable Compute Engine API.
-		projectnumber-compute@developer.gserviceaccount.com
+	Google creates the Compute Engine default service account with "IAM project editor role" and adds it to your project automatically once you enable Compute Engine API.
+	projectnumber-compute@developer.gserviceaccount.com
 		
 
 Google APIs service account
-		 all projects enabled with Compute Engine come with a Google APIs service account.
-		 This service account is designed specifically to run internal Google processes on your behalf. 
-		 The account is owned by Google and is not listed in the Service Accounts section of Cloud Console.		
-			compute@developer.gserviceaccount.com	
-		 eg. managing MIGs	
+	all projects enabled with Compute Engine come with a Google APIs service account.
+	This service account is designed specifically to run internal Google processes on your behalf. 
+	The account is owned by Google and is not listed in the Service Accounts section of Cloud Console.		
+		compute@developer.gserviceaccount.com	
+	eg. managing MIGs	
 
 
 Funny thing
@@ -624,7 +624,7 @@ Funny thing
 You can write VM shutdown script but it has to be completed within 90 secs. Thats a hard limit.
 This limit is 30 secs for preemptible vm.
 	
-Yuo access windows vm via tcp:3389 and linux vm via tcp:22
+You access windows vm via tcp:3389 and linux vm via tcp:22
 
 fun fact : The more you use the VM in billing period, more you get sustained use discounts
 
@@ -634,12 +634,13 @@ Reset VM will stop and reboot the machine. It keeps the same IPs and the same pe
 Cost Control :
 			Discounts
 					Commited Use Discount
-						
+							Commitment to use VM for certain period.
+							Need to be bought explicitely
 					Sustained Use Discount
-						Sustained use discounts are automatic discounts for running Compute Engine resources a significant portion of the billing month.
-						Note that it is calculated over all instances run in that month. So you dont need to make sure once instance runs fully that month. Its possible that you spin up instance1 on 1st and shut it down on 10th. You spin up another isntance instance2 on 11 and use it till 30th of the month. You are elligible for SUDs
+						Sustained use discounts are automatic/implicit discounts for running Compute Engine resources a significant portion of the billing month.
+						Note that it is calculated over all instances run in that month. So you dont need to make sure once instance runs fully that month. Its possible that you spin up instance1 on 1st and shut it down on 10th. You spin up another instance instance2 on 11 and use it till 30th of the month. You are elligible for SUDs
 						https://youtu.be/3aNDcgoJ-_8?t=1669
-						Sustained use discounts do not apply to E2 and A2 machine types.
+						Sustained use discounts do not apply to E2(Cost Optimized machines) and A2 machine types.
 			Automatic cleaning up unused IP addresses, disks, etc 
 			
 			Automatic stopping idle VMs
@@ -671,7 +672,7 @@ Sequence of steps happen when vm starts
 
 
 
-How to create a new instance based on exisitg instance?
+How to create a new instance based on existing instance?
 		gcloud compute instances-templates create mytemplate --source-instance myinstance
 			then using the template of myinstance create a new vm
 		gcloud compute instances create newinstance --source-instance-template mytemplate
@@ -707,7 +708,7 @@ How do I know if an instance will be undergoing an infrastructure maintenance ev
 		
 		
 Can I create a VM without any SA?		
-	If not specified, default service account is attached to Comppute Engine but you can delete default service account and create VM without any SA. 
+	If not specified, default service account is attached to Compute Engine but you can delete default service account and create VM without any SA. 
 	Its not mandatory to have SA for compute Engine.
 
 
@@ -720,6 +721,7 @@ What is diff between Compute Admin and Compute instance admin
 	Compute Instance Admin : 
 		Permissions to create, modify, and delete virtual machine instances along with disks crud ops.
 	compute instance admin V1 : 
+		Much broader role.
 		Full control of Compute Engine instances, instance groups, disks, snapshots, and images
 		If you grant a user this role only at an instance level, then that user cannot create new instances.
 	Compute Admin - 
