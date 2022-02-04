@@ -11,7 +11,7 @@ Its is recommended
 		to enable billing exports to big query on day one
 		to assign key roles to more than one person (reasonable redundancy)
 
-You can create many billing accounts. But a project is associated with max one billing account(offcourse). 
+You can create many billing accounts. Like I did (SEB Credit Card linked Billing Account, Satish Patil Credit Card linked Billing Account). But a project is associated with max one billing account(offcourse). 
 One billing account can be associated with multiple projects.
 
 see@ Billing Overview.png
@@ -19,16 +19,19 @@ Note that..Payment profile is google level resource and not in GCP. So if you wa
 
 
 Billing Account viewer role can view billing details of the billing account(no matter how many projects it has)
+Remember that Billing Account is not a project level entity. There can be many projects linked to Billing Account.
 So if you want to restrict user to view billing of only project he is part of you can use Project Viewer role.
-Alternatively if you need to just know how much each project is spending then you can use Billing Account Viewer
+And if you need to just know how much each project is spending then you can use Billing Account Viewer.
+
 
 ACE(VIMP**)
 Billing Account viewer   - view account billing. 
-						   Billing Account Viewer access would usually be granted to finance teams, it provides access to spend information	
+						   Billing Account Viewer access would usually be granted to finance teams, it provides access to spend information.	
 Billing Account User	 - view account billing + link projects to a billing account
 Project Billing Manager  - Link/unlink "the project(only one)" to/from a billing account
-Billing Account Admin    - view account billing + add new project under billing account + more
+Billing Account Admin    - view account billing + add/remove new project under billing account + disable billing of project + more
 						   Manage billing accounts (but not create them)	
+						   The only ones who can contact Google Cloud support if you need help
 Billing Account Creator  - Create new self-serve (online) billing accounts.
 
 
@@ -87,7 +90,7 @@ On Billing account, billing report page, you can filter billing report by locati
 				
 Billing Export(ACE**) :
 		You can setup export billing information to either csv/json File export(not supported now, its deprecated) and Bgquery export(highly recommended)
-		Yuu can run sofisitcated analysis on this data to find the patterns and even predict the future usage.
+		You can run sofisitcated analysis on this data to find the patterns and even predict the future usage.
 		Further you can connect it to Data Studio for beautiful visualization charts and graphs.
 		GCP recommends that you enable Cloud Billing data export to BigQuery at the same time that you create a Cloud Billing account.
 		Steps :
@@ -144,8 +147,8 @@ Cost control
 			
 		Using Resource Cleanup
 			Finding fully idle resources
-			Finding Over provisioned Resources
 			Finding part-time idle resources
+			Finding Over provisioned Resources
 			Is there any programmatic way to do this??	- Recommender Service
 			
 		IMP : google provides ready to use cloud function code that we can use to perform cost control action like find and delete unused external ip addresses, move nonused cloud storage data to coldline, delete non attached PDs and so on
