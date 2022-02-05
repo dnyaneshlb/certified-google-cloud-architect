@@ -1,14 +1,21 @@
-Serverless, event based, small single purpose processing 
+What is Cloud Function?
+	Serverless
+	Event based
+	Small "SINGLE PURPOSE" processing 
+	Fully managed
+		can scale from a few invocations a day to many millions of invocations without any work from you
 
-billed nearest 100ms
+billed nearest 100ms.
 
 can be written only in python, nodejs, java, .Net, Ruby, php and go.
 
 Two types
 	HTTP Function
 		Functions that are triggered by HTTP requests are called HTTP functions.
+		invoked at most once -- imp
 	Event driven functions	
-		Functions that are triggered by event in GCP ecosystem are called even driven functions
+		Functions that are triggered by event in GCP ecosystem are called even driven functions.
+		invoked at least once -- imp
 		Background Function
 			Functions that are triggered by event are called background functions
 			for example, by a message being published to a Pub/Sub topic, a change in a Cloud Storage bucket, or a Firebase event.
@@ -19,6 +26,12 @@ Two types
 			This isn't supported by many popular languages yet.
 			https://cloud.google.com/functions/docs/writing/cloudevents
 			
+Event and Triggers
+Event
+	Events are things that happen within your cloud environment that you might want to take action on	
+	A single event can be bound with many CFs but a CF is always bound with a single event.
+	event ----(one to manty)----> CFs
+	CF -------(one to one)------> Event
 	
 Triggers
 	Cloud functions can be triggered by many things
@@ -28,6 +41,15 @@ Triggers
 		Cloud Firestore
 		Cloud Logging
 		Firebase
+
+
+Cloud Function for firebase mobile developers
+	Cf is joint initiative between firebase and google cloud.
+	Just like cloud, firebase mobile devs has interesting usecases that they can do serverside inside of mobile app.
+		- publish push notification when a follower is added to your social media account
+		- send sms for OTPS
+		- send newsletters and welcome mail
+		- https://firebase.google.com/docs/functions/use-cases
 
 
 gcloud
@@ -57,17 +79,32 @@ Supprted Events and triggers
 
 
 Important Considertion for choosing CF
+
 	By default, a function times out after 1 minute, but you can extend this period up to 9 minutes.
+	So if you expect to do a longer processing in cloud function then it might not be right fit for your usecase.
 	
-	Each instance of a function handles only one concurrent request at a time. This means that while your code is processing one request, there is no possibility of a second request being routed to the same instance. So if you have requests thousands then there are chances then you have many(not exactly 1000 instances cause it depends on GCP how many instances to use) instances are created and so the billing.
+	Each instance of a function handles only one concurrent request at a time. This means that while your code is processing one request, there is no possibility of a second request being routed to the same instance. So if you have requests thousands then there are chances then you have many(not exactly 1000 instances cause it depends on GCP how many instances to use & the execution time of CF) instances are created and so the billing.
 	
 	To avoid the aftermath of sudden traffic spikes you can set min and max instances of CF.
 
-	The code executed after sending the HTTP response could be interrupted at any time, and CpU can throttle
+	The code executed after sending the HTTP response could be interrupted at any time, and CPU can throttle.
 
 	To avoid cold start, set a min instances.
 	To enable back pressure, set max instances. 
+	
+	CFs is always stateless. If you expect to remember state in subsequent execution then its not possible.
+	You have to store the state in DB and then fetch it.
+	However, you can set certain things in global scope which can be reused in subsequent invocation of SAME INSTANCE.
+	Keep in mid that its not guaranteed that the next invocation will reach the same function instance
+	
+	VVIMP
+	You should aim to write idemopotent CFs because the events can be delivered multiple times OR the function can be retried many times by retry on failure setting.
+	
+	If your code or any other code you call throws an uncaught exception or crashes the current process, then the function instance might be restarted before handling the next invocation. This can lead to more cold starts, resulting in higher latency, and thus is discouraged.
+	Never ever surface your dirty exceptions at container level. Try to eat them, log properly and return 5XX return type to reprocess it.
 
+	When you enable retries on an event-driven function, Cloud Functions will retry a failed function invocation until it completes successfully, or the retry window (by default, 7 days) expires.
+	
 	
 
 Cloud function configuration
@@ -91,9 +128,48 @@ Pricing :
 	
 Best Practices
 	https://cloud.google.com/functions/docs/bestpractices/tips
+	
+	Cloud function uses App Engine Default Service Account by default but its not the best choice as it has editor role. Hence you must run a CF with a SA having appropriate roles.
+		
+	For Http functions, make sure to send http response in both success or failure scenario. If not then CF thinks that there is still some processing going on and the resources are kept allocated till timeout.	
+	Timeout will cause cold start and horrible cascading effects.
+	cold start
+		cold start is not just limited to application start up in serverless world
+		It has other things like finding host, allocating resources, intializing function framework, app start up, logging and monitoring agent startup and so on. These GCP internal things related to cold start are generally  fast but still they consume some time.
+	
+	No background activities in best case.
+	If you still want to run background activities, Review your code to make sure all asynchronous operations finish before you terminate the function.
+	Accessing the network after a function terminates usually leads to connections being reset (ECONNRESET error code)
+	
+	Manually exiting can cause unexpected behavior.
+	Strict no to System.exit()
+	
+	Use global variables to reuse objects in future invocations.
+	Also dont initialize global variables directly rather initialize then lazily(as we did in ATP). 
+		This is because, loading global context is part of CF cold start. So CF cold start time will increase leading to unexpected behaviour.
+		Plus if there is exception thrown while initializing global variable during cold start then its a terrible situation, cause function is not even invoked in such a case.
+		Another aspect is - in case of idle instances(instances which are initialized but havent got any requests), the resouces are wasted
+	
+	Scary Infinite Retry Loop
+		Setting "retry on failure" causes your function to be retried repeatedly until it either successfully executes or the maximum retry period has elapsed, which can be multiple days. If the failure is due to a bug or any other sort of permanent error, your function can get stuck in a retry loop. You should only use this setting when dealing with transient failures (such as a flaky endpoint or intermittent timeouts), and only after pressure-testing your code without this property set. If your function does become stuck in a retry loop, you must either redeploy it or delete it to end execution.
+		This has fatal billing impact. People have suffered quite a lot due to this.
+		https://cloud.google.com/functions/docs/bestpractices/retries#best_practices
+		
+		To tacke this problem,
+		A simple yet effective approach is to discard events with timestamps older than a certain time. This helps to avoid excessive executions when failures are either persistent or longer-lived than expected.
+		e.g.
+			if(current_time - event_occured_time > 10 mins)
+				log.warn("ignoring event stuck in scary retry loop")
+				return "200 OK"
+			else:
+				do something
+	
+	We recommend assigning a --max-instances limit to any functions that send requests to throughput-constrained or otherwise unscalable downstream services. A maximum instances limit improves overall system stability and helps guard against abnormally high request levels.
+	https://cloud.google.com/functions/docs/configuring/max-instances#limits_best_practices	
 		
 		
+	
 		
 Links : 
 	https://cloud.google.com/functions/docs/concepts/overview
-	
+		
