@@ -2,11 +2,18 @@ very easy and very important topic for ACE exam
 
 https://cloud.google.com/sdk/docs/components
 
-default components	
-	gcloud, gsutil, bq
-	Cloud SDK Core Libraries
-	Note that alpha, beta components are not isntalled by default
-	
+Cloud SDK comes with a set of components some of which are installed by default and some you can install as per need.
+	see @components.png
+	default components	
+		gcloud - for interacting with google cloud via commands
+		gsutil - for interacting with bigquery with commands
+		gsutil - for interacting with cloud storage with commands
+		Cloud SDK Core Libraries - Libraries used internally by the gcloud CLI tools.
+		
+	Note that alpha, beta components are not installed by default.
+	e.g. cbt, pubsub-emulator, minikube, kubectl etc	
+		gcloud components install/remove component_name
+		
 	
 Setting up SDK
 	gcloud init
@@ -15,7 +22,8 @@ Setting up SDK
 		
 	If you want to change the account used in current gcloud configuration, you can run 
 		gcloud auth login
-		Here you will be redirected to web login page where you put username/passwrd.	
+			if you have couple of google accounts(office and personal) and want to use same sdk installation then its quite a good hack.
+		Here you will be redirected to web login page where you put username/password.	
 		
 	But if you want to login with service account,
 		gcloud auth activate-service-account [ACCOUNT] --key-file=[KEY_FILE]
@@ -23,15 +31,25 @@ Setting up SDK
 
 
 Configurations
-	A configuration is a named set of SDK properties. The gcloud CLI uses a configuration named "default" as the initial active configuration; default is suitable for most use cases. However, you can also create additional configurations and switch between them as required.
+	A configuration is a named set of SDK properties. A configuration works like a profile.
+	see @configurations.png
+	The gcloud CLI uses a configuration named "default" as the initial active configuration; default is suitable for most use cases. However, you can also create additional configurations and switch between them as required.
+	commands
+		gcloud config configurations list
+		gcloud config configurations activate atp-dev
 	
+
+Misc Important
+	Cloud shell has cloud sdk pre-installed with bunch of other stuff.
+
+	You can either download the SDK and install OR you can use docker image of cloud SDK.
 	
 gcloud commands
 	gcloud components list
-	gcloud components install kubectl   (not installed by default)
+	gcloud components install kubectl  (not installed by default)
 	
 	gcloud config set account dnyanesh4dd@gmail.com
-	gcloud auth reovke accountname     -> removes from local
+	gcloud auth revoke accountname     -> removes from local
 	gcloud config configurations create dev
 	gcloud config configurations activate dev
 	gcloud config unset project
@@ -40,5 +58,4 @@ gcloud commands
 	gcloud auth configure-docker
 	gcloud auth application-credentials  - play around default application credentials
 
-	
 	
