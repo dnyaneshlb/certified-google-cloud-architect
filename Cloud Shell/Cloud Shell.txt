@@ -12,13 +12,13 @@ Preinstalled tools :
 	bash, vim, git
 	gcloud, gsutil, bq, kubectl	
 	docker, MySQL Client, gRPC, Tensorflow
-	build in web code editor and web preview
+	built in web code editor and web preview
 
 
 Cautions : 
 	When you first connect to Cloud Shell, you will be automatically assigned to the closest available geographical region. You cannot pick your own region and zone.
 	
-	The Cloud Shell container image is updated weekly . This means Cloud Shell always comes with the latest versions of Cloud SDK, Docker, and all its other utilities.
+	The Cloud Shell container image is updated weekly . This means Cloud Shell always comes with the latest versions of Cloud SDK, Docker and other utilities.
 
 	You can install additional software packages on the virtual machine instance but the installation will not persist after the instance terminates unless you install the software in your $HOME directory or create a custom environment.
 
@@ -30,6 +30,9 @@ Boost mode :
 	
 Safe Mode
 	Cloud Shell will immediately close connection if there is a problem in your .bashrc or .tmux.conf(this is technology for having multiple superfast sessions to VMs) files. To resolve this, open Cloud Shell in safe mode by appending cloudshellsafemode=true to the URL. This will restart your Cloud Shell and log you in as root, allowing you to fix any issues in the files.
+
+Ephemeral Mode
+	Cloud Shell also offers Ephemeral mode which is the Cloud Shell experience without persistent disk storage. Ephemeral mode offers faster connection performance but all the files you create in your session are lost on session end.
 
 
 
@@ -57,14 +60,13 @@ Whenver we open cloud shell instance, we neeed to do lot of boilersetting for re
 We can automate this process.
 Just add config file with correct settings and add this file as env variables using "source"  command
 To automate further, in linux there is file called .profile which gets run when instance started.
-Just add this command "source path_to_file" in .profile file and when instance starts, this file is scanned. The added command tells the os to add entries in path_to_file as env variables.(path_to_file contains key/val pair of env variables)
+Just add this command "source path_to_file" in .profile file. When instance starts, this file is scanned. The added command tells the os to add entries in path_to_file as env variables.(path_to_file contains key/val pair of env variables)
 So no matter how many cloud shell instances you open, it will pick right settings automatically.
 
 
 Q: If you want to run gcloud commands on specfic version on cloud sdk, how can you do it?
 Ans : You can use Cloud SDK Docker image and choose any version you want from container registry.
 			The Cloud SDK Docker Image is essentially Cloud SDK installed on top of a Debian-based OS image.
-
 
 
 gcloud commands

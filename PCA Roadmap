@@ -48,6 +48,10 @@ Master Important topics
 			Cloud DNS
 			Private Google Access
 			Identity-Aware-Proxy
+			pubsub with protobuff schema
+	QuickStart 
+		find unexplored components by using easy quickstarts present in documenttion.
+		e.g. https://cloud.google.com/storage/docs/quickstarts
 	Articles
 		Sktechnotes by pvergadia
 

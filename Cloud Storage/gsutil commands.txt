@@ -58,5 +58,3 @@ gsutil -m cp -r dir gs://my-bucket VS
 gsutil cp -rm dir gs://my-bucket
 This is very interesting
 
-gsutil signurl -d 10m gs://test/test/png
-	
