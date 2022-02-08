@@ -1,26 +1,45 @@
 Cloud vpn: 
-	prereq : VPN in general is a trusted network for external devices(laptops, mobiles, servers) to communicate with private isolated network such as corporate office network. Traffic flows over the internet in encryted form.
+	prereq : VPN in general is a trusted network for external devices(laptops, mobiles, servers) to communicate with private isolated network such as corporate office network. 
+	Traffic flows over the internet in encryted form.
 	
 	Cloud vpn is a gcp service which allows you to connect your on premise infrastructure to gcp.
-	It encrypts traffic leaving on premise/gcp and decrypts traffic entering onpremise/gcp hence its slow. So it should be used for low network traffic scenarios. (Hence its advised not to use vpn for video meetings)
+	It encrypts traffic leaving on premise/gcp and decrypts traffic entering onpremise/gcp hence its slow. So it should be used for low speed network traffic scenarios. (Hence its advised not to use vpn for video meetings)
 
 	It needs vpn gateways at both the ends(gcp end and on premise end to encrypt and decrypt traffic) and a secure tunnel between both ends.
+
+
+	on-prem network ------>on prem vpn gateway(encrypt/decrypt traffic) -----> Internet(encrypted traffic)------> GCP vpn gateway(encrypt/decrypt traffic) ------> GCP VPC 
+
 
 	Routing via cloud vpn can be done in 2 ways
 	static routing
 		can be done by assigning static ip addresses
 	dynamic routing 
 		requires you to configure cloud router service.
+		is called dynamic because it automatically discovers and remembers the new routes.
 	
 	
-two vms having same network but different subnets can communicate using internal IP addresses(assuming firewall rules are enabled) as its internally managed by google.
+two vms having same network but different subnets/region can communicate using internal IP addresses(assuming firewall rules are enabled) as its internally managed by google.
 So in such scenarios, external Ip addresses are not required.
 
 But if they are in different network then you can communicate via external IP(which incurs more charges as traffic is route via THE intenet, outside GCP network, and less secure as traffic is not encrypted at all)
 To avoid cost, we can connect them using vpn(built in encryption).
 
 
+Types
+	HA VPN
+	Classic VPN
+	
+	
+Best Practices
+	https://cloud.google.com/network-connectivity/docs/vpn/concepts/best-practices
+	
+	To achieve the highest level of availability, use HA VPN whenever possible.
+	Classic VPN is partially deprecated and anyways going to be deprecated fully.
+	
 
+
+	
 
 
 	

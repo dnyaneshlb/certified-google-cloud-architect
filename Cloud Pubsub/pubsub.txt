@@ -1,26 +1,81 @@
-Pub/Sub is an asynchronous messaging service that decouples services that produce events from services that process events. Pub/Sub offers durable message storage and real-time message delivery with high availability and consistent performance at scale.
-Features :
-	Promises at least once delivery
-	Heavilly used inside google.
-	Supports offline consumers.
-	Durable message storage(7 days, can be extended to 30 days)
-
+What is pubsub?
+	Pub/Sub is an asynchronous messaging service that decouples services that produce events from services that process events. Pub/Sub offers durable message storage and real-time message delivery with high availability and consistent performance at scale.
+	Features :
+		Promises at least once delivery
+		Heavilly used inside google.
+		Supports offline consumers.
+		Durable message storage(7 days, can be extended to 30 days)
+		Supports event Ordering as well
+		Cost-optimized ingestion with Pub/Sub Lite
+		Integration with almost all GCP services.
 
 Topic
 
 Subscription
 
 Publishers
+	Supports ---
+	flow control
+	concurrency
+	Batching
+	Schema for Message format
+		Topics may use schemas to define a format that their messages must follow. When subscribing to a topic with a schema, the messages sent to the subscriber are guaranteed to be valid messages of the type and encoding specified in the topic's schema settings. 
+		Remember schema is set on topic.
+	Custom Retry Config
+	Ordering of messages
 
 Subscribers
-	Push Based
+	Mesaged delivered at least once
+	You wont get messages for a subscription which is created after messages is sent to topic. You get messages sent only after attaching subscription to topic.
+		However you can set message retention either at Topic level or subscription level. It allows a subscription to replay messages that are published before you created a subscription on topic.
+	Types
+		Push Based
 
-	Pull Based
+		Pull Based
+			Synchrous Pull
+			ASynchrous Pull
+	
+	Subscription Filters
+		When you receive messages from a subscription with a filter, you only receive the messages that match the filter. The Pub/Sub service automatically acknowledges the messages that don't match the filter. You can filter messages by their attributes.
+	
 
+Message Retention and Replaying
+	Its an intersting concept.
+	Pubsub topic deletes message which is acked by ALL subscriptions. 
+	Similarly subscription deletes messages as soon as its acked by subscriber.
+	But
+	We can increase the retention time
+	topic - increase upto 31 days even after they have been acknowledged by all attached subscriptions
+	subscription - increase upto 31 days even after they have been acknowledged subscriber
+
+	With message retention, we can replay the messages from certain point again, no matter they are already acked or nacked.
+	
+	
+	
+		
 Pubsub lite
 	pubsub with reduced cost.
-	Lite topics and Lite subscriptions are zonal resources that must be in the same Cloud project and zone
+	Lite topics and Lite subscriptions are zonal resources that must be in the same Cloud project and zone.
 
+
+How can I decide if I choose to design my app with pubsub or pubsub lite?
+	https://cloud.google.com/pubsub/docs/choosing-pubsub-or-lite
+	see @pubsub vs pubsub lite.png
+	pubsub lite
+		can be zonal or regional
+		you need to manually reserve and manage the storage for storing messages
+		you need to manually reserve and manage the throughput
+		Replication
+			it supports asynchronous replication(Pub/Sub guarantees synchronous replication of all data to at least two zones and best-effort replication to a third additional zone)
+			zonal lite topics - single zone replication
+			regional lite topics - multi zonal replication within region.
+		extermely low cost	
+				
+			
+	Both Pub/Sub and Pub/Sub Lite can publish and subscribe from all regions, and even outside of Google Cloud.
+
+
+	
 
 Choosing between pubsub and cloud task?
 	https://cloud.google.com/pubsub/docs/choosing-pubsub-or-cloud-tasks
@@ -31,10 +86,20 @@ gcloud commands(ACE**)
 	gcloud pubsub subscriptions create mysub --topic mytopic
 	gcloud pubsub topics publish mytopic --message="Hey There" --attribute=Key1=Value1
 	gcloud pubsub subscriptions pull mysub --auto-ack --limit 10
+
+
+Important Considerations
+	Scale
+		pubsub's operating scale is humoungous which makes it popular choice but if downstream application is not scalable enough then it can quickly become a bottleneck. Especially in puhs based subscriber secnearion, it starts to create more problems as it consistently hits the downstream endpoint at extreme pace.
 	
+	Event Replication
+		Pub/Sub guarantees synchronous replication of all data to at least two zones and best-effort replication to a third additional zone. So its a immune to zonla failure.
+	
+	
+
 	
 Best Practices
-
+	
 
 Pricing
 	Pricing is based on volume of data processed 

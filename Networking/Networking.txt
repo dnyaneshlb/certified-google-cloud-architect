@@ -1,22 +1,35 @@
 GCP netowrk Tiers
 	VIMP - https://cloud.google.com/network-tiers/#tab1
-	
+	Standard Tier 
+		Relies on ISPs to great extent to send traffic to destination, i.e. traffic flows throgh internet
+		Hot potato routing
+	Premium tier
+		Cold potato routingg
+		faster traffic as it doesnt leave google network till destination(no internet hops)
+	BSed on choice of network tier, Some services are offered regional and some are global.	
+	e.g. HTTP(S) Load Balancing (LB) is global in premuim tier but regional in standard tier	
+		see the above link carefully.
+
 
 VPC:
 	A Virtual Private Cloud (VPC) network is a virtual version of a physical network
-	VPC is global whole subnet is regional.
+	VPC is global while subnet is regional.
 	VPC networks only support IPv4 unicast traffic. They do not support broadcast, multicast, or IPv6 traffic within the network. However extrnal IPV6 traffic can be handled by using load balancers.
+	
+	When you create a project, you get a default network automatically provisioned for you.
+	
 	Automode network
 		In default network, google adds one subnet per region. 
 		ACE** -- subnet in Auto mode vpc can be expanded from /20 to max /16
 		As new Google Cloud regions become available, new subnets in those regions are automatically added to auto mode nw.
 		You can convert automode nw to custom mode, but remember this is one way transaction, other way isnt possible		
 		Its not recommended to use it in most cases, hence you can disable it or add org policy constraint (compute.skipDefaultNetworkCreation) not to create it.
-		In this nw, resources communincate with each other using internal IPs are it automatically adds fw rule 'fw-default-allow-internal'
+		In this nw, resources communincate with each other using internal IPs. It automatically adds fw rule 'default-allow-internal'
 
-	Custom netowrk
+	Custom network
 		It starts with no subnet hence more control to you. You can add subnets in only region you want.
 		In this nw, resources cannot communincate with each other using internal IPs as default fw rule is to deny ingress traffic. You need to add fw rule to allow this.
+
 
 Subnet : 	
 	Subnet is fancy way of saying "range of isolated ip addresses"
@@ -34,8 +47,10 @@ Subnet :
 				one ip for broadcast
 	Important Considerations:			
 		You can have primary and secondary ranges in subnet and they may not be contiguous.
-		The minimum primary or secondary range size is eight IP addresses. In other words, the longest subnet mask you can use is /29
+		But
 		Primary and secondary ranges for subnets cannot overlap with any allocated range, any primary or secondary range of another subnet in the same network, or any IP ranges of subnets in peered networks.
+		The minimum primary or secondary range size is eight IP addresses. In other words, the longest subnet mask you can use is /29
+
 
 Subnet Address Ranges
 	Primary Ip ranges
@@ -61,13 +76,13 @@ Session Affinity
 
 
 VPC :
-	Global private cloud env that can "span across multiple regions".
+	GLOBAL private cloud env that can "span across multiple regions".
 	Traditional VPCs are regional and to be able to talk across regions you have to talk via public internet which is risky as well as time consuming.
 	Hence VPC.
 	
 	Without a VPC network, you cannot create VM instances, containers, or App Engine applications. Therefore, each Google Cloud project has a default network to get you started. Default network has default 1 subnet per region , default routes, and default firewall rules.
 	
-	Note : VPC can span accross multiple zones in a single region.
+	Note : a VPC is global and subnet is regional.	
 		   see https://cloud.google.com/vpc/docs/vpc#network_example
 	
 	Each subnet has primary range and secondary range. Both cannot intersect.
@@ -87,8 +102,8 @@ Cloud interconnect
 		less than 10gbps speed
 	
 NAT : 
-	  VM instances without external IP addresses are isolated from external networks/internet. Using Cloud NAT, these instances can access the internet	
-	  explained like a pro https://youtu.be/FTUV0t6JaDA
+	  VM instances without external IP addresses are isolated from external networks/internet. Using Cloud NAT, these instances can access the internet. However other way is not allowed hence your services using private IPs are isolated and secure.
+	  explained like a pro https://youtu.be/FTUV0t6JaDA must see
 	  Network address translation.
 	  Convert set of private ip addresses into set of public ip addresses and vice versa.
 	  Not not needed once ipv6 is in full force.
@@ -114,7 +129,7 @@ Shared VPC
 	Advantage is you get central point of administration (host project)for all the VPCs(Service Project), job becomes easy.
 	
 	VPC peering is completely different as it allows communicattion between two or more diffrent vpc networks which may not be in same project or same organization.
-	You can share with the service projects
+	You can share below with the service projects
 		all host project subnets 
 		selected host project subnets only.
 	see diagram @https://cloud.google.com/vpc/docs/shared-vpc#shared_vpc_overview
@@ -170,28 +185,31 @@ Automatic network has one subnet per region(which we dont need mostly). For newl
 
 IP address:
 	Every resource has an internal IP address 
-	If it is internet facing resource then it has internal+external IPs.
+	If it is internet facing, you can add external IP to it.
 	Extrenal Ip can be static(reserved) IP or ephemeral IP(default is ephemeral)
+		static - ip is exclusively reserved for you, it wont be assgined to anyone else.
+		ephemeral - once service is shut down or restarted, ip is returned to pool of ips and then new ip is assigned
 	What is Alias Ip address ranges? Whats the purpose?
 		If a vm hosts many services then it can use alias ip addressess to expose those services.
 		GKE uses these addresses heavily and for GKE its recommended practice.
+		Alias ip address rnges come from either primary or secondary ip ranges of subnet.
 	VMs in the VPC network can only send to IPv4 destinations and only receive traffic from IPv4 sources
 	GCP supports only ipv4 addresses as of today.
 	Fun fact : static ip addresses reserved but not in use are charged more than ones in use.
 
 	Bring Your Own IP
 		BYOIP
-		If you your own ip address that you want to bring to gcp, you can use BYOI
+		If you have own ip address that you want to bring to gcp, you can use BYOI
 	
 	
 Routes:
 	Route is way of defining how packets move in between resources and eventually how resources communicate.
 	Every default network has 
-		a routes  that allow every resource in same network send packets to another resource.
+		routes  that allow every resource in same network send packets to another resource.
 		a default route that allow direct packets to destinations outside the network.
 	But firewall must allow such packet movement.
 	Manual networks dont have such route
-	
+	Types
 	Default Routes
 	Custom Routes
 	static routes
@@ -220,7 +238,11 @@ Firewall Rules
 								 - all instances in network
 								 - instances having specific network tags
 								 - instances having specific service account
-				source - instances on which rule applies
+				source - sources on which rule applies
+								 - ipv4 ranges
+								 - ipv6 ranges
+								 - instances with network tags
+								 - instance with certain service account
 				protocol and port - 
 							icmp- selects icmp protocol and all its allowed ports
 							tcp:443,80 - selects tcp protocol and its ports 443 and 80 only
@@ -236,6 +258,9 @@ Firewall Rules
 Forwarding Rules
 	USed in LB
 	They have a ip address.
+	Forwarding Rules are used to forward the incoing traffic to chosen instances based on pattern.
+	e.g. www.facebook.com/login --- route traffic to login service
+	     www.facebbok.com/profile --- route traffic to profile service
 	
 	
 
@@ -259,7 +284,7 @@ Cloud DNS(ACE**)
 
 A company wants a maximum availability without having trouble of complex security. What is best choice?
 		Dont create all your resources (compute engines) in same zone. There are likely chances that a zone might have a problem like resource limit exhausted, zone going down etc. As resources are within same network, complex security conifg is not required.
-		Additionally placing resources in different regions even makes it more robust.
+		Additionally placing resources in different regions even makes it more robust for regional failures.
 	
 
 IP addresses
@@ -275,7 +300,7 @@ IP addresses
 		Ephemeral external IP addresses are released from a resource if you delete the resource. For VM instances, the ephemeral external IP address is also released even if you stop the instance. After you restart the instance, it is assigned a new ephemeral external IP address.
 		
 		Note that the ephemeral internal ip addresses remain with VM even though they are stopped. They are released only after vm deletion. 
-		----> Exact opposite of ephemeral internal ip addresses
+		----> Exact opposite of ephemeral external ip addresses. Makes sense cause the external ips is a scarce resource, so make optimum use of it.
 		
 		VVIMP : If you are communicating between instances in the same VPC network, they can communiate using FQDN as "Internal DNS" will automatically resolve FQDN to ip addresses.
 		"warmup.europe-west1-a.c.prod-project.internal" -----Internal DNS-----> 10.2.0.10
@@ -298,7 +323,7 @@ Private Google Access
 				in a nutshell, all google apis can be called using a service endpoint url like 		
 					https://cloudfunctions.googleapis.com.
 					https://storage.googleapis.com/storage/v1
-				If you want to call it like this way within the constraint of interal ip address, then it mandatory to enable this private google access.
+				If you want to call it like this way within the constraint of interal ip address, then it's mandatory to enable this private google access.
 		how? - go to subnet in vpc where you want to enable it and check the checkbox for Private Google Access.
 				checkbox for enabling vpc flow logs is also there.
 			
@@ -310,9 +335,12 @@ Private Service Access
 		This require you to reserve certain CIDR ip range block of your vpc for such service providers. This reserved block cannot be used for "your" vpc services.
 		  	
 	
-A VM instance can connect to multiple VPC netoworks at the same time. By default it has default netowork interace but we can add more network interfaces.(subnet ranges must not overlap).
-The number of interfaces allowed in an instance is dependent on the instance's machine type and the number of vCPUs. The n1-standard-4 allows up to 4 network interfaces.
-https://cloud.google.com/vpc/docs/create-use-multiple-interfaces#max-interfaces
+Network Interfaces of VM	
+	A VM instance can connect to multiple VPC netoworks(not the subnets) at the same time. By default it has default netowork interface(nic-0) but we can add more network interfaces(nic-1 to nic-7).(subnet ranges must not overlap).
+	The number of interfaces allowed in an instance is dependent on the instance's machine type and the number of vCPUs. The n1-standard-4 allows up to 4 network interfaces.
+	https://cloud.google.com/vpc/docs/create-use-multiple-interfaces#max-interfaces
+
+	You cannot attach multiple network interfaces to the same VPC network.
 	
 
 Identity-Aware Proxy: 

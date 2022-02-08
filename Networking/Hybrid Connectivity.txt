@@ -2,52 +2,70 @@
 https://cloud.google.com/hybrid-connectivity
 
 If you have a existig on prem network then What are different ways to connect your network to gcp network?
-	Dedicated way(Done via direct connection to gcp)
+	Cloud VPN
+		private connection between on prem and gcp network
+		slow
+	Cloud Interconnect
+		see @cloud interconnect.png
 		Dedicated Interconnect
-		Direct Peering
-	Shared way(Done via partner in between)
+			private connection between on prem and gcp network
+			fastest - more than 10gbps
 		Partner Interconnect
+			private connection between on prem and gcp network
+			faster - 50mbps - 10gbps	
+	Peering
+		only if you need Google Workspace and supported Google APIs.
+		done over external ip addresses and internet
+		Direct Peering			
 		Carrier Peering
-	see @cloud interconnect.png
-
+	
+	
 ACE***
 Interconnects are different from peering in that they give you connectivity using "private address space" into your Google VPC.
 While Peering relies on "external IP addresses".
+Cloud interconnect is recommended way.
 
 
-Dedicated Interconnect
-	A direct physical connection between your on prem network and gcp network.
-	This requires a common physical colocation facility to setup the connection. 
-	This common facility is within gcp geographical boundries.
-	see@dedicated-inteconnect.png
-	The number of dedicated colocation facilities are limited which makes it hard to use hence gcp has partner interconnect.
-	No risk of security since networks are connected using internal IP addresses and traffic never routed via internet.
+
+Cloud Interconnect
+	Cloud Interconnect provides access to all Google Cloud products and services from your on-premises network "except Google Workspace".
+	Cloud interconnect is recommended way(unless you want to connect google workspace).
 	
-	min capacity 10gbps
-	Dedicated Interconnect enables you to transfer large amounts of data between networks, which can be more cost-effective than purchasing additional bandwidth over the public internet.
+
+	Dedicated Interconnect
+		A direct physical connection between your on prem network and gcp network.
+		This requires a common physical colocation facility to setup the connection. 
+		This common facility is within gcp geographical boundries.
+		see@dedicated-inteconnect.png
+		The number of dedicated colocation facilities are limited which makes it bit inconvinient to use hence gcp has partner interconnect.
+		No risk of security since networks are connected using internal IP addresses and traffic never routed via internet.
+		
+		---> min capacity 10gbps
+		Dedicated Interconnect enables you to transfer large amounts of data between networks, which can be more cost-effective and fast than purchasing additional bandwidth over the public internet.
+		
+		
+	Partner Interconnect
+		Helps to establish a high speed connection between on prem and gcp via a third party service provider(who have tied up with gcp).
+		Service providers have existing physical connections to Google's network that they make available for their customers to use.
+		Used when dedicated colocation facility is not near.
+		see@partner interconnect.png
+		No risk of security since networks are connected using internal IP addresses and traffic never routed via internet(partner netowrk is still has GCP SLAs and SLOs).
+		has leser speed than dedicated interconnect. 
+		----> max capacity 10gbps
 	
+Peering	
+	Peering is used ONLY IF you need Google Workspace and supported Google APIs only.
 	
-	
-Partner Interconnect
-	Helps to establish a high speed connection between on prem and gcp via a third party service provider(who have tie up with gcp).
-	Service providers have existing physical connections to Google's network that they make available for their customers to use.
-	Used when dedicated colocation facility is not near.
-	see@partner interconnect.png
-	No risk of security since networks are connected using internal IP addresses and traffic never routed via internet(partner netowrk is still has GCP SLAs and SLOs).
-	has leser speed than dedicated interconnect. max capacity 10gbps
-	
-	
-Direct Peering
-	You can connect your network to gcp netowrk directly via direct peering if you are near to google's any PoP(Point of Presence - PoP is a location on world map where google's netowrk connects rest of the internet)
-	If no, then use carrier peering.
-	Via peering you can access any of google's services directly but via interconnect we cant.	
-	"Direct and carrier peering is done via external Ip address."
-	***Note that peering(Carrier and Direct) is used only if you need Google Workspace and supported Google APIs only. Otherwise Cloud interconnect is recommended way.
-	
-	
-Carrier Peering
-	If you want access to all gcp services and you are not close to any PoP then you need carrier peering.
-	***Note that peering(Carrier and Direct) is used only if you need Google Workspace and supported Google APIs only. Otherwise Cloud interconnect is recommended way.
+	Direct Peering
+		You can connect your on prem network to gcp netowrk directly via direct peering if you are near to google's any PoP(Point of Presence - PoP is a location on world map where google's netowrk connects rest of the internet)
+		If no, then use carrier peering.
+		Via peering you can access any of google's services directly but via interconnect we cant.	
+		"Direct and carrier peering is done via external Ip address."
+		***Note that peering(Carrier and Direct) is used only if you need Google Workspace and supported Google APIs only. Otherwise Cloud interconnect is recommended way.
+		
+	Carrier Peering
+		If you want access to all gcp services and you are not close to any PoP then you need carrier peering.
+		***Note that peering(Carrier and Direct) is used only if you need Google Workspace and supported Google APIs only. Otherwise Cloud interconnect is recommended way.
 	
 	
 How to choose when to use which of the above service?
@@ -72,7 +90,6 @@ If you want to connect google cloud use
 	Clou Router
 But
 If you want to connect to other google services like workspace,youtube then use direct/carrier peering.
-
 
 	
 Links :

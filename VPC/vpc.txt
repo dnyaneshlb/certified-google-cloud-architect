@@ -12,7 +12,7 @@ VIMP
 		 192.12.56.23/8 -- valid
 		 
 	for automatic subnets you cannot provide range above x.x.x.x/16
-	i.e. you cannot expand subnet(default is x.x.x.x/20)
+	i.e. you cannot expand subnet beyond /16(default is x.x.x.x/20)
 	
 		 
 		 
@@ -26,7 +26,6 @@ CIDR Range notation
 Custom VPC cannot be converted into auto mode network but vice versa possible.
 
 For external Ip address(internet facing machine), you can use either static reserved ip address or ephemeral ip address.
-If you use 
 
 	
 Subnetworks :
@@ -36,7 +35,7 @@ Subnetworks :
 		This subnet will have 8 ip address but 4 will be reserved leaving you with only 4 useful ip addresses.
 	Subnets can grow but cant contract so avoid large subnets.
 	
-	Every vm in subnet needs an internal ip address and external ip address. Both Internal and external can be ephemeral or static.	
+	Every vm in subnet needs an internal ip address and optional external ip address. Both Internal and external can be ephemeral or static.	
 	see create instance in gui.
 		
 	

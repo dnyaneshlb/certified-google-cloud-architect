@@ -1,12 +1,7 @@
 
 Review ACE exam notes
 	Not watching the youtube videos - Need to revisit
-	Also skipping some links - Need to revisit
-	Sktechnotes by pvergadia - Need to Revisit
-	Links
-		https://cloud.google.com/architecture/framework/performance-optimization
-		and sublinks under same link
-		https://www.googlecloudcommunity.com/gc/Architecture-Framework-Guidance/tkb-p/cloud-architecture-framework-guidance
+	Also skipping some links - Need to revisit		
 	
 
 Watch online content and take notes
@@ -19,6 +14,7 @@ Watch online content and take notes
 	Youtube
 		Learn GCP with Mahesh
 		Google Cloud Tech
+			Networking E2E - https://www.youtube.com/playlist?list=PLIivdWyY5sqJ0oXcnZYqOnuNRsLF9H48u
 		Cloud Next videos
 		Links spread across ACE notes
 	Udemy
@@ -33,6 +29,9 @@ Master Important topics
 		component documents
 		Best practices
 		Architecture center
+			https://cloud.google.com/architecture/framework/performance-optimization
+			and sublinks under same link
+			https://www.googlecloudcommunity.com/gc/Architecture-Framework-Guidance/tkb-p/cloud-architecture-framework-guidance
 	Qwiklabs
 		find relevent and kill em'll
 			vpc service controls
@@ -46,8 +45,12 @@ Master Important topics
 			How to use secret manager to store env variables in cloud run
 			Write a cloud schedular to trigger cloud run/function which can give report of min instances. Later improve it to set min instances to 0 EOD and set back to whatever value
 			SQL failover and read replicas
+			Cloud DNS
+			Private Google Access
+			Identity-Aware-Proxy
 	Articles
-		
+		Sktechnotes by pvergadia
+
 
 Case Studies
 	
