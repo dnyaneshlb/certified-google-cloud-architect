@@ -44,6 +44,9 @@ Misc Important
 
 	You can either download the SDK and install OR you can use docker image of cloud SDK.
 	
+	
+	
+	
 gcloud commands
 	gcloud components list
 	gcloud components install kubectl  (not installed by default)

@@ -49,6 +49,8 @@ Master Important topics
 			Private Google Access
 			Identity-Aware-Proxy
 			pubsub with protobuff schema
+			https://cloud.google.com/storage/docs/hosting-static-website
+			Requester Pays, Resumable uploads and Object Holds in Cloud storage
 	QuickStart 
 		find unexplored components by using easy quickstarts present in documenttion.
 		e.g. https://cloud.google.com/storage/docs/quickstarts
