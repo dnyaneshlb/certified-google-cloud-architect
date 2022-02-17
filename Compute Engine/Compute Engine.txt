@@ -270,16 +270,18 @@ Instance Group :
 		
 		To reduce cost, we can add preemtible instances in MIG.
 
-		MIGs can be used for 
-			stateless : vm state is not maintained
-			stateful : instance name, attached PDs, metadata is preserved while restart, autoheal, migrating instance.
-			and even batch processing.	
-		
+		MIG types :
+			Stateless MIGs : for stateles workloads
+							 for even batch processing workloads*****
+							 vm state is not maintained
+			Stateful MIGs : for stateful workloads,
+							instance name, attached PDs, metadata is preserved while restart, autoheal, migrating instance.
+				
 		Managed instance groups offer autoscaling capabilities that allow you to automatically add or remove instances from a managed instance group based on increases or decreases in load. Autoscaling helps your applications gracefully handle increases in traffic and reduces cost when the need for resources is lower. You just define the autoscaling policy, and the autoscaler performs automatic scaling based on the measured load.
 		Imp fact is you can scale MIGs based on Autoscaling policy - "defined schedule". You can edit MIGs and schedule to have 100 instances at 9am in the morning so that spikes can be absorbed and then you can lower it down based on "defined schedule"
 		
 		Note that MIGs dont have autoscaling by default you have to enable it. Without autoscaling default behavior is to maintain given number of instances in group always. So here if request spike comes, number of instances in MIG will remain as defined. 
-			options	: autoscale, autoscaling off, autoscale only up 
+			options	: autoscale up/down, autoscaling off, autoscale only up (see console)
 		
 		Autoscaling will reduce MIG instances to defined "min instances" setting when no/less traffic and increase instances to "max instances" setting to absorb the traffic spike.
 		You can use "predictive autoscaling" which in advance scales your MIG based on historical data of scaling.
@@ -294,12 +296,17 @@ Instance Group :
 		
 		Types(ACE**) : 
 			Zonal MIGS, Regional MIGs
+			
+		Dont forget to have a console look at updating/replacing/restarting instance group.***		
+			
 		
 	UnManaged instance groups
 		Group of heterogeneous instances that you have to manage on your own.
 		They do not offer autoscaling, autohealing, rolling update support, multi-zone support, or the use of instance templates and are not a good fit for deploying highly available and scalable workloads
 	
 		You dont create VMs in unmanaged instance group(as like MIGs) but you add existing VMs in same zone/vpc to unmanaged instance group.
+		
+		You cannot create multizonal unmanaged instance group. i.e. you can select only vms in same zone in unmanaged instance group.(see console)
 		
 		
 	
@@ -379,14 +386,6 @@ Assessing compute quotas and requesting increases
 	You can increase quota by going to IAM->quota page and editing service quota.
 	But request to descrease quota is rejected by default. You have to reply to the rejection email mail with valid reason for decrease.
 	
-	
-Live Migration:
-	Its a process of migrating compute engine instance from one host to another without loosing any data or downtime.
-	During host maintenance, the VM is set default for live migration. 
-	The live migration process just transfers a running VM from one host machine to another host machine "within the same zone". All VM properties and attributes remain unchanged, including internal and external IP addresses, instance metadata, block storage data and volumes, OS and application state, network settings, network connections, and so on.
-	However, you can have the VM terminated instead of migrated. Just edit the availability policy by clicking edit vm btn.
-	VMs having GPUs and TPUs, configdential VMs cant be live migrated.
-	Note "Confidential VMs and Preemptble VMs" dont support live migration.
 
 
 Compute Engine Disks :
@@ -448,6 +447,13 @@ Images
 		images created with some preconfigured software(can be imported from on prem)
 		images created by you from disk snapshots are also custom images
 	
+Machine Images vs Disk Images
+	So long disk images are being referred as images.
+	But recently google introduced machine images which are even better then disk images.
+	google it.
+	
+	
+
 	
 Can we move instance to a new zone and region?
 		to new zone ---- yes (gcloud compute instances move src_zone dest_zone)
@@ -602,6 +608,17 @@ VM Availbility Policy(ACE**):
 						default is yes.
 						If vm is stopped due to user intentional action then it wont be automatically restarted.
 	Preemptible : yes/no 
+
+
+	
+Live Migration:
+	Its a process of migrating compute engine instance from one host to another without loosing any data or downtime.
+	During host maintenance, the VM is set default for live migration. 
+	The live migration process just transfers a running VM from one host machine to another host machine "within the same zone". All VM properties and attributes remain unchanged, including internal and external IP addresses, instance metadata, block storage data and volumes, OS and application state, network settings, network connections, and so on.
+	However, you can have the VM terminated instead of migrated. Just edit the availability policy by clicking edit vm btn.
+	VMs having GPUs and TPUs, configdential VMs CANT be live migrated but works for VMs with local SSDs attached.
+	Note "Confidential VMs and Preemptble VMs" dont support live migration.
+
 	
 
 Compute Engine Default Service Account?

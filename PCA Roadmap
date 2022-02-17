@@ -47,10 +47,16 @@ Master Important topics
 			SQL failover and read replicas
 			Cloud DNS
 			Private Google Access
-			Identity-Aware-Proxy
+			Identity-Aware-Proxy	
 			pubsub with protobuff schema
 			https://cloud.google.com/storage/docs/hosting-static-website
 			Requester Pays, Resumable uploads and Object Holds in Cloud storage
+			Deployment mgr - https://console.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fdeploymentmanager-samples&cloudshell_tutorial=walkthroughtutorial.md&_ga=2.10343990.225871058.1619638200-2121382610.1593627817
+			MIGs and UMIGs
+				Canary and Rolling update
+				Time Schedule of the instance group autoscaling
+			Anthos	
+			Cloud Run for Anthos
 	QuickStart 
 		find unexplored components by using easy quickstarts present in documenttion.
 		e.g. https://cloud.google.com/storage/docs/quickstarts
@@ -69,8 +75,9 @@ Experiences of the people and their articles, notes, recommendations
 Practice Exams
 	Free exams
 		Pluralsight etc
+		https://www.examtopics.com/discussions/google/
 	Paid exams - braincert, testpreptraining, whizlabs
-	
+		
 	
 
 	

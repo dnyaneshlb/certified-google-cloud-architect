@@ -2,17 +2,17 @@ Labels vs tags
 	Labels are used to organize the resources in gcp.
 	They are key value pairs, always!
 	e.g. dept: finance
-		 env: prod
-		 
+		 env: prod	 
 	Tags are simple strings applied on resource(primarily networking resources). One use I know is in firewall rules to filter out resources with tags.
 	e.g. dev-network
+
 
 Budgets in GCP are not a way to prevent spending or stop resources. They are a tool for raising awareness about the consumption of resources so that a business can implement its own consumption management processes.
 e.g. when budget has spiked above 70% of monthly spend then possible code-automated action can be shutdown or delete non required resources.
 Note : Using 100% monthly budget will simply trigger notification to billing administrator. It wont prevent spending or stop resources.
 
 
-External IP addresses that don’t fall under the Free Tier will incur a small cost. Also, as a general security best practice, it’s a good idea to use internal IP addresses where applicable.
+External IP addresses that don’t fall under the Free Tier will incur a small cost. Also, as a general security best practice, it’s a good idea to use internal IP addresses wherever possible.
 
 
 Each project ID is unique across Google Cloud. 
@@ -31,8 +31,7 @@ What is cloud identity?
 If you want to attach a persistent disk to a virtual machine instance, both resources must be in the same zone. Similarly, if you want to assign a static IP address to an instance, the instance must be in the same region as the static IP address.
 
 
-
-Where APIs are default enabled on project?
+Which APIs are default enabled on project?
 	https://cloud.google.com/service-usage/docs/enabled-service#default
 	Cloud storage API
 	Datastore API

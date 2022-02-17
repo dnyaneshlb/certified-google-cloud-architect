@@ -5,7 +5,7 @@ Its a declarative way of telling how your infrastructure should look like. IaaC.
 
 
 You can provision resources declaratively using either deployment manager or any third party tools like terraform, ansible etc.
-Deployment Manager is an infrastructure deployment service that automates the creation and management of Google Cloud resources. Write flexible template and configuration files and use them to create deployments that have a variety of Cloud  services, such as Cloud Storage, Compute Engine, and Cloud SQL, configured to work together.
+Deployment Manager is an infrastructure deployment service that automates the creation and management of Google Cloud resources. Write flexible template and configuration files and use them to create deployments that have a variety of Cloud  services, such as Cloud Storage, Compute Engine, and so on, configured to work together.
 
 Ability to delete infra in a single click/command
 
@@ -21,12 +21,10 @@ Configuration file :
 		  properties:
 		    #RESOURCE properties go here
 
-	Selflink : By default, Deployment Manager creates all resources in parallel, so there is no guarantee that dependent 
-				resources are created in the correct order unless you use self references(selflink).		    
+	Selflink : By default, Deployment Manager creates all resources in parallel, so there is no guarantee that dependent resources are created in the correct order unless you use self references(selflink).		    
 				see@selflink example.yaml
 	
-	Outputs : When you create a deployment, you might want to expose key properties of your configurations or templates 
-			 for other templates or users to consume.
+	Outputs : When you create a deployment, you might want to expose key properties of your configurations or templates to other templates or users to consume.
 			 Outputs can be added optionally in template or configuration both.
 			 Its optional setting.
 			 see @simple vm deployment.yaml

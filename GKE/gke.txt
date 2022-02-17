@@ -8,13 +8,23 @@ Links
 	Kubenetes best practices palylist by google
 		https://www.youtube.com/watch?v=wGz_cbtCiEA&list=PLIivdWyY5sqL3xfXz5xJvwzFW_tlQB_GB	
 	Quick videos
-		https://www.youtube.com/watch?v=lC7LSUlZ4A8&list=PLIivdWyY5sqKJx6FwJMRcsnFIkkNFtsX9&index=13 - google clud tech's short gke cost opimization playlist 
+		https://www.youtube.com/watch?v=lC7LSUlZ4A8&list=PLIivdWyY5sqKJx6FwJMRcsnFIkkNFtsX9&index=13 - google cloud tech's short gke cost opimization playlist 
 	
 
 See more on k8s on graph15Up\tools\Kubernetes\knowme.txt
 
 
 Kubernetes is an orchestration framework for software containers. Containers are a way to package and run code that's more efficient than virtual machines. Kubernetes provides the tools you need to run containerized applications in production and at scale.
+
+
+Most important features
+	Cluster management
+		node auto repair
+		node auto upgrade
+	Pod and cluster autoscaling
+	Container optimized and hardened OSs
+	and plathora of other features.....
+	
 
 
 Local K8s Setup in most simple way :
@@ -50,6 +60,7 @@ Cluster Types
 		standard - you get to choose lot of stuff about how cluster will look and work. You determine the configurations needed for your production workloads
 		autopilot - the cluster configuration options are intellegently made for you.
 					e.g. Cluster will always be regional to mitigate zonal falures. 
+					Reduction in operational cost
 			
 	
 Cluster Version

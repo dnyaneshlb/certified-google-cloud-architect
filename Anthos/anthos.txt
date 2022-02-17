@@ -1,5 +1,48 @@
+Links
+	https://www.youtube.com/watch?v=RQFt-nAEyFU   - lean gcp with mahesh
+	https://youtu.be/42RmVrM7B7E    Inrto to Anthos
+	https://www.youtube.com/watch?v=DM8p_cnc6ZY  Getting started to Anthos*****(nice intro and demo)
+
+
+***** Dont Miss this - Solllllllid info with awesome demo at 
+	https://youtu.be/be_bXETvbuE
+	https://youtu.be/jIkymJYsCR4
+
+
 https://cloud.google.com/anthos/docs/concepts/overview
 
-Anthos enables you to run Kubernetes clusters anywhere, in both cloud and on-premises environments. 
+Anthos enables you to run Kubernetes clusters anywhere, in any available public clouds(gcp, azure, aws) and on-premises environments. 
 
 In a complex org, we have some apps in one cloud and some in other, while some monolith live in on prem env. It becomes hard to manage all these moving pieces together. Hence anthos. It enables you to work with you on prem clusters + any cloud kubenetes clusters together.
+You dont need to build new clusters to run on anthos. You can Just bring existing k8s cloud/on-prem cluster directly to anthos as it.
+
+
+
+There separate flavours of kubenetes for each env
+GCP 
+AWS 
+Azure
+Attached Cluster
+on-prem(GKE on-prem)
+	VMware
+	Bare Metal
+	
+
+
+
+
+Features
+	Hybrid and multicloud kubenetes deployments
+	Single pane og glass for management of all clusters in diff envs.
+	It supports even windows containers
+	
+	
+	
+Pricing
+	Pay as you go
+	Subscription based
+	
+	
+	
+	
+

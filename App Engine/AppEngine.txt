@@ -103,6 +103,11 @@ App Engine Flex
 	https://cloud.google.com/appengine/docs/flexible
 	
 	
+One of the main diff I learnt in Ranga's course
+	App Engine Standard runs apps in language specific sandbox env.
+		hence supports limited language runtimes
+	App Engine Flex runs apps in docker containers
+		hence supports many language runtimes.
 
 How to choose right App engine env?
 	https://cloud.google.com/appengine/docs/the-appengine-environments
