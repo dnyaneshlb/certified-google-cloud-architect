@@ -1,0 +1,26 @@
+Cloud Key Management System
+
+
+Key Ring
+	A key ring is kitchen we use for general keys of physical world. For kitchen, we can attached many keys.
+	Similarly to key ring in KMS, we can attach many cryptographic keys.
+	HEnce we first create key rng and then attach keys to it.
+
+Supports
+	Symmetric keys
+	Asymetric Keys
+	Also Supports HSM(Toggle between software- and hardware-protected encryption keys with the press of a button)
+
+Supports
+	Google Managed Keys
+	Customer Managed Keys
+	Customer Supplied Keys
+	
+We can create either regional keys or global keys.
+
+Keys can have many version but at most one active version at a time.
+Only active keys are billed.
+Key Rings and non-active keys are not billed.
+
+
+	
