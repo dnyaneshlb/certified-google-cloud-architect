@@ -2,6 +2,13 @@ data fusion - data integration service that has connectors to many systems
 data lab - run jupyter notebooks on cloud
 data prep  -data cleansing in sheet like app
 
+Cloud SQL has 99.95% availability - 22mins downtime/month
+Cloud Spanner has 99.99% availability - 4.5mins downtime/month
+Hence if a question come asking for more availability then spanner is the recommended choice.
+
+Yuo cannot use standby instance as read replica.
+If you enable HA  in cloud SQL then it created standby instance, but its available just for HA not for read replica.
+
 
 There can be many host projects but service project can be attached to max one host project. offcourse!	
 

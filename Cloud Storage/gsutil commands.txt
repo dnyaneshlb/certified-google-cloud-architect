@@ -58,3 +58,13 @@ gsutil -m cp -r dir gs://my-bucket VS
 gsutil cp -rm dir gs://my-bucket
 This is very interesting
 
+
+gsutil uniformbucketlevelaccess set on/off gs://mybucket
+gsutil acl ch -u dnyanesh@google.com:WRITE gs://mybucket
+gsutil iam ch user:dnyanesh@google.com:ObjectCreator gs://mybucket
+gsutil iam ch group:testers@google.com:ObjectCreator gs://mybucket
+gsutil iam ch allAuthenticatedUsers:ObjectViewer gs://mybucket
+
+
+
+

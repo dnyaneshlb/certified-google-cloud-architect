@@ -7,4 +7,15 @@ Suitable for IoT, mobile, web data.
 This is enhanced version of Cloud Datastore. It can work in datastore mode for backword compatibility. It is compatible with all old datastore APIs and libraries.
 
 
-
+Datastore vs Firestore
+	Datastore :
+		Data store provides SQL like queries (via GQL ~ similar to sql)
+		Data store is not fully consistent
+		Data store does not support joins or aggregates(like sum, count).
+		Has Kinds ans entities
+		
+	Firestore
+		Its a datastore++
+		Offers datatore mode and native mode
+		Supports offline data sync
+		Has collections and documents

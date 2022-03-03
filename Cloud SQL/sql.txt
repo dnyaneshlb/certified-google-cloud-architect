@@ -316,3 +316,13 @@ Pricing
 
 Best Practices
 	Create sql instance in same region as that of service consuming data so that they can communicate using private ip
+	
+	For larger tables/databases, export operation takes a longer time and it affect performance of primary instance. To avoid it, we can use serverless export.
+		IT creates a separate temp sql instance to offload the export operation.
+		
+	Remember you cannot backup a table or database. Backup is always of instance. But you can export a table or database.
+	
+	
+	
+	
+	

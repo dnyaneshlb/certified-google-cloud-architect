@@ -57,6 +57,12 @@ Master Important topics
 				Time Schedule of the instance group autoscaling
 			Anthos	
 			Cloud Run for Anthos
+			Cloud KMS
+			Cloud SQL Quest
+			Storage Data transfer
+			Policy TrubleShooter
+			Exposing static website using cloud storage
+			Cloud Spanner
 	QuickStart 
 		find unexplored components by using easy quickstarts present in documenttion.
 		e.g. https://cloud.google.com/storage/docs/quickstarts

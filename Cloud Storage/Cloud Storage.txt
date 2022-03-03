@@ -12,11 +12,22 @@ What is Cloud Storage?
 Bucket 
 	Can be regional or dual regional or multiregional
 	Can have a bucket level access control or fine grained object level access control
-
+	An oject in bucket is accessed by a unique url(https://storage.cloud.google.com/my-bucket/2022/trips/to-norway.png) Hence a bucket name sould also adhere to the url naming standards like 	
+		cannot have capital letters
+		cannot start wit 'goog' prefix or have 'google' in bukcet name; even misspelled
+		can have small case letters, numbers, hyphens, underscores, periods only
+	
+	
 Objects
 	Bucket OBJECTS ARE IMMUTABLE. When an object is modified, GCP creates new version of the object and creates the archieve of old version. This way we can roll back to older stage of the object at any time.
 	BY default objevt versioning is off.
 	WE can turn versioning on and off as required(as it involves the cost of storing each version -- remember OBJECTS ARE IMMUTABLE! )
+	
+	Max size of object is 5tb but infinite space in bucket to hold as many objects as possible.
+	
+	Object are stored a key/value pair in bucket. 
+	https://storage.cloud.google.com/my-bucket/2022/trips/to-norway.png is a key 
+	and to-norway.png object is a value.
 	
 
 
@@ -75,7 +86,15 @@ Standard Storage Sub-Classes :
 Data Security :
 	Fine Grained(Object Level)
 	Uniform(Bucket level) - recommended
-
+	
+	Cloud Storage always encrypts your data on the server side, before it is written to disk, at no additional charge
+		Besides this standard behavior, there are additional ways to encrypt your data when using Cloud Storage
+		CMEK(Customer Managed Encryption Key)
+			encryption key is stored in kms.
+		CSEK(Customer Supplied Encryption Key)
+			encryption key is supplied in each storage operation
+		Client side encryption : Data arrives at Cloud Storage already encrypted at client side but also undergoes server-side encryption
+	
 	
 Commands :	
 	gsutil ls
@@ -130,15 +149,6 @@ Object Holds
 	Temporary holds
 		Just apply hold on object for certain time.
 	
-
-
-
-Cloud Storage always encrypts your data on the server side, before it is written to disk, at no additional charge
-	Besides this standard behavior, there are additional ways to encrypt your data when using Cloud Storage
-	CMEK(Customer Managed Encryption Key)
-	CSEK(Customer Supplied Encryption Key)
-	Client side encryption : Data arrives at Cloud Storage already encrypted at client side but also undergoes server-side encryption
-	
 	
 	
 Important Features
@@ -166,7 +176,8 @@ Object Protection
 	Object Versioning
 		see above.
 	Object Retention Policy
-		Prevents the deletion or modification of the bucket's objects for a specified minimum period of time after they're uploaded. The optional step of locking a retention policy ensures that no one (including you) can shorten or remove the retention period.
+		Prevents the deletion or modification of the bucket's objects for a specified minimum period of time after they're uploaded. The optional step of 'locking a retention policy' ensures that no one (including you) can shorten or remove the retention period.
+			But you can increase the retention period while retention policy is locked.
 	Object Holds
 		??????????
 
@@ -178,6 +189,8 @@ GCP Data import Services
 	Storage Transfer Service
 		A software service to import data from another gcp bucket, S3 bucket, Azure Blob Storage Container or a http/https web source.
 		VVVIMP : To use this service, you can use Storage Transfer API or console. Google recommends that you use the Google-provided """client libraries""". This is asked in one of the exam.
+		It fault tolerant so it can resume from where it left off in case of errors.
+		It supports incremental transfer too.
 	Offline Media Import
 		A third party provider service where provider can upload tons of physical offline data in form of hard drives, USB flash drives, tapes etc to google cloud.
 
@@ -387,12 +400,30 @@ How can I expect data integrity in cloud storage? OR how can I trust the file I 
 	Note that the gsutil cp and rsync commands validate that the checksum automatically for you.
 	
 	
+How ACLs are diffrent from IAM?
+	IAM provides "uniform" access to underlying entity be it bucket or objects in bucket.
+	But ACL can control access ased on each object.
+	e.g. IAM can say user A has object viewer permission on bucket 1.
+		 ACL can say user A has viewer permission on object1 in bucket1, editor permission on object2 in bucket 1.
+	
+	
 Should I assign roles at bucket level, project level or object level?
 	https://cloud.google.com/storage/docs/access-control/iam#project-level_roles_vs_bucket-level_roles
 	Some roles can be used at both the project level and the bucket level. When used at the project level, the permissions they contain apply to ALL BUCKETS AND OBJECTS IN THE PROJECT. When used at the bucket level, the permissions only apply to A SPECIFIC BUCKET AND THE OBJECTS WITHIN IT
 	
 	For example, say you want to give a user permission to read objects in any bucket but create objects only in one specific bucket. To achieve this, give the user the Storage Object Viewer role at the project level, thus allowing the user to read any object stored in any bucket in your project, and give the user the Storage Object Creator role at the bucket level for a specific bucket, thus allowing the user to create objects only in that bucket.
 
+
+I want to transfer data from on prem to gcp. Which service shall I use?
+	one time transfer less than 1tb
+		gsutil
+	petabyte data
+		storage transfer service
+			on-prem transfer : 
+			cloud transfer : aws s3, azure blob storage or any URL 
+			Transfer Appliance : 
+				Transfer Appliance is recommended for data that exceeds 20 TB or would take more than a week to upload.
+				supports upto 40gbps speed.
 
 
 practice test
@@ -420,7 +451,7 @@ Best practices for Cloud Storage
 	Avoid using sequential filenames such as timestamp-based filenames if you are uploading many files in parallel.
 	Every bucket name must be unique across the entire Cloud Storage namespace.
 	
-	Don't use user IDs, email addresses, project names, project numbers, or any personally identifiable information (PII) in bucket names. This is because, you access object in bucket using a url, which exposes the bucket, object names to public. Hence choose bucket and object names that are difficult to guess
+	Don't use user IDs, email addresses, project names, project numbers, or any personally identifiable information (PII) in bucket names or object names. This is because, you access object in bucket using a url, which exposes the bucket, object names to public. Hence choose bucket and object names that are difficult to guess
 	
 	***** Bucket and object ACLs(Access Control List) are independent of each other, which means that the ACLs on a bucket do not affect the ACLs on objects inside that bucket. It is possible for a user without permissions for a bucket to have permissions for an object inside the bucket. 
 	For example, you can create a bucket such that only GroupA is granted permission to list the objects in the bucket. Upload an object into that bucket. GroupB has READ access to the uploaded object. GroupB will be able to read the object, but will not be able to view the contents of the bucket or perform bucket-related tasks like list object.
@@ -449,8 +480,12 @@ Best practices for Cloud Storage
 	Even though you can make a bucket publicly available for read/write. GCP discourages the as anyone can take the advantage to spread virus, explicit content etc and you being owner of bucket will be held responsible.
 	GCP recommends to use signed URLs instead.
 	
-	Not a best practive but a easy brainer - If you plan to use the gcp component with storage buckets then make sure their region is same as it would reduce the n/w latency.
+	Not a best practice but a easy brainer - If you plan to use the gcp component with storage buckets then make sure their region is same as it would reduce the n/w latency.
 
+	If you want to use cloud storage buckets as a file system, use a "Cloud Storage FUSE" to mount it on linux or macOS systems.
+	FUSE : 
+		Cloud Storage FUSE is an open source FUSE adapter that allows you to mount Cloud Storage buckets as file systems on Linux or macOS systems. It also provides a way for applications to upload and download Cloud Storage objects using standard file system semantics.
+		
 		
 Complete playlist ACE**
 	https://www.youtube.com/hashtag/cloudstoragebytes

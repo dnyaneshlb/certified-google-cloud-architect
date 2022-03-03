@@ -79,7 +79,7 @@ StackDriver Alerting:
 
 StackDriver Logging:
 	Provides functionality to view/filter/search logs.
-	Stores logs for at most 30 days.	
+	Stores logs for at most 30 days??????????.	
 	It is a best practice to run the Stackdriver Logging agent on all your VM instances.
 	Its a cross platform service which can work with AWS, GCP or even Onprem(but no azure)
 	** Logs can be exported directly using "LOG SINK" to cloud storage bucket, big query dataset and pub/sub.
@@ -105,14 +105,14 @@ StackDriver Logging:
 	https://cloud.google.com/logging/docs/agent/logging
 	
 	
-Exporting Logs : 	
+Exporting Logs using log router : 	
 	https://cloud.google.com/logging/docs/export
 	Log sink to
 		Pubsub
 		Cloud Storage
 		BigQuery
 		Cloud Logging log buckets
-		Splunk
+		Splunk(via pubsub)
 		
 		
 	SideNote - Cloud logging bucket is the same cloud storage bucket(_Default) used to store the logs for 30 days. We can either use the same bucket or create another storage bucket for storing the logs.		

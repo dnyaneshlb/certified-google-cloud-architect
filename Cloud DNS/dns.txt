@@ -11,7 +11,7 @@ What is zone?
 Private Domain ZOne
 	Private zones enable you to manage custom domain names for your Google Cloud resources without exposing the underlying DNS data to the public internet. A private zone is a container of DNS records that can only be queried by one or more Virtual Private Cloud (VPC) networks that you authorize.
 	
-	A private zone can only be queried from networks in the same project where it is defined
+	A private zone can only be queried from networks in the same project where it is defined.
 
 
 Public DOmain ZOne  
@@ -49,6 +49,8 @@ note that
 	
 DNS Policies
 	https://cloud.google.com/dns/docs/policies-overview
-	https://cloud.google.com/dns/docs/server-policies-overview	
+	https://cloud.google.com/dns/docs/server-policies-overview
+
+	
 	
 	

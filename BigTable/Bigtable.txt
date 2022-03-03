@@ -63,7 +63,8 @@ Schema Design
 	
 	
 Misc IMp
-	Bigtable is a key/value store, not a relational store. It does not support joins, and transactions are supported only within a single row.
+	Bigtable is a key/value store, not a relational store. It does not support joins, and transactions are supported only within a single row.********
+	Hence its not recommended for transactional workloads.
 
 	Each table has only one index, the row key. There are no secondary indices. Each row key must be unique.
 
