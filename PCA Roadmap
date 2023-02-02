@@ -2,11 +2,23 @@
 Review ACE exam notes
 	Not watching the youtube videos - Need to revisit
 	Also skipping some links - Need to revisit		
-	
+
+
+Study New Components
+	Cloud Armour
+	Cloud DLP 
+	Apigee - just introduction
+	Auto ML, AI Platform, Vertex AI- just introduction and a lab or two
+	Cloud Spanner
+	Cloud Schedular
+	TAU Vms, GPU and TPUs
+	Bigquery ML, Bigquery Omni, BQ Bi Engine -- introduction
+	Cloud COmposer - just introduction
+		
 
 Watch online content and take notes
 	GoogleCourses
-		Design and process
+		Design and process - In Progress**************
 		Architecting with Kubenetes Engine
 		Preparing for PCA exam
 		Tech Refresh: Professional Cloud Architect(https://googlecourses.qwiklabs.com/course_templates/214)
@@ -18,10 +30,9 @@ Watch online content and take notes
 		Cloud Next videos
 		Links spread across ACE notes
 	Udemy
-		Dan sullivan course
-		Ranga karnam course
-	A Cloud Guru
-	Coursera
+		Dan sullivan course - Done
+			Need to go through doc link under each video
+		Ranga karnam course - Done
 	
 		
 Master Important topics
@@ -38,8 +49,8 @@ Master Important topics
 			Orgnization policies
 			Billing setup and alerts
 			Cloud Data Loss Prevention
-			Cloud Armour
 			Anthos
+			storage transfer service
 			Cloud run Continuous deployment from Git using Cloud Build 
 			Cloud Run webbsockets - https://cloud.google.com/run/docs/tutorials/websockets
 			How to use secret manager to store env variables in cloud run
@@ -63,6 +74,18 @@ Master Important topics
 			Policy TrubleShooter
 			Exposing static website using cloud storage
 			Cloud Spanner
+			VPC Peering
+			Log Router	
+			Cloud DLP------must****************
+			Cloud Armor
+			Cloud DNS private zone
+			Cloud Scheduler
+			Apigee API management
+			Containers in compute engine
+			GKE Autopilot mode
+			Privacy Service Connect
+			Cloud CDN
+			Partionining and clustering in bigquery
 	QuickStart 
 		find unexplored components by using easy quickstarts present in documenttion.
 		e.g. https://cloud.google.com/storage/docs/quickstarts
@@ -70,12 +93,13 @@ Master Important topics
 		Sktechnotes by pvergadia
 
 
-Case Studies
+Case Studies(VVVIMP********)
 	
 	
 	
 Experiences of the people and their articles, notes, recommendations
-
+	https://www.startcloudnow.com/   ---- Recommended by Dan Sullivan
+	
 
 
 Practice Exams
@@ -84,6 +108,6 @@ Practice Exams
 		https://www.examtopics.com/discussions/google/
 	Paid exams - braincert, testpreptraining, whizlabs
 		
-	
+	https://docs.google.com/forms/d/e/1FAIpQLSdvf8Xq6m0kvyIoysdr8WZYCG32WHENStftiHTSdtW4ad2-0w/viewscore?viewscore=AE0zAgCoYQ2ZKg2m_ofIxHiFTNlDa51PLyerMCt4kBVbtOIsp3lopN4KlxcIRC0kkVynNJg
 
 	

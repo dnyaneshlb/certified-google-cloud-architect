@@ -213,7 +213,7 @@ Access Control :
 	Signed URLs: 
 		Time limited cryptographically signed URL. Note anyone having this URL can perform all allowed actions for limited amount of time(regardless of whether they have a Google account)
 		Any user having this URL can perform "only permitted operations" on bucket or object in bucket.
-	Signed Policy Documents
+	Signed Policy Documents***
 		Controls what can be uploaded to a bucket
 		Policy documents allow greater control over size, content type, and other upload characteristics than signed URLs
 	Public access prevention

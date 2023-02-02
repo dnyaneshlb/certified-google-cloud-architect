@@ -23,7 +23,7 @@ Rate Quota
 	Rate quota expires after certain.
 Allocation Quota
 	5 networks per project
-	gcloud compute project-info  -> project quota
+	gcloud compute project-info describe  -> project quota
 	gcloud compute regions describe region1 -> regional quota
 	
 	
@@ -461,3 +461,48 @@ ACE** -- subnet in Auto mode vpc can be expanded from /20 to max /16
 
 You can create many subnets in region if required unless quota exceeds.
 		
+		
+		
+VVVIMP***		
+Data Lifecycle in General		
+Data Ingest
+	Streaming - pubsub
+	Batch - gsUtil, Transfer appliance, Storage Transfer Service, BQ transfer Service
+Data Storage
+	Cloud SQL, Spanner
+	Firestore, Bigtable
+	Cloud Storage
+	Third party systems like mongoDB, cassandra
+Data Processing and Analsis(Cleansing and Transform)
+	Data prep(even non tech person can use this)
+	Cloud Data Loss Prevention
+	Dataflow
+	Dataproc - Managed Hadoop and Spark Clusters
+Data Explore and Visualize	
+	Bigquery
+	Datalabs - Web based tool based on Jupiter Notebooks
+	Data Studio - you know this very well
+	Data Catlog
+	ML models	
+		Prebuild AI models - Speech to text, Vision API, Natural Language, Video Intelligence etc
+		Also custom models using Tensorflow
+	
+		
+If you want to analyze petabyte scale data with some fixed predefined queries then Cloud Bigtable is a good choice since you can design a row key based on your predefined fixed queries.\
+But if queries are adhoc, then you must choose the BigQuery.
+
+
+
+Redis can store max 300GB 
+But memcached can store upto 5tb data. --- by dan sullivan
+
+
+Encryption
+	Data at rest is encrypted.
+	Apart from encrypting data with user defined encryption key, user's encryption key is also encrypted using enother key. So its double level of encryption
+	For datta in transit, if its over internet its encrypted over TLS
+	But if its in google network then its not encrypted but authentucated.
+	
+VPC service controls????	
+
+	

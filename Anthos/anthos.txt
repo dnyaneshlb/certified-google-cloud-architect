@@ -18,10 +18,10 @@ You dont need to build new clusters to run on anthos. You can Just bring existin
 
 
 
-There separate flavours of kubenetes for each env
-GCP 
-AWS 
-Azure
+Anthos can be run not only on google cloud but
+GCP (Most feature rich)
+AWS EC2 machines
+Azure VMs
 Attached Cluster
 on-prem(GKE on-prem)
 	VMware
@@ -35,6 +35,26 @@ Features
 	Hybrid and multicloud kubenetes deployments
 	Single pane og glass for management of all clusters in diff envs.
 	It supports even windows containers
+	
+	
+Multi Cluster Ingress 
+	When an application resides in mulitple clusters across multiple clouds/on-prem systems, we can use this feature.
+	Supports
+		Single consistent virtual IP for application, regardless where its deployed.
+		Proximity Based routing
+
+What is service mesh and anthos service mesh?
+	Its the old thing wrapped in new cloth
+		Decopule the cross cutting concerns into a sidecar proxy so developers can focus on application then boilerplate code and design.
+		It decouples things like below from application
+			Observability
+			Traffic management
+			Security
+	https://cloud.google.com/service-mesh/docs/overview	
+	
+
+Cloud Run for Anthos??
+		
 	
 	
 	

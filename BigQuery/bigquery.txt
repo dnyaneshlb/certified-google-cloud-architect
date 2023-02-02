@@ -51,6 +51,17 @@ BigQuery Jobs
 	https://cloud.google.com/bigquery/docs/jobs-overview	
 
 
+Importing data in BQ
+	Batch import
+		Completely free*****************	
+	Streaming
+		Very Expensive and lof of limitations***
+		Not recommended
+	BQ Transfer Service
+	Federation
+		import from external sources using federation tools
+
+
 Querying Internal Data
 	You can query data resides within bigquery. It can be across projects, across datasets.
 	But it should not be across locations.
@@ -125,6 +136,10 @@ Logical Views vs Materilized Views
 	While materialized views are recomuted from base tables contineously in the background.
 
 
+Partitioning and CLustering in BQ
+	?
+
+
 Misc important features
 	Time Travel
 		https://cloud.google.com/bigquery/docs/time-travel
@@ -169,7 +184,12 @@ Misc important features
 		So SQL query look neat and clean, complexity hidden.
 		You can create UDF in SQL or javascript
 		
-		
+	bIgquery supports automatic dataset, table, partition expiration.
+
+	You can query the data even though it is being stremed into bigquery. 
+	
+	BQ has capability to query external data sources even without storing the data in BQ.
+		Cloud Storage, Google Drive, CLoud SQL, Bigtable
 	
 	
 		
@@ -177,11 +197,15 @@ Advanced BigQuery Usages
 	Bigquery Omni : 
 		run BigQuery analytics on data stored in AWS S3 or Azure blob storage
 	Bigquery ML : 
+		Historically we need to migrate data to other platform for ML usage but BQ now supports running ML models using SQL in bigquery.
 		create and execute machine learning models in BigQuery using standard SQL queries
 	Geospatial analytics : 
 		store geospatial data(latitude and longitude etc) in bigquery and efficiently run analytics workloads on it.
 	Data Transfer Service:
 		automatic data movement into BigQuery on a scheduled, managed basis without writing single line of code.
+		From GCP and other players too.
+	BQ BI Engine
+		Fast in-memory analysis service like tableu, klicksense, powerBI, looker.	
 
 Pricing
 	Pricing Model
@@ -240,12 +264,31 @@ An application is writing and reading data for OLAP processing at very high scal
 	So answer could be BigTable or Spanner.
 
 
+***What is difference between bigquery job user, bigquery user and bigquery dataviewer???
+	bigquery job user : run jobs 
+	bigquery user : ?
+	bigquery dataviewer : ?
+
 Notes :
 	If you have a table that is not edited for 90 consecutive days, the price of storage for that table automatically drops by 50 percent to $0.01 per GB, per month. This is the same cost as Cloud Storage Nearline.
 
+Bigquery supports partitioning and sharding
+	partitioning - making chunks within same table so as to scan required chunk only
+		daywise partitions for TS data
+	sharding - making seperate table for a chunk and query only requried chunked table
+		humoungous data sharded into tables.
+		can do partitioning in a shard.
+		
 
 Best Practices :
-	???
+	Use batch inserts thn streaming inserts.
+	Use Partitioning and Clustering to avoid large table scanning
+	Use Automatic table, partition and table expiration feature to avoid excess billing of storage and scanning.
+	Estimate queries using console or --dry-run flag before runing it 
+	Use longterm storage(>90days) option to move to cheap storage cost
+	Prefer BQ for complex queries. For simple narrow range queries Bigtable can do the job.
+	
+	
 	
 	
 Links :	

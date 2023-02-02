@@ -70,8 +70,8 @@ Member :
 			Each group has unique email address. developers.atp@google.com
 			Its best practice to use group for everything
 			You can nest groups as well. e.g. mindspehere developers group and iot subgroup of it and "ie engineer" as sub group and so on
-		Google Workspace domain : Domain managed by gsuite
-		Cloud Identity domain : Domain managed by cloud Identity. Google recongised domain like ikea.com
+		Google Workspace domain : accounts in domain managed by gsuite
+		Cloud Identity domain : accounts in domain managed by cloud Identity. Google recongised domain like ikea.com
 		
 		
 		allAuthenticatedUsers : any authenticated google account or service account
@@ -291,7 +291,7 @@ Best practices
 
 	Audit your policies to ensure compliance. Audit logs contain all setIamPolicy() calls, so you can trace when a policy has been created or modified.
 
-	Audit the ownership and the membership of the Google groups used in policies.
+	Audit the ownership and the membership of the Google groups used in policies. Export audit logs to for long term audit purpose.
 
 	If you want to limit project creation in your organization, change the organization access policy to grant the Project Creator role to a group that you manage.
 	
@@ -339,7 +339,7 @@ Grant roles to a Google group instead of individual users when possible. It is e
 	
 	
 Workload Identity 
-	If you use Google Kubernetes Engine, then you might be running a combination of different applications on a single GKE cluster. The individual applications are likely to differ in which resources and APIs they need to access
+	If you use Google Kubernetes Engine, then you might be running a combination of different applications on a single GKE cluster. The individual applications are likely to differ in which resources and APIs they need to access.
 	If you attach a service account to a GKE cluster or one of its node pools, then all pods running in cluster get access to resource permission granted by SA which might be too restrictive or too over permissive.
 	Hence 
 		Don't attach service accounts to GKE clusters or node pools.
@@ -374,6 +374,8 @@ Best Practices:
 	USe Workload Identity for GKE applications
 
 	If your applications runs on on-prem or in other cloud providers, then use "Workload Identity Federation" to directly talk to google cloud services using authentication mechanism used in on prem or other cloud provider.
+		Main advantage of it is it creates a short lived tokens using which you can communicate as opposed to sharing service account key(which is long lived token of auth)
+	
 
 	Service account key is the last option to choose. If none of above option is viable in your case.
 	Dont forget to rotate keys regularly.
@@ -381,6 +383,8 @@ Best Practices:
 	Never delete default service accounts such as the App Engine or Compute Engine default service account. These service accounts can't be recreated without disabling and reenabling the respective API, which might break your existing deployment. If you don't use the default service accounts, disable them instead.
 
 	Dont use default service account, instead create single purpose SAs
+
+	Avoid adding service account to group. Reason being service account has tailored access needs which in most cases never resembles with other service accounts or users.
 
 
 VIMP : https://cloud.google.com/iam/docs/job-functions/auditing	
@@ -393,7 +397,11 @@ Gotchas
 	Max 100 Service accounts per project
 	Browser is the most restrictive role.
 
-
+	IAM focuses on WHO part on resource access but Org Policy focuses on the WHAT part of resource access - waht can be done to resources.
+	Org Policy is "enforced on the all users" and it "overrides the IAM policies".
+	e.g. create VMs only in europe-west1 region.
+		 Deny project wide ssh key creation
+		
 Pricing
 	IAM is free
 

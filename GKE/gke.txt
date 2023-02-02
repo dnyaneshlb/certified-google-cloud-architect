@@ -295,6 +295,10 @@ Node auto-upgrades and auto-repairs
 
 	GKE's node auto-repair feature helps you keep the nodes in your cluster in a healthy, running state. When enabled, GKE makes periodic checks on the health state of each node in your cluster. If a node fails consecutive health checks over an extended time period, GKE initiates a repair process for that node.
 
+
+GKE sandbox??
+
+
 Practice Links :
 	Complete basic interactive modules to learn real world kubernetes use
 	https://kubernetes.io/docs/tutorials/kubernetes-basics/

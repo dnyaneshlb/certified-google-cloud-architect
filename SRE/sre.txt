@@ -1,0 +1,117 @@
+What is SRE
+	DEvOps++
+
+
+SLI
+	Quantitative measurement of service performance
+	e.g. availability, correctness, response time, throughput etc.
+
+SLO
+	SLI + target
+	e.g. response time should be under 100ms 99%
+
+SLA
+	SLO + Consequences
+	Its an agreement that a service SLIs should perform as defined and agreed, else there will be consequences.
+	e.g. If a dsa service response time is more than 100ms for less than 99% time for a day then CIA can look for another source for lead time.
+	
+	
+Error Budget
+	100% - SLO
+	Error budgets is amount of errors your service is expected to make.	
+	If you are constantly achieving your service SLOs then you have more error budget and you can deploy your apps more frequently.
+	But if SLos are not being met then your error budget will be less and you cannot deploy apps frequently.
+	"So error budget drives the speed of software delivery."*******
+	
+	
+Best Practices
+	Watch Ranga Karnam's lesson no 260  -- VVIMP****
+	
+	Proper Testing
+		Chaos Testing
+			Simian Army
+		Load Testing
+			Gatling, Jmeter
+		Resilience Testing
+			Resilience = Its the ability of application to behave correctly when one or more parts of system fail
+		DiRT Testing
+			Disaster Recovery Testing
+	
+	Load Shedding
+		If system is experiencing the more than expected load, then drop the extra load.
+		ways - API limits, dropping data
+		
+	Reduced Quality of Service
+		If sytem is under stress, then make some breathing space by returning static values.
+		e.g. we can return static recommendations, or lower quality images instead of actual dynamic calls.
+		
+	Avoid Cascading failures
+		Avoid thrashing
+			thrashing - A process where a service responding very slow is stressed even more.
+			
+			
+Deployment Strategies
+	Recreate
+		Simplest of all, no strategy at all
+		Just recreate new version of app application instances v1 -> v2
+		There will be downtime while v1 is being replaced by v2
+		
+	A/B Testing
+		Deploy new version v2 of application with some % capacity.
+		Let users check if v2 is stable and they like v2.
+		If yes then promote v2 to all instances of v1
+		
+	Canary Release
+		
+	
+	Rolling Update
+		Defualt strategy in k8s.
+		
+	Blue Green Deployment
+		Create a v2 version and deploy it separately. Test it properly.
+		If v2 works fine, switch v1(green slot) with v2(Blue slot).
+		It needs extra infra as both versions are live at the same time for certain duration.
+			but we can mirror the v1 traffic to v2, to have v2 tested with real traffic.
+
+-------------------------------------------------------------------------------------------------------------			
+below is Not a SRe material, just a random but important from GCA exam pov. 			
+
+Compliance Standards
+	HIPAA
+		Health Insurance Portability And Accountability Act
+		It mandates the services to be regional, object versioning enabled and so on.
+		Google platform supports the HIPAA standards but you have to adhere to it by making right choices of GCP components.
+	PCI DSS
+		Payment Card Industry Data Security Standards
+		If application is handling payments, then you must adhere to PCI DSS standards.
+		Mandates
+			must have seperate "google cloud account" for payment prcessing that the usual account for rest of the stuff
+			Strict auditing of security of every env vpc setup, fw rules, vulnerability assessment etc.
+			https communication only
+			hardened secure linux image
+			Implement Foresety Security
+			Enable Vpc flow logs, firewall rules logging, log bucket lock, audit logs
+			Must enable Cloud DLP to sanitize the data
+	
+	
+Google's Architectural framework
+	Googls defines 4 pillars of architecture
+	https://www.udemy.com/course/google-cloud-professional-cloud-architect-certification/learn/lecture/26120260#content	
+		OPerational Excellence
+		Security, Privacy and Compliance
+		Reliability
+		Performance and Cost OPtimization
+		
+		
+		
+MMTD
+	"Mean time to detect" a problem in app
+MTTM
+	"Mean time to mitigate" a problem in app using temporary alternative/fix
+MTTR		
+	"Mean time to recover" a problem in app	without using a temp fix
+MTTB
+	"Mean time between failures" - a time between 2 failures	
+		if its high then system is not reliable
+	
+	

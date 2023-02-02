@@ -1,0 +1,40 @@
+Tankerax
+
+Tankerax is a global tanker supplier agency for suppliying water and fuel via tanker fleet.
+They want to build a scalable platform for fleet management and analytics.
+
+Features
+	Track tankers fleet using location, activity status
+	Search for a tanker in area
+	Assign a tanker for service duty
+	Derive analytics for most in demand areas, tanker health etc
+	Strong Social intergration with reviews, posts, comments
+	Suppliers can upload tanker inventory
+	
+Typical Users
+	Driver
+	Tanker supplier
+	Fleet manager
+	Customer
+	
+Personas
+	Amol is a middle aged happily married corporate worker and also a secretary of his society. He likes to keep things simple and neat. He believes in planning things in life. He lives in 2BHK flat in a sociaety with his family. He wants to make sure that all families in his society always have running water troughout the day. He wants to book a tanker whenever a supply goes below cetain level. He wants to make it automatic and save time with reppititive booking calls.
+
+	
+Stories	
+	As a tanker driver, I want to get details about my tanker health and todays schedule so that I can efficiently work full day.
+
+	As a Tanker suppier, I want to get details about my tanker fleet so that I can plan my day to day activities
+
+	As a Tanker suppier, I want to bulk supply tanker fleet so that I Tankerax can use it on my behalf
+
+	As a fleet manager, I want to track entire tanker fleet and get details about it so that I can productively drive my fleet
+
+	As a customer I want to book a tanker at my location so that I never run out of my water.
+
+	As a customer I want to see my previous bookings so that I can get my purchase history.
+
+SLI/SLO
+	USer Story: Supply tanker inventory -> SLI: latency=100ms, availability=request count the reach server SLO:latency=99%, availability=99%
+	
+	

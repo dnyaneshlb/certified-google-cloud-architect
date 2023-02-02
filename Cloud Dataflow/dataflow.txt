@@ -1,0 +1,21 @@
+Horizontally sclable, managed service
+
+Batch and stream processing
+
+Supports predefined templates for doing many simple jobs
+	pubsub to bigquery
+	pubsub to Cloud storage
+	and so on
+	
+Its a runner based on Apache Beam
+
+Nice DAG visualization for clarity
+
+Can be written in java, python and go.
+
+You have to write transaformations as opposed to data fusion(which is code-free technology to just drag and drop like mendix)
+
+
+-------------------------------- Cloud Composer -----------------------------------------------
+Apache Airflow based 
+

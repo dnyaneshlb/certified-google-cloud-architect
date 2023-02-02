@@ -9,7 +9,8 @@ BigTable is priced by provisioned nodes. BigTable does not autoscale.
 
 ACE** - The Compute Engine default service account is created with the Cloud IAM project editor role
 
-To access big table, we can use HBase API.
+To access big table, we can use HBase API.***
+	Watch out -- There were questions in past exam where a existing HBase based data pipeline needs to be migrated "with minimal toil" in to google cloud. Can we use bigtable? --- yes
 
 Yuo can directly query bigtable from bigquery(similar to cloud sql, google drive, cloud storage)
 
@@ -60,7 +61,10 @@ Schema Design
 	https://cloud.google.com/bigtable/docs/schema-design
 	Designing a Bigtable schema is different than designing a schema for a relational database. 
 	Rowkey Design
-	
+		dont start rwo key with a timestamp
+		keep low cardinality attrribute at the end - STO.120#ART2122#IKEA_SE
+		if timestamp is required in row kay, then reverse it - advantage is	that we can query the data more precisely like give me last 10min data 
+		
 	
 Misc IMp
 	Bigtable is a key/value store, not a relational store. It does not support joins, and transactions are supported only within a single row.********
@@ -89,7 +93,11 @@ Row key Design
 	Using one table for all tenants is the most efficient way to store and access multi-tenant data.
 	Here we make use of natural sorting of rowkeys very effectively.
 	
-	
+	Poorly Designed RowKey
+		auto-incremented value
+		start with a timestamp
+		
+		
 	
 Garbage Collection 
 	Garbage collection is a continuous process in which Bigtable checks the rules for each column family and deletes expired and obsolete data accordingly. In general, it can take up to a week from the time that data matches the criteria in the rules for the data to actually be deleted. You are not able to change the timing of garbage collection.
@@ -101,9 +109,12 @@ Garbage Collection
 Application profiles
 	https://cloud.google.com/bigtable/docs/app-profiles
 	An app profile specifies the routing policy that Bigtable uses to handle an instance's incoming requests.
-	Single Cluster Routing - requests goes to single cluster always
-	Multi Cluster Routing  - requests goes to nearest available cluster
-
+	Single Cluster Routing - 
+		requests goes to single cluster always
+		You get strong consistency because there is always single cluster for data read/write
+	Multi Cluster Routing  - 
+		requests goes to nearest available cluster
+		Writes will be eventual consistent because there will be some delay for replicating data across clusters.
 
 
 GCA

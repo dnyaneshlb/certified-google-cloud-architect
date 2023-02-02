@@ -13,9 +13,21 @@ Datastore vs Firestore
 		Data store is not fully consistent
 		Data store does not support joins or aggregates(like sum, count).
 		Has Kinds ans entities
+		offers unlimited writes per second
 		
 	Firestore
 		Its a datastore++
 		Offers datatore mode and native mode
 		Supports offline data sync
 		Has collections and documents
+		Limits writes to 10000 docs per second(This is limit is to bring strong consistency)
+		Supports millions of clients and offline updates
+	
+	
+Common things in both modes,
+	Single fields indexes are created automatically
+	You have to create composite indexes based on your application need
+	
+	Key design for kind/collection is a crucial factor
+	
+	You can nest entities/documents inside another.

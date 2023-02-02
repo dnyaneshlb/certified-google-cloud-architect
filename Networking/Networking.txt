@@ -315,6 +315,7 @@ VPC flow logs
 				
 				
 Private Google Access
+	https://cloud.google.com/vpc/docs/private-google-access
 		If you want to access any public Google API service(pubsub API, gmail API, CAlender API, Firestore API, Cloud Function API)				
 		AND
 		you have only internal Ip address then you must enable Private Google Access.
@@ -331,9 +332,17 @@ Private Google Access
 		
 
 Private Service Access
+	https://cloud.google.com/vpc/docs/private-services-access
 		Just like google as seen above, there can be other third party service providers who wants to expose their services to your applications as internal ip addresses within your vpc. In such a case, private service access is useful.
 		This require you to reserve certain CIDR ip range block of your vpc for such service providers. This reserved block cannot be used for "your" vpc services.
 		  	
+	
+Private Service Connect
+	https://cloud.google.com/vpc/docs/private-service-connect
+	Private Service Connect allows private consumption of services across VPC networks that belong to different groups, teams, projects, or organizations. You can publish and consume services using IP addresses that you define and that are internal to your VPC network.
+	IMP from exam pov
+
+	
 	
 Network Interfaces of VM	
 	A VM instance can connect to multiple VPC netoworks(not the subnets) at the same time. By default it has default netowork interface(nic-0) but we can add more network interfaces(nic-1 to nic-7).(subnet ranges must not overlap).
